@@ -162,6 +162,7 @@ Section Summary
 \subsection{Notation}
 Notation
 
+
 \section{Problem Statement}
 
 Restate the scenario but more formally. 
@@ -172,25 +173,53 @@ Rough computational capabilities expected by parties
 
 Fixed sensor subsets of which only whole subsets can be used at once. Maybe a picture of what this might look like in high level distributed localisation diagram.
 
-\section{Preliminaries}
 
+
+
+\section{Private Weighted Aggregation Preliminaries}
 
 \subsection{Paillier Encryption Scheme}
+
 \subsection{Joye-Libert Privacy-Preserving Aggregation}
 
 
-\section{Private Partially Homomorphic Aggregation}
+% Maybe rename this to Our Scheme or something like that
+\section{Private Weighted Aggregation}
+\subsection{Proof}
+Give the reduction proof here for pWSAO and implicit indistinguishability of weights
+
+
+\section{Private Localisation Preliminaries}
 
 \subsection{Integer Encoding for Real Numbers}
+
 \subsection{Extended Information Filter}
 
-\section{Requirements for Measurement Model}
-\section{Localisation Measurement Modification}
-Point out here that the further away the sensor is when it makes its distance measurement (the larger the measurement) the more Gaussian the noise and the better the filter. Give flight navigation as an applicable example with typically high distances.
 
 \section{Private Localisation with Privacy-Preserving Sensors}
+Explain it in overview. How is the aggregation scheme used, what does this require from the measurement model, why can this be a problem for normal distance sensors.
+
+\subsection{Requirements for Measurement Model}
+
+\subsection{Localisation Measurement Modification}
+Show here the weighted integrals that give mean and variance of the new noise.
+
+Point out here that the further away the sensor is when it makes its distance measurement (the larger the measurement) the more Gaussian the noise and the better the filter. Give flight navigation as an applicable example with typically high distances.
+
+\subsection{Expanding Aggregation for Multi-dimensional Inputs}
+Give 1D example that's intuitive (with $a^2b$) and then reduce the equivalent ND case ($A^\top BA$) to a set of weighted sums.
+
+Ensure that timestamps are concatenated with position so that no aggregation values are blinded by the same noise.
+
+% Maybe name the scheme? That would be in the heading here
+\subsection{Algorithm}
+Piece together the whole algorithm here.
+
 
 \section{Results}
+Decide on what kind of simulations and which plots to make. run times would be nice this time around
+
+
 \section{Conclusion}
 
 
