@@ -67,7 +67,7 @@
 
 %=================================================================
 % Full title of the paper (Capitalized)
-\Title{Localisation and Sensor Privacy Using the Extended Information Filter and Secure Partially Homomorphic Aggregation}
+\Title{Localisation and Sensor Privacy Using the Extended Information Filter and Secure Weighted Aggregation}
 
 % Author Orchid ID: enter ID or remove command
 \newcommand{\orcidauthorA}{0000-0002-9581-9937} % Add \orcidA{} behind the author's name
@@ -98,10 +98,10 @@ $^{1}$ \quad Intelligent Sensor-Actuator-systems Laboratory, Institute for Anthr
 %\conference{} % An extended version of a conference paper
 
 % Abstract (Do not insert blank lines, i.e. \\) 
-\abstract{A single paragraph of about 200 words maximum. For research articles, abstracts should give a pertinent overview of the work. We strongly encourage authors to use the following style of structured abstracts, but without headings: (1) Background: Place the question addressed in a broad context and highlight the purpose of the study; (2) Methods: Describe briefly the main methods or treatments applied; (3) Results: Summarize the article's main findings; and (4) Conclusion: Indicate the main conclusions or interpretations. The abstract should be an objective representation of the article, it must not contain results which are not presented and substantiated in the main text and should not exaggerate the main conclusions.}
+\abstract{Distributed state estimation and localisation methods have become increasingly popular with the rise of ubiquitous computing, and have led naturally to an increased concern regarding data and estimation privacy. Traditional distributed sensor navigation methods involve the leakage of sensor information or navigator location during localisation protocols and fail to preserve participants’ data privacy. Existing secure methods fail to address sensor and navigator privacy in some common model-based non-linear measurement localisation methods forfeiting broad applicability. We define a novel, cryptographically secure, weighted aggregation scheme which we apply to the Extended Kalman Filter with range-sensor measurements, and show that navigator location, sensor locations and sensor measurements can remain private during navigation. The requirements and cryptographic proof are given for the weighted aggregation scheme, and simulations of the private filter are used to evaluate the accuracy and performance of the method. Our approach defines a novel, computationally plausible, and private model-based localisation filter with direct application to environments where nodes may not be fully trusted, and data is considered sensitive.}
 
 % Keywords
-\keyword{keyword 1; keyword 2; keyword 3 (list three to ten pertinent keywords specific to the article, yet reasonably common within the subject discipline.)}
+\keyword{Extended Kalman Filter; Secure Localisation; Private Aggregation}
 
 % The fields PACS, MSC, and JEL may be left empty or commented out if not applicable
 %\PACS{J0101}
@@ -139,9 +139,9 @@ Introduce localisation, filtering and the need for privacy.
 
 Examples of environments where privacy is relevant and concrete examples where lack of privacy could have large costs
 
-Explain the additional difficulties with achieving privacy in distributed environments (malicious subsets etc). AO and pWSAO.
-
 Public key cryptography applicability to distributed systems; difference to symmetric schemes. Homomorphic encryption power and use case.
+
+Explain the additional difficulties with achieving privacy in distributed environments (malicious subsets etc). AO and pWSAO.
 
 
 
@@ -151,7 +151,7 @@ Application of partially Homomorphic encryption. Control examples include Alexan
 
 Estimation examples include Filters with a sensor hierarchy and linear models, localisation methods which hide sensor information in a model-free environment but either pay in security or require additional rounds of communication.
 
-Additionally encoding for signal processing is an issue. Typically unlimited scalar multiplications and additions using a scheme that allows it over integers does not work on encoded real numbers. Google bignum adds power but risks overflow and leaks exponents, Farokhi leaks no information but allows only a single multiplication.
+Additionally encoding for signal processing is an issue. Typically unlimited scalar multiplications and additions using a scheme that allows it over integers does not work on encoded real numbers. Google bignum adds power but risks overflow and leaks exponents, Farokhi leaks no information but allows only a single multiplication (extendable to more but each further limits the real number size and increases risk of overflow).
 
 Describe Navigator scenario and our contributions
 
