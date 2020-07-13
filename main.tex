@@ -98,7 +98,7 @@ $^{1}$ \quad Intelligent Sensor-Actuator-systems Laboratory, Institute for Anthr
 %\conference{} % An extended version of a conference paper
 
 % Abstract (Do not insert blank lines, i.e. \\) 
-\abstract{Distributed state estimation and localisation methods have become increasingly popular with the rise of ubiquitous computing, and have led naturally to an increased concern regarding data and estimation privacy. Traditional distributed sensor navigation methods involve the leakage of sensor information or navigator location during localisation protocols and fail to preserve participants’ data privacy. Existing secure methods fail to address sensor and navigator privacy in some common model-based non-linear measurement localisation methods forfeiting broad applicability. We define a novel, cryptographically secure, weighted aggregation scheme which we apply to the Extended Kalman Filter with range-sensor measurements, and show that navigator location, sensor locations and sensor measurements can remain private during navigation. The requirements and cryptographic proof are given for the weighted aggregation scheme, and simulations of the private filter are used to evaluate the accuracy and performance of the method. Our approach defines a novel, computationally plausible, and private model-based localisation filter with direct application to environments where nodes may not be fully trusted, and data is considered sensitive.}
+\abstract{Distributed state estimation and localisation methods have become increasingly popular with the rise of ubiquitous computing, and have led naturally to an increased concern regarding data and estimation privacy. Traditional distributed sensor navigation methods involve the leakage of sensor information or navigator location during localisation protocols and fail to preserve participants’ data privacy. Existing secure methods fail to address sensor and navigator privacy in some common model-based non-linear measurement localisation methods forfeiting broad applicability. We define a modified, cryptographically secure, weighted aggregation scheme which we apply to the Extended Kalman Filter with range-sensor measurements, and show that navigator location, sensor locations and sensor measurements can remain private during navigation. The requirements and cryptographic proof are given for the weighted aggregation scheme, and simulations of the private filter are used to evaluate the accuracy and performance of the method. Our approach defines a novel, computationally plausible, and private model-based localisation filter with direct application to environments where nodes may not be fully trusted, and data is considered sensitive.}
 
 % Keywords
 \keyword{Extended Kalman Filter; Secure Localisation; Private Aggregation}
@@ -139,59 +139,54 @@ Introduce localisation, filtering and the need for privacy.
 
 Examples of environments where privacy is relevant and concrete examples where lack of privacy could have large costs
 
-Public key cryptography applicability to distributed systems; difference to symmetric schemes. Homomorphic encryption power and use case.
+Methods for introducing security and privacy include differential privacy methods and encryption methods. 
+
+Differential privacy involves using statistical noise as security to make individual users' information cannot be deduced. Often requires a trusted aggregator, although secure aggregation methods exist. always requires noising result such that the final outcome is not exact (a problem in localisation).
+
+Encryption schemes involve formal indistinguishability proofs typically over bit-streams or integers. They typically reply on computationally hard problems over bit streams of a sufficiently large size; therefore the additional computational requirements of using encryption schemes should be pointed out and what this means in a real-time distributed sensor system. Continuing, specify public key cryptography applicability to distributed systems; difference to symmetric schemes. Homomorphic encryption power and use case.
+
+Model-free localisation using homomorphic encryption examples include polygon thing, WSN examples which protect against adversaries but don't preserve individual information. Importantly model-based filtering and localisation provide accurate estimates and these are not applicable there.
+
+Model-based estimation examples can include Aristov paper (which requires a linear model, and a hierarchy of sensors) and Farkhi papers (which includes distribution step)
 
 Explain the additional difficulties with achieving privacy in distributed environments (malicious subsets etc). AO and pWSAO.
 
+pWSAO achieved in Alexandru weighted aggregation, but requires redistributing keys at every timestep resulting in a costly operation, and a complicated communication protocol.
 
+In addition to applying suitable encryption schemes to signal processing tasks, care must be taken when converting sensor output into an encryptable homomorphic format. Typically unlimited scalar multiplications and additions using a scheme that works over integers does not work on encoded real numbers. Google bignum adds power but risks overflow and leaks exponents, Farokhi leaks no information but allows only a single multiplication (extendable to more but each further multiplication limits the real number size and increases the risk of overflow).
 
-Differential privacy concerned with hiding individuals in a group but results in noisy results. Also often requires a trusted aggregator, although aggregation methods exist.
-
-Application of partially Homomorphic encryption. Control examples include Alexandru and Farokhi papers, mostly applicable due to distributed aggregation step.
-
-Estimation examples include Filters with a sensor hierarchy and linear models, localisation methods which hide sensor information in a model-free environment but either pay in security or require additional rounds of communication.
-
-Additionally encoding for signal processing is an issue. Typically unlimited scalar multiplications and additions using a scheme that allows it over integers does not work on encoded real numbers. Google bignum adds power but risks overflow and leaks exponents, Farokhi leaks no information but allows only a single multiplication (extendable to more but each further limits the real number size and increases risk of overflow).
-
-Describe Navigator scenario and our contributions
+Briefly describe navigator scenario and our contributions
 
 Section Summary
 
+\subsection{Notation}
+Notation
+
 \section{Problem Statement}
+
 Restate the scenario but more formally. 
 
-Exact security guarantees we aim for
+Exact security guarantees we aim for, as well as the definitions for these guarantees (pWSAO and indistinguishability)
 
 Rough computational capabilities expected by parties
 
-Fixed sensor subsets of which only whole subsets can be used at once
-
-\section{Existing Literature}
-
-Details and differences to private localisation methods, aggregation methods, and encoding methods
-
-Model-free localisation examples can include polygon thing, WSN examples which protect against adversaries but don't preserve individual information. Importantly model-based filtering and localisation provides accurate estimates and these are not applicable there.
-
-Estimation examples can include Aristov paper (which requires linear model, and a hierarchy of sensors)
-
-Alexandru weighted aggregation requires redistributing keys at every timestep resulting in a costly operations, and a complicated communication protocol.
-
-Encoding of signal processing values for use in encrypted processing should consist of google bignum library and Farokhi qnm encoding
-
-
+Fixed sensor subsets of which only whole subsets can be used at once. Maybe a picture of what this might look like in high level distributed localisation diagram.
 
 \section{Preliminaries}
 
-\subsection{Integer Encoding for Real Numbers}
+
 \subsection{Paillier Encryption Scheme}
 \subsection{Joye-Libert Privacy-Preserving Aggregation}
-\subsection{Extended Information Filter}
-
 
 
 \section{Private Partially Homomorphic Aggregation}
+
+\subsection{Integer Encoding for Real Numbers}
+\subsection{Extended Information Filter}
+
 \section{Requirements for Measurement Model}
 \section{Localisation Measurement Modification}
+Point out here that the further away the sensor is when it makes its distance measurement (the larger the measurement) the more Gaussian the noise and the better the filter. Give flight navigation as an applicable example with typically high distances.
 
 \section{Private Localisation with Privacy-Preserving Sensors}
 
