@@ -98,7 +98,7 @@ $^{1}$ \quad Intelligent Sensor-Actuator-systems Laboratory, Institute for Anthr
 %\conference{} % An extended version of a conference paper
 
 % Abstract (Do not insert blank lines, i.e. \\) 
-\abstract{Distributed state estimation and localisation methods have become increasingly popular with the rise of ubiquitous computing, and have led naturally to an increased concern regarding data and estimation privacy. Traditional distributed sensor navigation methods involve the leakage of sensor information or navigator location during localisation protocols and fail to preserve participants’ data privacy. Existing secure methods fail to address sensor and navigator privacy in some common model-based non-linear measurement localisation methods forfeiting broad applicability. We define a modified, cryptographically secure, weighted aggregation scheme which we apply to the Extended Kalman Filter with range-sensor measurements, and show that navigator location, sensor locations and sensor measurements can remain private during navigation. The requirements and cryptographic proof are given for the weighted aggregation scheme, and simulations of the private filter are used to evaluate the accuracy and performance of the method. Our approach defines a novel, computationally plausible, and private model-based localisation filter with direct application to environments where nodes may not be fully trusted, and data is considered sensitive.}
+\abstract{Distributed state estimation and localisation methods have become increasingly popular with the rise of ubiquitous computing, and have led naturally to an increased concern regarding data and estimation privacy. Traditional distributed sensor navigation methods involve the leakage of sensor information or navigator location during localisation protocols and fail to preserve participants’ data privacy. Secure existing methods fail to address sensor and navigator privacy in some common model-based non-linear measurement localisation methods forfeiting broad applicability. We define a modified, cryptographically secure, weighted aggregation scheme which we apply to the Extended Kalman Filter with range-sensor measurements, and show that navigator location, sensor locations and sensor measurements can remain private during navigation. The requirements and cryptographic proof are given for the weighted aggregation scheme, and simulations of the private filter are used to evaluate the accuracy and performance of the method. Our approach defines a novel, computationally plausible and cryptographically private, model-based localisation filter with direct application to environments where nodes may not be fully trusted and data is considered sensitive.}
 
 % Keywords
 \keyword{Extended Kalman Filter; Secure Localisation; Private Aggregation}
@@ -151,29 +151,35 @@ Another example of function providing encryption, and a generalisation of privat
 
 Several of the aforementioned encryption schemes have found uses in secure localisation, estimation, and control.
 
-\section{Existing Literature}
+\subsection{Relevant Literature on Encrypted Localisation and Estimation}
 
 Model-free localisation using homomorphic encryption examples include polygon thing, WSN examples which protect against adversaries but in the case of the WSN paper. don't preserve anchor privacy. Importantly, model-based filtering and localisation provide more accurate estimates and these are not applicable there.
 
-Model-based estimation examples can include Aristov paper (which requires a linear model, and a hierarchy of sensors) and Farkhi papers (which includes distribution step)
+Model-based estimation examples include Aristov paper (which requires a linear model, and a hierarchy of sensors), Farokhi paper (which requires the controller compute entirely in encrypted space and send input back to actuator - supporting only cloud as a service type architectures) and Alexandru paper (which implements a distributed control environment but requires a constant gain matrix K)
 
 pWSAO achieved in Alexandru weighted aggregation, but requires redistributing keys at every timestep resulting in a costly operation, and a complicated communication protocol.
 
-In addition to applying suitable encryption schemes to signal processing tasks, care must be taken when converting sensor output into an encryptable homomorphic format. Typically unlimited scalar multiplications and additions using a scheme that works over integers does not work on encoded real numbers. Google bignum adds power but risks overflow and leaks exponents, Farokhi leaks no information but allows only a single multiplication (extendable to more but each further multiplication limits the real number size and increases the risk of overflow).
+In addition to applying suitable encryption schemes to signal processing tasks, care must be taken when converting sensor output into an encryptable homomorphic format. As is the case with our proposed localisation method, real number sensor output doesnot trivially encode to integers such that the homomorphic properties provided by an additive encryption scheme over integers keep the underlying real numbers consistent. Methods for handling the encoding of real numbers such that they can be used in homomorphic encryption exist. Google bignum adds power but risks overflow and leaks exponents, Farokhi leaks no information but allows only a single multiplication (extendable to more but each further multiplication limits the real number size and increases the risk of overflow).
 
 Briefly describe navigator scenario and our contributions
 
 Section Summary
 
-\section{Notation}
+\subsection{Notation}
 Notation
 
 
 \section{Problem Statement}
 
-Restate the scenario but more formally. 
+Restate the scenario but more formally. Give concrete example - plane and signal towers.
 
-Exact security guarantees we aim for, as well as the definitions for these guarantees (pWSAO and indistinguishability)
+Exact security guarantees we aim for, as well as the definitions for these guarantees (pWSAO and indistinguishability but in context of localisation as well). Note that learning only the sum in aggregation (as is normal in AO) would in this case tell the navigator the average location and measurements of all sensors, which is fine as it does not disclose any exact sensor.
+
+Passive attacks only from sensors to learn navigator position (Otherwise could do some kind of attack that would send fake measurement and note the change in it's own measurements - possible this would give away average of other sensors' measurements but unclear). Justify by saying sensors need to behave for localisation to work in the first place, for example GPS.
+
+Active attacks from navigator to find sensor location allowed, but assume that weights sent to all sensors are the same. In a wireless setting all sensors would recieve all broadcast weights anyway. While special hardware which would support directional broadcasting and recieving could be used to locate sensors individually this is beyond the scope of what is considered in our problem.
+
+Point out that learning the aggregation of sensor outputs, which contains measurement and location information also means that the average location and measurment of the sensors may be leaked, and is accepted as a part of the leakage as it is inferrable from the aggregation scheme and any functioning model-based localisation where measuremments are not known
 
 Rough computational capabilities expected by parties
 
@@ -191,6 +197,8 @@ Fixed sensor subsets of which only whole subsets can be used at once. Maybe a pi
 
 % Maybe rename this to Our Scheme or something like that
 \section{Private Weighted Aggregation}
+Explain it in overview
+
 \subsection{Proof}
 Give the reduction proof here for pWSAO and implicit indistinguishability of weights. alternatively sketch it out here and give reduction in appendix.
 
@@ -204,6 +212,8 @@ Give the reduction proof here for pWSAO and implicit indistinguishability of wei
 
 \section{Private Localisation with Privacy-Preserving Sensors}
 Explain it in overview. How is the aggregation scheme used, what does this require from the measurement model, why can this be a problem for normal distance sensors.
+
+Explain how leakage of the final aggregation sum to the navigator means leakage of the average sensor location and meausurement to the navigator. This is the reason for the accaptance of this leakage, as we pointed out in the problem statement section.
 
 \subsection{Requirements for Measurement Model}
 
