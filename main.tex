@@ -141,15 +141,21 @@ Examples of environments where privacy is relevant and concrete examples where l
 
 Methods for introducing security and privacy include differential privacy methods and encryption methods. 
 
-Differential privacy involves using statistical noise as security to make individual users' information cannot be deduced. Often requires a trusted aggregator, although secure aggregation methods exist. always requires noising result such that the final outcome is not exact (a problem in localisation).
+Differential privacy involves using statistical noise as security to make individual users' information cannot be deduced. Often requires a trusted aggregator, although secure aggregation methods exist. always requires noising result such that the outcome is not exact (a problem in localisation).
 
-Encryption schemes involve formal indistinguishability proofs typically over bit-streams or integers. They typically reply on computationally hard problems over bit streams of a sufficiently large size; therefore the additional computational requirements of using encryption schemes should be pointed out and what this means in a real-time distributed sensor system. Continuing, specify public key cryptography applicability to distributed systems; difference to symmetric schemes. Homomorphic encryption power and use case. Why FHE isn't used often, why additive partially homomorphic encryption is.
+Encryption schemes involve formal indistinguishability proofs typically over bits or integers. They rely on computationally hard problems involving security parameters of a sufficiently large size; therefore the additional computational requirements of using encryption schemes should be pointed out and what this means in a real-time distributed sensor system. Continuing, explain public-key cryptography applicability to distributed systems; difference to symmetric schemes. Homomorphic encryption power and use case. Why FHE isn't used often, why additive partially homomorphic encryption is.
 
-Model-free localisation using homomorphic encryption examples include polygon thing, WSN examples which protect against adversaries but don't preserve individual information. Importantly model-based filtering and localisation provide accurate estimates and these are not applicable there.
+Advancements in function providing encryption schemes such as homomorphic encryption have also led to several other types of schemes which have found uses in signal processing. Private aggregation schemes allow the secure computation of the sum of encrypted values originating from different parties, leaking only the final result. When considering such multi-party encryption protocols, formal security definitions must now also incorporate the added dangers of colluding malicious parties, and lead to new notions of security. For example Aggregator Obliviousness (AO) is typically proven for private aggregation schemes, while alternatives such as Private Weighted Secure Aggregator Obliviousness (pWSAO) exist for other specific use-cases.
+
+Another example of function providing encryption, and a generalisation of private aggregation, is called functional encryption (FE) and its distributed extension, multi-client functional encryption (MCFE), which allow the unencrypted result of an arbitrary function to be computed from encrypted inputs. General FE and MCFE are known to be quite computationally expensive (from meeting with ITI and student Johannes - need ref.) but alternatives providing only a subset of possibly computable function exist; for example, inner product encryption.
+
+Several of the aforementioned encryption schemes have found uses in secure localisation, estimation, and control.
+
+\section{Existing Literature}
+
+Model-free localisation using homomorphic encryption examples include polygon thing, WSN examples which protect against adversaries but in the case of the WSN paper. don't preserve anchor privacy. Importantly, model-based filtering and localisation provide more accurate estimates and these are not applicable there.
 
 Model-based estimation examples can include Aristov paper (which requires a linear model, and a hierarchy of sensors) and Farkhi papers (which includes distribution step)
-
-Explain the additional difficulties with achieving privacy in distributed environments (malicious subsets etc). AO and pWSAO.
 
 pWSAO achieved in Alexandru weighted aggregation, but requires redistributing keys at every timestep resulting in a costly operation, and a complicated communication protocol.
 
@@ -159,7 +165,7 @@ Briefly describe navigator scenario and our contributions
 
 Section Summary
 
-\subsection{Notation}
+\section{Notation}
 Notation
 
 
@@ -171,7 +177,7 @@ Exact security guarantees we aim for, as well as the definitions for these guara
 
 Rough computational capabilities expected by parties
 
-Fixed sensor subsets of which only whole subsets can be used at once. Maybe a picture of what this might look like in high level distributed localisation diagram.
+Fixed sensor subsets of which only whole subsets can be used at once. Maybe a picture of what this might look like in a high level distributed localisation diagram.
 
 
 
