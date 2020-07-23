@@ -175,7 +175,7 @@ Restate the scenario but more formally. Give concrete example - plane and signal
 
 Exact security guarantees we aim for, as well as the definitions for these guarantees (pWSAO and indistinguishability but in context of localisation as well). Note that learning only the sum in aggregation (as is normal in AO) would in this case tell the navigator the average location and measurements of all sensors, which is fine as it does not disclose any exact sensor.
 
-Passive attacks only from sensors to learn navigator position (Otherwise could do some kind of attack that would send fake measurement and note the change in it's own measurements - possible this would give away average of other sensors' measurements but unclear). Justify by saying sensors need to behave for localisation to work in the first place, for example GPS.
+Passive attacks only from sensors to learn navigator position (Otherwise could do some kind of attack that would send fake measurement and note the change in it's own measurements - possible this would give away average of other sensors' measurements but unclear). Any largly incorrect inputs from sensors may also be detectable by comparison to alternative navigator onboard sensors (GPS etc.). Justify by saying sensors need to behave for localisation to work in the first place.
 
 Active attacks from navigator to find sensor location allowed, but assume that weights sent to all sensors are the same. In a wireless setting all sensors would recieve all broadcast weights anyway. While special hardware which would support directional broadcasting and recieving could be used to locate sensors individually this is beyond the scope of what is considered in our problem.
 
@@ -183,7 +183,7 @@ Point out that learning the aggregation of sensor outputs, which contains measur
 
 Rough computational capabilities expected by parties
 
-Fixed sensor subsets of which only whole subsets can be used at once. Maybe a picture of what this might look like in a high level distributed localisation diagram.
+Fixed sensor subsets of which only whole subsets can be used at once. Maybe a picture of what this might look like in a high level distributed localisation diagram. Should consider that this subt grouping would also mean the leakage of the average sensor/measurment of each subset not all sensors at once. This should be considered when choosing sensor subsets and locations.
 
 
 
@@ -218,9 +218,11 @@ Explain how leakage of the final aggregation sum to the navigator means leakage 
 \subsection{Requirements for Measurement Model}
 
 \subsection{Localisation Measurement Modification}
-Show here the weighted integrals that give mean and variance of the new noise. If wanting to show more working, do this in appendix section, but probablynot needed.
+Show here the weighted integrals that give mean and variance of the new noise. If wanting to show more working, do this in appendix section, but probably not needed.
 
 Point out here that the further away the sensor is when it makes its distance measurement (the larger the measurement) the more Gaussian the noise and the better the filter. Give flight navigation as an applicable example with typically high distances.
+
+Additionally increased range accuracy may be possible when sensors know the process model of the navigator, allowing them to run their own filter (more accurate than only measumrements but not as accurate as the navigator's estimate from multiple sensors) and use their filtered estimated distance as the scaling factor when computing the modified measurement variance.
 
 \subsection{Expanding Aggregation for Multi-dimensional Inputs}
 Give 1D example that's intuitive (with $a^2b$) and then reduce the equivalent ND case ($A^\top BA$) to a set of weighted sums.
@@ -230,6 +232,7 @@ Ensure that timestamps are concatenated with position so that no aggregation val
 % Maybe name the scheme? That would be in the heading here
 \subsection{Algorithm}
 Piece together the whole algorithm here.
+Give the algorithm as a pseudocode (including encoding and encryption)
 
 
 \section{Results}
