@@ -238,9 +238,23 @@ Give the algorithm as a pseudocode (including encoding and encryption)
 \section{Results}
 Decide on what kind of simulations and which plots to make. run times would be nice this time around
 
+Time results can be captured in one graph. Y axis is time, x axis in number of sensors, each line (different colour) will show how the runtime changes as sensors are increased for different Paillier bitsizes (at least 3: 512, 1024, 2048). Every data point should be the average over some X number of simulations.
+
+Accuracy plots will describe error due to encoding, number of sensors (more adding may increase error in encoding), and the average distance of the sensors to the navigator. All plots will use the same ground truth and initial state and covariance estimates (this way average error at each timestep from multiple runs makes sense).
+
+Plot 1 will plot the RMSE of the average of X runs at each encoding size. A fixed layout of 4 mediumly spaced sensor will be used, and a fixed Paillier bit size.
+
+Plot 2 will plot the RMSE of the average of X runs with different numbers of sensors. A fixed encoding method will be used, and a fixed Paillier bit size.
+
+Plot 3 will plot the RMSE as the average distance of sensors changes. Fixed encoding and Paillier bit size. Vary between 4 layouts where 4 sensors are either very close to the center (and ground truth, and progressivly further out)
+
+Plot 4 will accompany plot 3 and display the 4 layours (arrow for ground truth and points for the sensors).
+
+
 
 \section{Conclusion}
-Future work can include hardware implementations, measurement handling which preservers Gaussian noise, or non-Gaussian noise methods. Can also consider ways of sending less information form the navigator to the sensors at each time step.
+Possible future work to consider writing here:
+Hardware implementations, measurement handling which preservers Gaussian noise, or non-Gaussian noise methods, ways of sending less information form the navigator to the sensors at each time step, active sensor attacker model, different state encryptions recieved at sensors.
 
 <Rest is template>
 

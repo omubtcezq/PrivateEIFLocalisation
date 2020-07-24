@@ -2,25 +2,24 @@
 \begin{document}
 \begin{tikzpicture}
 \begin{scope}
-%\draw  (-9,8) circle (10);
-%\draw  (-3,6) circle (10);
-
-%\draw (-4,12.5) circle (10);
-
-\end{scope}
-
-
-
-\begin{scope}
-\draw (0,15) circle (10);
+\clip (-9,8) circle (10) (-3,6) circle (10);
+\draw  (-9,8) circle (10);
+\draw  (-3,6) circle (10);
 \draw (-4,12.5) circle (10);
-\fill [white] (3,10) circle (10);
 \end{scope}
-\begin{scope}
-\draw (0,15) circle (10);
-\draw (3,10) circle (10);
-\fill [white] (-4,12.5) circle (10);
-\end{scope}
+
+
+
+%\begin{scope}
+%\draw (0,15) circle (10);
+%\draw (-4,12.5) circle (10);
+%\fill [white] (3,10) circle (10);
+%\end{scope}
+%\begin{scope}
+%\draw (0,15) circle (10);
+%\draw (3,10) circle (10);
+%\fill [white] (-4,12.5) circle (10);
+%\end{scope}
 
 
 
@@ -67,9 +66,20 @@
 \end{tikzpicture}
 
 \end{document}
-e\write\metadatafile{\p1,\p2}
-};
-\immediate\closeout\metadatafile
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \end{tikzpicture}
 
 \end{document}
