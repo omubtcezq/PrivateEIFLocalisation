@@ -60,6 +60,9 @@
 
 %=================================================================
 % Add packages and commands here. The following packages are loaded in our class file: fontenc, inputenc, calc, indentfirst, fancyhdr, graphicx,epstopdf, lastpage, ifthen, lineno, float, amsmath, setspace, enumitem, mathpazo, booktabs, titlesec, etoolbox, tabto, xcolor, soul, multirow, microtype, tikz, totcount, amsthm, hyphenat, natbib, hyperref, footmisc, url, geometry, newfloat, caption
+\usepackage{amsfonts}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 
 %=================================================================
 %% Please use the following mathematics environments: Theorem, Lemma, Corollary, Proposition, Characterization, Property, Problem, Example, ExamplesandDefinitions, Hypothesis, Remark, Definition, Notation, Assumption
@@ -86,7 +89,7 @@
 $^{1}$ \quad Intelligent Sensor-Actuator-systems Laboratory, Institute for Anthropomatics, Karlsruhe Institute of Technology, 76131 Karlsruhe, Germany; marko.ristic@kit.edu; noack@kit.edu; uwe.hanebeck@kit.edu}
 
 % Contact information of the corresponding author
-\corres{Correspondence: uwe.hanebeck@kit.edu; Tel.: +49-721-608-43909}
+\corres{Correspondence: uwe.hanebeck@kit.edu; Tel.: +49--721--608--43909}
 
 % Current address and/or shared authorship
 %\firstnote{Current address: Affiliation 3} 
@@ -98,7 +101,7 @@ $^{1}$ \quad Intelligent Sensor-Actuator-systems Laboratory, Institute for Anthr
 %\conference{} % An extended version of a conference paper
 
 % Abstract (Do not insert blank lines, i.e. \\) 
-\abstract{Distributed state estimation and localisation methods have become increasingly popular with the rise of ubiquitous computing, and have led naturally to an increased concern regarding data and estimation privacy. Traditional distributed sensor navigation methods involve the leakage of sensor information or navigator location during localisation protocols and fail to preserve participants’ data privacy. Secure existing methods fail to address sensor and navigator privacy in some common model-based non-linear measurement localisation methods forfeiting broad applicability. We define a modified, cryptographically secure, weighted aggregation scheme which we apply to the Extended Kalman Filter with range-sensor measurements, and show that navigator location, sensor locations and sensor measurements can remain private during navigation. The requirements and cryptographic proof are given for the weighted aggregation scheme, and simulations of the private filter are used to evaluate the accuracy and performance of the method. Our approach defines a novel, computationally plausible and cryptographically private, model-based localisation filter with direct application to environments where nodes may not be fully trusted and data is considered sensitive.}
+\abstract{Distributed state estimation and localisation methods have become increasingly popular with the rise of ubiquitous computing, and have led naturally to an increased concern regarding data and estimation privacy. Traditional distributed sensor navigation methods involve the leakage of sensor information or navigator location during localisation protocols and fail to preserve participants’ data privacy. Existing approaches which provide such guarantees, fail to address sensor and navigator privacy in some common model-based non-linear measurement localisation methods forfeiting broad applicability. We define a cryptographically secure weighted aggregation scheme which we apply to the Extended Kalman Filter with range-sensor measurements, and show that navigator location, sensor locations and sensor measurements can remain private during navigation. The security requirements, leakage, and cryptographic proof are given for the private filter and weighted aggregation scheme, and simulations of the filter are used to evaluate the accuracy and performance of the method. Our approach defines a novel, computationally plausible and cryptographically private, model-based localisation filter with direct application to environments where nodes may not be fully trusted and data is considered sensitive.}
 
 % Keywords
 \keyword{Extended Kalman Filter; Secure Localisation; Private Aggregation}
@@ -135,6 +138,10 @@ $^{1}$ \quad Intelligent Sensor-Actuator-systems Laboratory, Institute for Anthr
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Introduction}
+
+
+--
+
 Introduce localisation, filtering and the need for privacy. 
 
 Examples of environments where privacy is relevant and concrete examples where lack of privacy could have large costs
@@ -189,15 +196,89 @@ Fixed sensor subsets of which only whole subsets can be used at once. Maybe a pi
 
 
 \section{Private Weighted Aggregation Preliminaries}
+Our weighted aggregation method relies on the decisional composite residuosity assumption (DCRA) originally defined by Paillier in \cite{paillierPublicKeyCryptosystemsBased1999}. The aggregation method can be seen as a combination of the additive homomorphic Paillier encryption scheme, which additionally allows multiplication of an encrypted message with a plaintext value, and the Joye-Libert private stream-aggregation scheme. Both of these schemes base their security on the DCRA, and their descriptions are given briefly below before defining our weighted aggregation scheme.
+
+% A number $z$ is said to be an $n$th residue modulo $n^2$ if there exists a number $y \in \mathbb{Z}^{*}_{n^2}$ such that
+% \begin{equation}
+%     z = y^n \pmod{n^2},
+% \end{equation}
+% where $n=pq$ is the product of two large primes. DCRA states that distinguishing an $n$th residue modulo $n^2$ from non $n$th residues is a hard problem, and is shown to be a reduction of the 
 
 \subsection{Paillier Encryption Scheme}
+The Paillier encryption scheme is an additively homomorphic encryption scheme which functions over a finite group $\mathbb{G}$, containing 
+
+% TODO not true I think - just keep it simple instead - a subgroup where the DCRA holds and is of an unknown order, and another subgroup where discrete logarithms are easily computable.
+
+Key generation of the Paillier scheme is performed by choosing two sufficiently large primes $p$ and $q$, and computing $n=pq$. A generator $g$ is also required for encryption, which is often set to $g=n+1$ when $p$ and $q$ are of equal bit length \cite{}. The public key is then given by $(n, g)$ and secret key by $(p, q)$.
+
+Encryption of a plaintext message $m \in \mathbb{Z}_n$, producing ciphertext $c \in \mathbb{Z}^{*}_{n^2}$, is computed by
+\begin{equation}
+    c = g^m r^n \pmod{n^2}
+\end{equation}
+for a randomly chosen $r \in \mathbb{Z}_{n}$. The $r^n$ term can be considered as the noise which hides the value $g^m \pmod{n^2}$, which due to the scheme construction, is an easily computable discrete logarithm. The decryption of a ciphertext is computed by
+\begin{equation}
+    m = \frac{L(c^\lambda\pmod{n^2})}{L(g^\lambda\pmod{n^2})} \pmod{n}
+\end{equation}
+where $\lambda = \operatorfont{lcm}(p-1, q-1)$ and $L(u) = \frac{u-1}{n}$.
+
+In addition to encryption and decryption, the following homomorphic functions are provided by the Paillier scheme. $\forall m_1,m_2 \in \mathbb{Z}_n$,
+\begin{align}
+    \mathcal{D}(\mathcal{E}(m_1)\mathcal{E}(m_2)\pmod{n^2}) &= m_1+m_2\pmod{n} \\
+    \mathcal{D}(\mathcal{E}(m_1)g^{m_2}\pmod{n^2}) &= m_1+m_2\pmod{n} \\
+    \mathcal{D}(\mathcal{E}(m_1)^{m_2}\pmod{n^2}) &= m_1m_2\pmod{n}\,.
+\end{align}
+
+The scheme is shown to be indistinguishable under the chosen plaintext attack model (IND-CPA), which is considered the strongest form of security acheivable by a homomorphic encryption scheme \cite{}.
 
 \subsection{Joye-Libert Privacy-Preserving Aggregation}
+The Joye-Libert private stream aggregation scheme allows, at each time-step, encrypted time-series values originating from $N$ different measuring parties, to be summed up and decrypted by an aggregator. Time-series values are encrypted by their measuring party's private encryption key, and decrypted by the aggregator using its private key. The scheme functions over the same finite group $\mathbb{G}$ as the Paillier encryption scheme above.
 
+A notable difference in key-generation for the aggregation scheme from a public-key scheme such as Paillier's scheme, is the requirement of an offline generation and distribution step by some trusted party. Similar to the Paillier scheme, key generation first requires choosing two sufficiently large, equal length, primes $p$ and $q$ and computing $n=pq$. In addition to $n$, a hash function $H:\mathbb{Z} \rightarrow \mathbb{Z}_{n^2}$ is defined, and the public key is set to $(n, H)$. The private keys are generated by choosing $N$ keys $sk_i,\,i \in \{1,\dots,N\}$ uniformly from $\mathbb{Z}_{n^2}$ and distributing them to all measuring parties, while the last key is set to
+\begin{equation}
+    sk_0 = -\sum^{N}_{i=1}sk_i \pmod{n^2}\,,
+\end{equation}
+and sent to the aggregator.
+
+Encryption of plaintext $m_{i,t} \in \mathbb{Z}_n$ to ciphertext $c_{i,t} \in \mathbb{Z}_{n^2}$ at time $t$ is computed by participant $i$ as
+\begin{equation}
+    c_{i,t} = (n+1)^{m_{i,t}} H(t)^{sk_i} \pmod{n^2}\,,
+\end{equation}
+As with the interpretation of the noise term in the Paillier scheme, here $H(t)^{sk_i}$ can be seen as noise which hides the easily computable discrete logarithm $g^{m_{i,t}} \pmod{n^2}$, where $g=n+1$.
+
+When all encryptions $c_{i,t},\,i \in \{1,\dots,N\}$ are sent to the aggregator, private summation and decryption are computed by the functions
+\begin{equation}
+    c_{t} = H(t)^{sk_0}\prod^{N}_{i=1}c_{i,t} \pmod{n^2}
+\end{equation}
+and
+\begin{equation}
+    \sum^{N}_{i=1}m_{i,t} = \frac{c_{t}-1}{n}\,. \label{agg-decryption}
+\end{equation}
+Correctness follows from $\sum^{N}_{i=0}sk_i = 0$, and therefore
+\begin{align}
+    H(t)^{sk_0}\prod^{N}_{i=1}c_{i,t} \pmod{n^2} &\equiv H(t)^{sk_0}\prod^{N}_{i=1}(n+1)^{m_{i,t}} H(t)^{sk_i} \pmod{n^2} \\
+    &\equiv H(t)^{\sum^N_{j=0}sk_j} \prod^{N}_{i=1}g^{m_{i,t}} \pmod{n^2} \\
+    &\equiv (n+1)^{\sum^N_{i=1}m_{i,t}} \pmod{n^2}
+\end{align}
+which results in a solvable discrete logarithm by using \ref{agg-decryption}, as defined in \cite{joyeScalableSchemePrivacyPreserving2013}, with no more noise term.
+
+The aggregation scheme is proven to achieve aggregator obliviousness (AO), which in that no corrupted colluding subset learns anything about the individual messages of the non-corrupted participants, other than the final sum of messages if the aggregator is corrupted, and is proven in the random oracle model.
 
 % Maybe rename this to Our Scheme or something like that
 \section{Private Weighted Aggregation}
 Explain it in as an overview
+
+% \begin{algorithm}
+%     \caption{Paillier Key Generation}\label{paillier_key_gen}
+%     \begin{algorithmic}[1]
+%         \Procedure{PaillierKeyGen}{$security\_param$}
+%         \State $p,q \gets$ \Call{GeneratePrimes}{$security\_param$}
+%         \State $\lambda \gets$ \Call{lcm}{p,q}
+%         \State $pk \gets (n, n+1)$
+%         \State $sk \gets \lambda$
+%         \State \Return $(pk, sk)$
+%         \EndProcedure
+%     \end{algorithmic}
+% \end{algorithm}
 
 \subsection{Proof}
 Give the reduction proof here for pWSAO and implicit indistinguishability of weights. Alternatively, sketch it out here and give reduction proof in the appendix.
@@ -263,7 +344,7 @@ The template details the sections that can be used in a manuscript. Note that th
 %The order of the section titles is: Introduction, Materials and Methods, Results, Discussion, Conclusions for these journals: aerospace,algorithms,antibodies,antioxidants,atmosphere,axioms,biomedicines,carbon,crystals,designs,diagnostics,environments,fermentation,fluids,forests,fractalfract,informatics,information,inventions,jfmk,jrfm,lubricants,neonatalscreening,neuroglia,particles,pharmaceutics,polymers,processes,technologies,viruses,vision
 
 \section{Introduction}
-The introduction should briefly place the study in a broad context and highlight why it is important. It should define the purpose of the work and its significance. The current state of the research field should be reviewed carefully and key publications cited. Please highlight controversial and diverging hypotheses when necessary. Finally, briefly mention the main aim of the work and highlight the principal conclusions. As far as possible, please keep the introduction comprehensible to scientists outside your particular field of research. Citing a journal paper \cite{ref-journal}. And now citing a book reference \cite{ref-book}. Please use the command \citep{ref-journal} for the following MDPI journals, which use author-date citation: Administrative Sciences, Arts, Econometrics, Economies, Genealogy, Humanities, IJFS, JRFM, Languages, Laws, Religions, Risks, Social Sciences.
+% The introduction should briefly place the study in a broad context and highlight why it is important. It should define the purpose of the work and its significance. The current state of the research field should be reviewed carefully and key publications cited. Please highlight controversial and diverging hypotheses when necessary. Finally, briefly mention the main aim of the work and highlight the principal conclusions. As far as possible, please keep the introduction comprehensible to scientists outside your particular field of research. Citing a journal paper \cite{ref-journal}. And now citing a book reference \cite{ref-book}. Please use the command \citep{ref-journal} for the following MDPI journals, which use author-date citation: Administrative Sciences, Arts, Econometrics, Economies, Genealogy, Humanities, IJFS, JRFM, Languages, Laws, Religions, Risks, Social Sciences.
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results}
@@ -436,20 +517,21 @@ All appendix sections must be cited in the main text. In the appendixes, Figures
 %=====================================
 % References, variant A: external bibliography
 %=====================================
-%\externalbibliography{yes}
+\externalbibliography{yes}
 %\bibliography{your_external_BibTeX_file}
+\bibliography{BibTeX/PrivateEIFLocalisation}
 
 %=====================================
 % References, variant B: internal bibliography
 %=====================================
-\begin{thebibliography}{999}
-% Reference 1
-\bibitem[Author1(year)]{ref-journal}
-Author1, T. The title of the cited article. {\em Journal Abbreviation} {\bf 2008}, {\em 10}, 142--149.
-% Reference 2
-\bibitem[Author2(year)]{ref-book}
-Author2, L. The title of the cited contribution. In {\em The Book Title}; Editor1, F., Editor2, A., Eds.; Publishing House: City, Country, 2007; pp. 32--58.
-\end{thebibliography}
+% \begin{thebibliography}{999}
+% % Reference 1
+% \bibitem[Author1(year)]{ref-journal}
+% Author1, T. The title of the cited article. {\em Journal Abbreviation} {\bf 2008}, {\em 10}, 142--149.
+% % Reference 2
+% \bibitem[Author2(year)]{ref-book}
+% Author2, L. The title of the cited contribution. In {\em The Book Title}; Editor1, F., Editor2, A., Eds.; Publishing House: City, Country, 2007; pp. 32--58.
+% \end{thebibliography}
 
 % The following MDPI journals use author-date citation: Arts, Econometrics, Economies, Genealogy, Humanities, IJFS, JRFM, Laws, Religions, Risks, Social Sciences. For those journals, please follow the formatting guidelines on http://www.mdpi.com/authors/references
 % To cite two works by the same author: \citeauthor{ref-journal-1a} (\citeyear{ref-journal-1a}, \citeyear{ref-journal-1b}). This produces: Whittaker (1967, 1975)
