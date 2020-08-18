@@ -1,141 +1,92 @@
-%  LaTeX support: latex@mdpi.com 
-%  In case you need support, please attach all files that are necessary for compiling as well as the log file, and specify the details of your LaTeX setup (which operating system and LaTeX version / tools you are using).
+% autosam.tex
+% Annotated sample file for the preparation of LaTeX files
+% for the final versions of papers submitted to or accepted for 
+% publication in AUTOMATICA.
 
-%=================================================================
-\documentclass[sensors,article,submit,moreauthors,pdftex]{Definitions/mdpi} 
+% See also the Information for Authors.
 
-% If you would like to post an early version of this manuscript as a preprint, you may use preprint as the journal and change 'submit' to 'accept'. The document class line would be, e.g., \documentclass[preprints,article,accept,moreauthors,pdftex]{mdpi}. This is especially recommended for submission to arXiv, where line numbers should be removed before posting. For preprints.org, the editorial staff will make this change immediately prior to posting.
+% Make sure that the zip file that you send contains all the 
+% files, including the files for the figures and the bib file.
 
-%--------------------
-% Class Options:
-%--------------------
-%----------
-% journal
-%----------
-% Choose between the following MDPI journals:
-% acoustics, actuators, addictions, admsci, aerospace, agriculture, agriengineering, agronomy, ai, algorithms, allergies, analytica, animals, antibiotics, antibodies, antioxidants, applmech, applnano, applsci, arts, asc, asi, atmosphere, atoms, automation, axioms, batteries, bdcc, behavsci , beverages, bioengineering, biology, biomedicines, biomedinformatics, biomimetics, biomolecules, biosensors, bloods, brainsci, breath, buildings, cancers, carbon , catalysts, cells, ceramics, challenges, chemengineering, chemistry, chemosensors, chemproc, children, civileng, cleantechnol, climate, clockssleep, cmd, coatings, colloids, computation, computers, condensedmatter, cosmetics, cryptography, crystals, cyber, dairy, data, dentistry, dermatopathology, designs, diabetology, diagnostics, digital, diseases, diversity, drones, earth, econometrics, ecologies, economies, education, ejbc, ejihpe, electricity, electrochem, electronicmat, electronics, endocrines, energies, engproc, entropy, environments, environsciproc, epidemiologia, epigenomes, est, fermentation, fibers, fire, fishes, fluids, foods, forecasting, forests, fractalfract, fuels, futureinternet, futurephys, galaxies, games, gardens, gases, gastrointestdisord, gels, genealogy, genes, geohazards, geosciences, geriatrics, hazardousmatters, healthcare, hearts, heritage, highthroughput, horticulturae, humanities, hydrogen, hydrology, ijerph, ijfs, ijgi, ijms, ijtpp, immuno, informatics, information, infrastructures, inorganics, insects, instruments, inventions, iot, j, jcdd, jce, jcm, jcp, jcs, jdb, jfb, jfmk, jimaging, jintelligence, jlpea, jmmp, jmse, jne, jnt, jof, joitmc, journalmedia, jpm, jrfm, jsan, land, languages, laws, life, literature, livers, logistics, lubricants, machines, magnetochemistry, make, marinedrugs, materials, materproc, mathematics, mca, medicina, medicines, medsci, membranes, metabolites, metals, microarrays, micromachines, microorganisms, minerals, modelling, molbank, molecules, mps, mti, nanomaterials, ncrna, ijns, neurosci, neuroglia, nitrogen, notspecified, nutrients, obesities, oceans, ohbm, osteology, optics, organics, particles, pathogens, pharmaceuticals, pharmaceutics, pharmacy, philosophies, photonics, physics, plants, plasma, pollutants, polymers, polysaccharides, preprints , proceedings, processes, prosthesis, proteomes, psych, psychiatryint, publications, quantumrep, quaternary, qubs, radiation, reactions, recycling, religions, remotesensing, reprodmed, reports, resources, risks, robotics, safety, sci, scipharm, sensors, separations, sexes, signals, sinusitis, skins, smartcities, sna, societies, socsci, soilsystems, solids, sports, standards, stats, surfaces, surgeries, suschem, sustainability, world, symmetry, systems, technologies, telecom, test, tourismhosp, toxics, toxins, transplantology, tropicalmed, universe, urbansci, uro, vaccines, vehicles, vetsci, vibration, viruses, vision, water, wem, wevj, women
+% Output produced with the elsart style file does not imitate the
+% AUTOMATICA style. The style file is generic for all Elsevier
+% journals and the output is laid out for easy copy editing. The
+% final document is produced from the source file in the
+% AUTOMATICA style at Elsevier.
 
-%---------
-% article
-%---------
-% The default type of manuscript is "article", but can be replaced by: 
-% abstract, addendum, article, benchmark, book, bookreview, briefreport, casereport, changes, comment, commentary, communication, conceptpaper, conferenceproceedings, correction, conferencereport, expressionofconcern, extendedabstract, meetingreport, creative, datadescriptor, discussion, editorial, essay, erratum, hypothesis, interestingimages, letter, meetingreport, newbookreceived, obituary, opinion, projectreport, reply, retraction, review, perspective, protocol, shortnote, supfile, technicalnote, viewpoint
-% supfile = supplementary materials
+% You may use the style file autart.cls to obtain a two-column 
+% document (see below) that more or less imitates the printed 
+% Automatica style. This may helpful to improve the formatting 
+% of the equations, tables and figures, and also serves to check 
+% whether the paper satisfies the length requirements.
 
-%----------
-% submit
-%----------
-% The class option "submit" will be changed to "accept" by the Editorial Office when the paper is accepted. This will only make changes to the frontpage (e.g., the logo of the journal will get visible), the headings, and the copyright information. Also, line numbering will be removed. Journal info and pagination for accepted papers will also be assigned by the Editorial Office.
+% Please note: Authors must not create their own macros.
 
-%------------------
-% moreauthors
-%------------------
-% If there is only one author the class option oneauthor should be used. Otherwise use the class option moreauthors.
+% For further information regarding the preparation of LaTeX files 
+% for Elsevier, please refer to the "Full Instructions to Authors" 
+% from Elsevier's anonymous ftp server on ftp.elsevier.nl in the
+% directory pub/styles, or from the internet (CTAN sites) on
+% ftp.shsu.edu, ftp.dante.de and ftp.tex.ac.uk in the directory
+% tex-archive/macros/latex/contrib/supported/elsevier.
 
-%---------
-% pdftex
-%---------
-% The option pdftex is for use with pdfLaTeX. If eps figures are used, remove the option pdftex and use LaTeX and dvi2pdf.
 
-%=================================================================
-\firstpage{1} 
-\makeatletter 
-\setcounter{page}{\@firstpage} 
-\makeatother
-\pubvolume{xx}
-\issuenum{1}
-\articlenumber{5}
-\pubyear{2020}
-\copyrightyear{2020}
-%\externaleditor{Academic Editor: name}
-\history{Received: date; Accepted: date; Published: date}
-%\updates{yes} % If there is an update available, un-comment this line
+%\documentclass{elsart}               % The use of LaTeX2e is preferred.
 
-%% MDPI internal command: uncomment if new journal that already uses continuous page numbers 
-%\continuouspages{yes}
+\documentclass[twocolumn]{autart}    % Enable this line and disable the 
+                                     % preceding line to obtain a two-column 
+                                     % document whose style resembles the
+                                     % printed Automatica style.
 
-%------------------------------------------------------------------
-% The following line should be uncommented if the LaTeX file is uploaded to arXiv.org
-%\pdfoutput=1
 
-%=================================================================
-% Add packages and commands here. The following packages are loaded in our class file: fontenc, inputenc, calc, indentfirst, fancyhdr, graphicx,epstopdf, lastpage, ifthen, lineno, float, amsmath, setspace, enumitem, mathpazo, booktabs, titlesec, etoolbox, tabto, xcolor, soul, multirow, microtype, tikz, totcount, amsthm, hyphenat, natbib, hyperref, footmisc, url, geometry, newfloat, caption
+\usepackage{graphicx}          % Include this line if your 
+                               % document contains figures,
+%\usepackage[dvips]{epsfig}    % or this line, depending on which
+                               % you prefer.
+
+% User imported packages
+\usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 
-%=================================================================
-%% Please use the following mathematics environments: Theorem, Lemma, Corollary, Proposition, Characterization, Property, Problem, Example, ExamplesandDefinitions, Hypothesis, Remark, Definition, Notation, Assumption
-%% For proofs, please use the proof environment (the amsthm package is loaded by the MDPI class).
-
-%=================================================================
-% Full title of the paper (Capitalized)
-\Title{Localisation and Sensor Privacy Using the Extended Information Filter and Secure Weighted Aggregation}
-
-% Author Orchid ID: enter ID or remove command
-\newcommand{\orcidauthorA}{0000-0002-9581-9937} % Add \orcidA{} behind the author's name
-\newcommand{\orcidauthorB}{0000-0001-8996-5738} % Add \orcidB{} behind the author's name
-\newcommand{\orcidauthorC}{0000-0001-9870-2331} % Add \orcidC{} behind the author's name
-
-% Authors, for the paper (add full first names)
-\Author{Marko Ristic $^{1}$\orcidA{}, Benjamin Noack $^{1}$\orcidB{} and Uwe D. Hanebeck $^{1,}$*\orcidC{}}
-
-
-% Authors, for metadata in PDF
-\AuthorNames{Marko Ristic, Benjamin Noack and Uwe D. Hanebeck}
-
-% Affiliations / Addresses (Add [1] after \address if there is only one affiliation.)
-\address[1]{%
-$^{1}$ \quad Intelligent Sensor-Actuator-systems Laboratory, Institute for Anthropomatics, Karlsruhe Institute of Technology, 76131 Karlsruhe, Germany; marko.ristic@kit.edu; noack@kit.edu; uwe.hanebeck@kit.edu}
-
-% Contact information of the corresponding author
-\corres{Correspondence: uwe.hanebeck@kit.edu; Tel.: +49--721--608--43909}
-
-% Current address and/or shared authorship
-%\firstnote{Current address: Affiliation 3} 
-%\secondnote{These authors contributed equally to this work.}
-% The commands \thirdnote{} till \eighthnote{} are available for further notes
-
-%\simplesumm{} % Simple summary
-
-%\conference{} % An extended version of a conference paper
-
-% Abstract (Do not insert blank lines, i.e. \\) 
-\abstract{Distributed state estimation and localisation methods have become increasingly popular with the rise of ubiquitous computing, and have led naturally to an increased concern regarding data and estimation privacy. Traditional distributed sensor navigation methods involve the leakage of sensor information or navigator location during localisation protocols and fail to preserve participants’ data privacy. Existing approaches which provide such guarantees, fail to address sensor and navigator privacy in some common model-based non-linear measurement localisation methods forfeiting broad applicability. We define a cryptographically secure weighted aggregation scheme which we apply to the Extended Kalman Filter with range-sensor measurements, and show that navigator location, sensor locations and sensor measurements can remain private during navigation. The security requirements, leakage, and cryptographic proof are given for the private filter and weighted aggregation scheme, and simulations of the filter are used to evaluate the accuracy and performance of the method. Our approach defines a novel, computationally plausible and cryptographically private, model-based localisation filter with direct application to environments where nodes may not be fully trusted and data is considered sensitive.}
-
-% Keywords
-\keyword{Extended Kalman Filter; Secure Localisation; Private Aggregation}
-
-% The fields PACS, MSC, and JEL may be left empty or commented out if not applicable
-%\PACS{J0101}
-%\MSC{}
-%\JEL{}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Only for the journal Diversity
-%\LSID{\url{http://}}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Only for the journal Applied Sciences:
-%\featuredapplication{Authors are encouraged to provide a concise description of the specific application or a potential application of the work. This section is not mandatory.}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Only for the journal Data:
-%\dataset{DOI number or link to the deposited data set in cases where the data set is published or set to be published separately. If the data set is submitted and will be published as a supplement to this paper in the journal Data, this field will be filled by the editors of the journal. In this case, please make sure to submit the data set as a supplement when entering your manuscript into our manuscript editorial system.}
-
-%\datasetlicense{license under which the data set is made available (CC0, CC-BY, CC-BY-SA, CC-BY-NC, etc.)}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Only for the journal Toxins
-%\keycontribution{The breakthroughs or highlights of the manuscript. Authors can write one or two sentences to describe the most important part of the paper.}
-
-%\setcounter{secnumdepth}{4}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frontmatter}
+% Running title for regular 
+% papers but only if the title  
+% is over 5 words. Running title 
+% is not shown in output.
+%\runtitle{Insert a suggested running title}
+
+\title{Localisation and Sensor Privacy Using the Extended Information Filter and Secure Weighted Aggregation\thanksref{footnoteinfo}} % Title, preferably not more than 10 words.
+
+\thanks[footnoteinfo]{This paper was not presented at any IFAC 
+meeting. Corresponding author Uwe~D.~Hanebeck. Tel. +49--721--608--43909.}
+
+% Add the 
+% e-mail address 
+% (ead) as shown
+\author[ISAS]{Marko Ristic}\ead{marko.ristic@kit.edu},
+\author[ISAS]{Benjamin Noack}\ead{noack@kit.edu},
+\author[ISAS]{Uwe D. Hanebeck}\ead{uwe.hanebeck@kit.edu}
+
+\address[ISAS]{Intelligent Sensor-Actuator-Systems Laboratory, Institute for Anthropomatics, Karlsruhe Institute of Technology, 76131 Karlsruhe, Germany}  % Please supply
+
+% Five to ten keywords,  
+% chosen from the IFAC 
+% keyword list or with the 
+% help of the Automatica 
+% keyword wizard
+\begin{keyword}
+System state estimation; Data privacy; Sensor fusion; Kalman filters.
+\end{keyword}
+
+
+\begin{abstract} % Abstract of not more than 200 words.
+Distributed state estimation and localisation methods have become increasingly popular with the rise of ubiquitous computing, and have led naturally to an increased concern regarding data and estimation privacy. Traditional distributed sensor navigation methods involve the leakage of sensor information or navigator location during localisation protocols and fail to preserve participants’ data privacy. Existing approaches which provide such guarantees, fail to address sensor and navigator privacy in some common model-based non-linear measurement localisation methods forfeiting broad applicability. We define a cryptographically secure weighted aggregation scheme which we apply to the Extended Kalman Filter with range-sensor measurements, and show that navigator location, sensor locations and sensor measurements can remain private during navigation. The security requirements, leakage, and cryptographic proof are given for the private filter and weighted aggregation scheme, and simulations of the filter are used to evaluate the accuracy and performance of the method. Our approach defines a novel, computationally plausible and cryptographically private, model-based localisation filter with direct application to environments where nodes may not be fully trusted and data is considered sensitive.
+\end{abstract}
+
+\end{frontmatter}
 
 \section{Introduction}
 
@@ -196,7 +147,12 @@ Fixed sensor subsets of which only whole subsets can be used at once. Maybe a pi
 
 
 \section{Private Weighted Aggregation Preliminaries}
+% TODO define IND-CPA brielfy, AO and our version of AO *HERE* are reffer to it later
+
+
+
 Our weighted aggregation method relies on the decisional composite residuosity assumption (DCRA) originally defined by Paillier in \cite{paillierPublicKeyCryptosystemsBased1999}. The aggregation method can be seen as a combination of the additive homomorphic Paillier encryption scheme, which additionally allows multiplication of an encrypted message with a plaintext value, and the Joye-Libert private stream-aggregation scheme. Both of these schemes base their security on the DCRA, and their descriptions are given briefly below before defining our weighted aggregation scheme.
+
 
 % A number $z$ is said to be an $n$th residue modulo $n^2$ if there exists a number $y \in \mathbb{Z}^{*}_{n^2}$ such that
 % \begin{equation}
@@ -335,220 +291,109 @@ A well-defined example.
 Possible future work to consider writing here:
 Hardware implementations, measurement handling which preservers Gaussian noise, or non-Gaussian noise methods, ways of sending less information form the navigator to the sensors at each time step, active sensor attacker model, different state encryptions received at sensors.
 
-<Rest is template>
+%---Rest is template---
 
 
+% \section{Introduction}
+% Video, patres conscripti, in me omnium vestrum ora atque oculos esse 
+% conversos, video vos non solunn de vestro ac rei publicae, verum 
+% etiam, si id depulsum sit, de meo periculo esse sollicitos. Est mihi 
+% iucunda in malis et grata in dolore vestra erga me voluntas, sed eam, 
+% per deos inmortales, deponite atque obliti salutis meae de vobis ac 
+% de vestris liberis cogitate. Mihi si haec condicio consulatus data 
+% est, ut omnis acerbitates, onunis dolores cruciatusque perferrem, 
+% feram non solum fortiter, verum etiam lubenter, dum modo meis 
+% laboribus vobis populoque Romano dignitas salusque pariatur.
 
-\section{How to Use this Template}
-The template details the sections that can be used in a manuscript. Note that the order and names of article sections may differ from the requirements of the journal (e.g., the positioning of the Materials and Methods section). Please check the instructions for authors page of the journal to verify the correct order and names. For any questions, please contact the editorial office of the journal or support@mdpi.com. For LaTeX related questions please contact latex@mdpi.com.
-%The order of the section titles is: Introduction, Materials and Methods, Results, Discussion, Conclusions for these journals: aerospace,algorithms,antibodies,antioxidants,atmosphere,axioms,biomedicines,carbon,crystals,designs,diagnostics,environments,fermentation,fluids,forests,fractalfract,informatics,information,inventions,jfmk,jrfm,lubricants,neonatalscreening,neuroglia,particles,pharmaceutics,polymers,processes,technologies,viruses,vision
+% \begin{figure}
+% \begin{center}
+% \includegraphics[height=4cm]{jcaesar.eps}    % The printed column  
+% \caption{Gaius Julius Caesar, 100--44 B.C.}  % width is 8.4 cm.
+% \label{fig1}                                 % Size the figures 
+% \end{center}                                 % accordingly.
+% \end{figure}
 
-\section{Introduction}
-% The introduction should briefly place the study in a broad context and highlight why it is important. It should define the purpose of the work and its significance. The current state of the research field should be reviewed carefully and key publications cited. Please highlight controversial and diverging hypotheses when necessary. Finally, briefly mention the main aim of the work and highlight the principal conclusions. As far as possible, please keep the introduction comprehensible to scientists outside your particular field of research. Citing a journal paper \cite{ref-journal}. And now citing a book reference \cite{ref-book}. Please use the command \citep{ref-journal} for the following MDPI journals, which use author-date citation: Administrative Sciences, Arts, Econometrics, Economies, Genealogy, Humanities, IJFS, JRFM, Languages, Laws, Religions, Risks, Social Sciences.
- 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Results}
+% % OR
 
-This section may be divided by subheadings. It should provide a concise and precise description of the experimental results, their interpretation as well as the experimental conclusions that can be drawn.
-\begin{quote}
-This section may be divided by subheadings. It should provide a concise and precise description of the experimental results, their interpretation as well as the experimental conclusions that can be drawn.
-\end{quote}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Subsection}
-\unskip
-\subsubsection{Subsubsection}
-
-Bulleted lists look like this:
-\begin{itemize}[leftmargin=*,labelsep=5.8mm]
-\item	First bullet
-\item	Second bullet
-\item	Third bullet
-\end{itemize}
-
-Numbered lists can be added as follows:
-\begin{enumerate}[leftmargin=*,labelsep=4.9mm]
-\item	First item 
-\item	Second item
-\item	Third item
-\end{enumerate}
-
-The text continues here.
-
-\subsection{Figures, Tables and Schemes}
-
-All figures and tables should be cited in the main text as Figure 1, Table 1, etc.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=2 cm]{Definitions/logo-mdpi}
-\caption{This is a figure, Schemes follow the same formatting. If there are multiple panels, they should be listed as: (\textbf{a}) Description of what is contained in the first panel. (\textbf{b}) Description of what is contained in the second panel. Figures should be placed in the main text near to the first time they are cited. A caption on a single line should be centered.}
-\end{figure}   
- 
-Text
-
-Text
-
-\begin{table}[H]
-\caption{This is a table caption. Tables should be placed in the main text near to the first time they are cited.}
-\centering
-%% \tablesize{} %% You can specify the fontsize here, e.g., \tablesize{\footnotesize}. If commented out \small will be used.
-\begin{tabular}{ccc}
-\toprule
-\textbf{Title 1}	& \textbf{Title 2}	& \textbf{Title 3}\\
-\midrule
-entry 1		& data			& data\\
-entry 2		& data			& data\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Text
-
-Text
-
-%\begin{listing}[H]
-%\caption{Title of the listing}
-%\rule{\textwidth}{1pt}
-%\raggedright Text of the listing. In font size footnotesize, small, or normalsize. Preferred format: left aligned and single spaced. Preferred border format: top border line and bottom border line.
-%\rule{\textwidth}{1pt}
-%\end{listing}
+% %\begin{figure}
+% %\begin{center}
+% %\epsfig{file=jcaesar,width=7cm}
+% %\caption{Gaius Julius Caesar, 100--44 B.C.}
+% %\label{fig1}
+% %\end{center}
+% %\end{figure}
 
 
-\subsection{Formatting of Mathematical Components}
+% \subsection{A subsection}
+% Marcus Tullius Cicero, 106--43 B.C. was a Roman statesman, orator, 
+% and philosopher.  A major figure in the last years of the Republic, 
+% he is best known for his orations against Catiline\footnote{
+% This footnote should be very brief.}
+% and for his mastery of Latin prose \cite{Heritage:92}. He was a 
+% contemporary of Julius Caesar (Fig.~\ref{fig1}).
 
-This is an example of an equation:
+% \section{The argument}
+% Some words might be appropriate describing equation~(\ref{e1}), if 
+% we had but time and space enough.
+% \begin{equation} \label{e1}
+% {{\partial F}\over {\partial t}} =
+% D{{\partial^2 F}\over {\partial x^2}}.
+% \end{equation}
+% See \cite{Abl:56}, \cite{AbTaRu:54}, \cite{Keo:58} and 
+% \cite{Pow:85}.
+% This equation goes far beyond the celebrated theorem ascribed to the great
+% Pythagoras by his followers.
+% \begin{thm}
+% The square of the length of the hypotenuse of a right triangle equals the sum of the squares 
+% of the lengths of the other two sides.
+% \end{thm}
+% \section{Epilogue}
+% A word or two to conclude, and this even includes some inline 
+% maths:  $R(x,t)\sim t^{-\beta}g(x/t^\alpha)\exp(-|x|/t^\alpha)$.
 
-\begin{equation}
-a + b = c
-\end{equation}
-%% If the documentclass option "submit" is chosen, please insert a blank line before and after any math environment (equation and eqnarray environments). This ensures correct linenumbering. The blank line should be removed when the documentclass option is changed to "accept" because the text following an equation should not be a new paragraph. 
+\begin{ack}                               % Place acknowledgements
+Partially supported by the Roman Senate.  % here.
+\end{ack}
 
-Please punctuate equations as regular text. Theorem-type environments (including propositions, lemmas, corollaries etc.) can be formatted as follows:
-%% Example of a theorem:
-\begin{Theorem}
-Example text of a theorem.
-\end{Theorem}
-
-The text continues here. Proofs must be formatted as follows:
-
-%% Example of a proof:
-\begin{proof}[Proof of Theorem 1]
-Text of the proof. Note that the phrase `of Theorem 1' is optional if it is clear which theorem is being referred to.
-\end{proof}
-The text continues here.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Discussion}
-
-Authors should discuss the results and how they can be interpreted in perspective of previous studies and of the working hypotheses. The findings and their implications should be discussed in the broadest context possible. Future research directions may also be highlighted.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Materials and Methods}
-
-Materials and Methods should be described with sufficient details to allow others to replicate and build on published results. Please note that publication of your manuscript implicates that you must make all materials, data, computer code, and protocols associated with the publication available to readers. Please disclose at the submission stage any restrictions on the availability of materials or information. New methods and protocols should be described in detail while well-established methods can be briefly described and appropriately cited.
-
-Research manuscripts reporting large datasets that are deposited in a publicly available database should specify where the data have been deposited and provide the relevant accession numbers. If the accession numbers have not yet been obtained at the time of submission, please state that they will be provided during review. They must be provided prior to publication.
-
-Interventionary studies involving animals or humans, and other studies require ethical approval must list the authority that provided approval and the corresponding ethical approval code. 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Conclusions}
-
-This section is not mandatory, but can be added to the manuscript if the discussion is unusually long or complex.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Patents}
-This section is not mandatory, but may be added if there are patents resulting from the work reported in this manuscript.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\vspace{6pt} 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% optional
-%\supplementary{The following are available online at \linksupplementary{s1}, Figure S1: title, Table S1: title, Video S1: title.}
-
-% Only for the journal Methods and Protocols:
-% If you wish to submit a video article, please do so with any other supplementary material.
-% \supplementary{The following are available at \linksupplementary{s1}, Figure S1: title, Table S1: title, Video S1: title. A supporting video article is available at doi: link.}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\authorcontributions{For research articles with several authors, a short paragraph specifying their individual contributions must be provided. The following statements should be used ``Conceptualization, X.X. and Y.Y.; methodology, X.X.; software, X.X.; validation, X.X., Y.Y. and Z.Z.; formal analysis, X.X.; investigation, X.X.; resources, X.X.; data curation, X.X.; writing--original draft preparation, X.X.; writing--review and editing, X.X.; visualization, X.X.; supervision, X.X.; project administration, X.X.; funding acquisition, Y.Y. All authors have read and agreed to the published version of the manuscript.'', please turn to the  \href{http://img.mdpi.org/data/contributor-role-instruction.pdf}{CRediT taxonomy} for the term explanation. Authorship must be limited to those who have contributed substantially to the work reported.}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\funding{Please add: ``This research received no external funding'' or ``This research was funded by NAME OF FUNDER grant number XXX.'' and  and ``The APC was funded by XXX''. Check carefully that the details given are accurate and use the standard spelling of funding agency names at \url{https://search.crossref.org/funding}, any errors may affect your future funding.}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\acknowledgments{In this section you can acknowledge any support given which is not covered by the author contribution or funding sections. This may include administrative and technical support, or donations in kind (e.g., materials used for experiments).}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\conflictsofinterest{Declare conflicts of interest or state ``The authors declare no conflict of interest.'' Authors must identify and declare any personal circumstances or interest that may be perceived as inappropriately influencing the representation or interpretation of reported research results. Any role of the funders in the design of the study; in the collection, analyses or interpretation of data; in the writing of the manuscript, or in the decision to publish the results must be declared in this section. If there is no role, please state ``The funders had no role in the design of the study; in the collection, analyses, or interpretation of data; in the writing of the manuscript, or in the decision to publish the results''.} 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% optional
-\abbreviations{The following abbreviations are used in this manuscript:\\
-
-\noindent 
-\begin{tabular}{@{}ll}
-MDPI & Multidisciplinary Digital Publishing Institute\\
-DOAJ & Directory of open access journals\\
-TLA & Three letter acronym\\
-LD & linear dichroism
-\end{tabular}}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% optional
-\appendixtitles{no} % Leave argument "no" if all appendix headings stay EMPTY (then no dot is printed after "Appendix A"). If the appendix sections contain a heading then change the argument to "yes".
-\appendix
-\section{}
-\unskip
-\subsection{}
-The appendix is an optional section that can contain details and data supplemental to the main text. For example, explanations of experimental details that would disrupt the flow of the main text, but nonetheless remain crucial to understanding and reproducing the research shown; figures of replicates for experiments of which representative data is shown in the main text can be added here if brief, or as Supplementary data. Mathematical proofs of results not central to the paper can be added as an appendix.
-
-\section{}
-All appendix sections must be cited in the main text. In the appendixes, Figures, Tables, etc. should be labeled starting with `A', e.g., Figure A1, Figure A2, etc. 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\reftitle{References}
-
-% Please provide either the correct journal abbreviation (e.g. according to the “List of Title Word Abbreviations” http://www.issn.org/services/online-services/access-to-the-ltwa/) or the full name of the journal.
-% Citations and References in Supplementary files are permitted provided that they also appear in the reference list here. 
-
-%=====================================
-% References, variant A: external bibliography
-%=====================================
-\externalbibliography{yes}
-%\bibliography{your_external_BibTeX_file}
+\bibliographystyle{plain}        % Include this if you use bibtex 
+                                 % and a bib file to produce the 
+                                 % bibliography (preferred). The
+                                 % correct style is generated by
+                                 % Elsevier at the time of printing.
 \bibliography{BibTeX/PrivateEIFLocalisation}
 
-%=====================================
-% References, variant B: internal bibliography
-%=====================================
-% \begin{thebibliography}{999}
-% % Reference 1
-% \bibitem[Author1(year)]{ref-journal}
-% Author1, T. The title of the cited article. {\em Journal Abbreviation} {\bf 2008}, {\em 10}, 142--149.
-% % Reference 2
-% \bibitem[Author2(year)]{ref-book}
-% Author2, L. The title of the cited contribution. In {\em The Book Title}; Editor1, F., Editor2, A., Eds.; Publishing House: City, Country, 2007; pp. 32--58.
-% \end{thebibliography}
+%\begin{thebibliography}{99}     % Otherwise use the  
+                                 % thebibliography environment.
+                                 % Insert the full references here.
+                                 % See a recent issue of Automatica 
+                                 % for the style.
+%  \bibitem[Heritage, 1992]{Heritage:92}
+%     (1992) {\it The American Heritage. 
+%     Dictionary of the American Language.}
+%     Houghton Mifflin Company.
+%  \bibitem[Able, 1956]{Abl:56}
+%     B.~C.~Able (1956). Nucleic acid content of macroscope. 
+%     {\it Nature 2}, 7--9. 
+%  \bibitem[Able {\em et al.}, 1954]{AbTaRu:54}   
+%     B.~C. Able, R.~A. Tagg, and M.~Rush (1954).
+%     Enzyme-catalyzed cellular transanimations.
+%     In A.~F.~Round, editor, 
+%     {\it Advances in Enzymology Vol. 2} (125--247). 
+%     New York, Academic Press.
+%  \bibitem[R.~Keohane, 1958]{Keo:58}
+%     R.~Keohane (1958).
+%     {\it Power and Interdependence: 
+%     World Politics in Transition.}
+%     Boston, Little, Brown \& Co.
+%  \bibitem[Powers, 1985]{Pow:85}
+%     T.~Powers (1985).
+%     Is there a way out?
+%     {\it Harpers, June 1985}, 35--47.
 
-% The following MDPI journals use author-date citation: Arts, Econometrics, Economies, Genealogy, Humanities, IJFS, JRFM, Laws, Religions, Risks, Social Sciences. For those journals, please follow the formatting guidelines on http://www.mdpi.com/authors/references
-% To cite two works by the same author: \citeauthor{ref-journal-1a} (\citeyear{ref-journal-1a}, \citeyear{ref-journal-1b}). This produces: Whittaker (1967, 1975)
-% To cite two works by the same author with specific pages: \citeauthor{ref-journal-3a} (\citeyear{ref-journal-3a}, p. 328; \citeyear{ref-journal-3b}, p.475). This produces: Wong (1999, p. 328; 2000, p. 475)
+%\end{thebibliography}
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% optional
-\sampleavailability{Samples of the compounds ...... are available from the authors.}
-
-%% for journal Sci
-%\reviewreports{\\
-%Reviewer 1 comments and authors’ response\\
-%Reviewer 2 comments and authors’ response\\
-%Reviewer 3 comments and authors’ response
-%}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+\section{A summary of Latin grammar}    % Each appendix must have a short title.
+\section{Some Latin vocabulary}         % Sections and subsections are supported  
+                                        % in the appendices.
 \end{document}
-
