@@ -48,6 +48,24 @@
 \usepackage{amsfonts}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\usepackage{tikz}
+\usepackage{environ}
+\usepackage{layouts}
+
+
+
+\makeatletter
+\newsavebox{\measure@tikzpicture}
+\NewEnviron{scaletikzpicturetowidth}[1]{%
+  \def\tikz@width{#1}%
+  \def\tikzscale{1}\begin{lrbox}{\measure@tikzpicture}%
+  \BODY
+  \end{lrbox}%
+  \pgfmathparse{#1/\wd\measure@tikzpicture}%
+  \edef\tikzscale{\pgfmathresult}%
+  \BODY
+}
+\makeatother
 
 \begin{document}
 
@@ -122,12 +140,13 @@ In addition to applying suitable encryption schemes to signal processing tasks, 
 Briefly describe navigator scenario and our contributions
 
 Section Summary
+%In Section \ref{sec:private_localisation} we will show how this scheme can be used to compute the measurement covariance and measurement vector homomorphically at each sensor, and allow the navigator to update their 
 
 \subsection{Notation}
 Notation
 
 
-\section{Problem Statement}
+\section{Problem Statement} \label{sec:problem_statement}
 
 Restate the scenario but more formally. Give a concrete example - plane and signal towers.
 
@@ -146,8 +165,71 @@ Fixed sensor subsets of which only whole subsets can be used at once. Maybe a pi
 
 
 
-\section{Private Weighted Aggregation Preliminaries}
-% TODO define IND-CPA brielfy, AO and our version of AO *HERE* are reffer to it later
+\section{Privacy-Preserving Weighted Aggregation}
+For achieveing the goal of private localisation defined in Section \ref{sec:problem_statement} we require a cryptographic scheme which allows a time-series of homomorphically computed linear combinations of encrypted weights, to be summed by a privacy-preserving aggregation scheme. In our case, weights $\omega_1, \dots , \omega_m$ are encrypted and broadcast by the navigator, linear combinations $\sum^m_{j=1}x_{j,i}^{(t)}\omega_i$ are computed by the sensors $i \in \{1, \dots ,n\}$ at time $t$, and aggregation is computed back at the navigator. This has been summarized in Figure \ref{fig:agg_steps}. In Section \ref{sec:private_localisation} we will show how this scheme can be used to compute measurement covariances and measurement vectors homomorphically, and update the Extended Information Filter while preserving privacy. 
+
+\begin{figure}[htbp]
+\centering
+\vspace{\baselineskip}
+\begin{tikzpicture}[scale=0.75]
+    % Step 1
+    \node at (5,22.5) {1. Broadcast and linear combinations step};
+    % Navigator
+    \node at (1.5,19.25) {\small Navigator};
+    \fill (1.5,18.25) [blue!40] ellipse (0.5 and 0.5);
+    % Sensors
+    \node at (7.75,21.75) {\small Sensor $1$};
+    \fill [red!40] (6.125,19.75) rectangle (9.375,21.25);
+    \node at (7.75,20.5) {\small $\displaystyle y_1 = \sum^m_{i=1}x_{i,1}^{(t)}\omega_i$};
+    \node at (7.75,14.75) {\small Sensor $n$};
+    \fill [red!40] (6.125,15.25) rectangle (9.375,16.75);
+    \node at (7.75,16) {\small $\displaystyle y_n = \sum^m_{i=1}x_{i,n}^{(t)}\omega_i$};
+    \fill [black] (7.75,18.75) circle (0.05);
+    \fill [black] (7.75,17.75) circle (0.05);
+    \fill [black] (7.75,18.25) circle (0.05);
+    % Lines
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(2,18.5) (6,20.25)};
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(2,18) (6,16.25)};
+    \node at (4,20.25) {$(\omega_1,\dots ,\omega_m)$};
+    \node at (4,16.25) {$(\omega_1,\dots ,\omega_m)$};
+    
+    % Step 2
+    \node at (5,13.25) {2. Aggregation step};
+    % Navigator
+    \node at (3,10.75) {\small Navigator};
+    \fill [blue!40] (0.625,8.75) rectangle (5.375,10.25);
+    \node at (3,9.5) {\small $\displaystyle \sum^{n}_{j=1}\sum^{m}_{i=1} x_{i,j}^{(t)}\omega_i = \sum^n_{i=1}y^{(t)}_{i}$};
+    % Sensors
+    \node at (8.5,12.5) {\small Sensor $1$};
+    \fill  (8.5,7.5) [red!40] ellipse (0.5 and 0.5);
+    \node at (8.5,6.5) {\small Sensor $n$};
+    \fill  (8.5,11.5) [red!40] ellipse (0.5 and 0.5);
+    \fill [black] (8.5,10) circle (0.05);
+    \fill [black] (8.5,9) circle (0.05);
+    \fill [black] (8.5,9.5) circle (0.05);
+    % Lines
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(8,11.25) (5.5,10)};
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(8,7.75) (5.5,9)};
+    \node at (6.5,11.5) {$y_1$};
+    \node at (6.5,7.5) {$y_n$};
+    
+    % Bounding rectangles
+    \draw [gray] (0,23.25) rectangle (10,14.25);
+    \draw [gray] (0,14) rectangle (10,5.5);
+\end{tikzpicture}
+\vspace{\baselineskip}
+\caption{Required weighted aggregation scheme}
+\label{fig:agg_steps}
+\end{figure}
+
+The security of a cryptographic scheme is typically defined by a security \textit{game}, which captures both the desired privacy guarantees, as well as the capabilities of attackers \cite{katzIntroductionModernCryptography2008}. Before defining the desired security of our scheme, we note that it has properties of both an additive homomorphic encryption scheme, and a privacy-preserving aggregation scheme. The typical security requirement for a homomorphic encryption scheme is Indistinguishability under the Chosen Plaintext Attack model (IND-CPA) \cite{}. Informally, IND-CPA states that an attacker who can choose plaintext messages to be encrypted at will, gains no additional information about an unkonwn plaintext message when they learn only its encryption. The more formal security game for IND-CPA has been given in Appendix \ref{app:ind-cpa}. Privacy-preserving aggregation, without weights, aims for the security goal of Aggregator Obliviousness (AO) \cite{}. AO states that no colluding subset of participants gains any additional information about the aggregation values from the remaining parties, given only their encryption, with the exception of learning only their sum if the aggregator is among the colluding subset. The game for AO has been given in Appendix \ref{app:ao}.
+
+Our desired weighted aggregation method has two security goals. Firstly, that encrypted values are indistinguishable from random to sensors, and secondly, that individual weighted values remain unknown to the navigator, who learns only the final weighted sum. From the definitions above, it is clear that an IND-CPA secure encryption of navigator produced weights is sufficient for the first goal, while the definition of AO needs to be altered to incooporate weights for the second.
+
+Such an altered aggregation games has been defined in \cite{alexandruEncryptedCooperativeControl2019} as private Weighted Sum Aggregator Obliviousness (pWSAO). In overview, the game states that given given weights --- not the case, need to define our own slightly different version (but we get to name it something else at least)
+
+and is defined as follows
+
 
 
 
@@ -179,9 +261,9 @@ where $\lambda = \operatorfont{lcm}(p-1, q-1)$ and $L(u) = \frac{u-1}{n}$.
 
 In addition to encryption and decryption, the following homomorphic functions are provided by the Paillier scheme. $\forall m_1,m_2 \in \mathbb{Z}_n$,
 \begin{align}
-    \mathcal{D}(\mathcal{E}(m_1)\mathcal{E}(m_2)\pmod{n^2}) &= m_1+m_2\pmod{n} \\
-    \mathcal{D}(\mathcal{E}(m_1)g^{m_2}\pmod{n^2}) &= m_1+m_2\pmod{n} \\
-    \mathcal{D}(\mathcal{E}(m_1)^{m_2}\pmod{n^2}) &= m_1m_2\pmod{n}\,.
+    \mathcal{D}(\mathcal{E}(m_1)\mathcal{E}(m_2)\!\pmod{n^2}) &= m_1+m_2\!\pmod{n} \\
+    \mathcal{D}(\mathcal{E}(m_1)g^{m_2}\!\pmod{n^2}) &= m_1+m_2\!\pmod{n} \\
+    \mathcal{D}(\mathcal{E}(m_1)^{m_2}\!\pmod{n^2}) &= m_1m_2\!\pmod{n}\,.
 \end{align}
 
 The scheme is shown to be indistinguishable under the chosen plaintext attack model (IND-CPA), which is considered the strongest form of security acheivable by a homomorphic encryption scheme \cite{}.
@@ -207,20 +289,21 @@ When all encryptions $c_{i,t},\,i \in \{1,\dots,N\}$ are sent to the aggregator,
 \end{equation}
 and
 \begin{equation}
-    \sum^{N}_{i=1}m_{i,t} = \frac{c_{t}-1}{n}\,. \label{agg-decryption}
+    \sum^{N}_{i=1}m_{i,t} = \frac{c_{t}-1}{n}\,. \label{eqn:agg_decryption}
 \end{equation}
 Correctness follows from $\sum^{N}_{i=0}sk_i = 0$, and therefore
 \begin{align}
-    H(t)^{sk_0}\prod^{N}_{i=1}c_{i,t} \pmod{n^2} &\equiv H(t)^{sk_0}\prod^{N}_{i=1}(n+1)^{m_{i,t}} H(t)^{sk_i} \pmod{n^2} \\
-    &\equiv H(t)^{\sum^N_{j=0}sk_j} \prod^{N}_{i=1}g^{m_{i,t}} \pmod{n^2} \\
-    &\equiv (n+1)^{\sum^N_{i=1}m_{i,t}} \pmod{n^2}
+    &H(t)^{sk_0}\prod^{N}_{i=1}c_{i,t} \pmod{n^2} \\
+    \equiv &H(t)^{sk_0}\prod^{N}_{i=1}(n+1)^{m_{i,t}} H(t)^{sk_i} \pmod{n^2} \\
+    \equiv &H(t)^{\sum^N_{j=0}sk_j} \prod^{N}_{i=1}g^{m_{i,t}} \pmod{n^2} \\
+    \equiv &(n+1)^{\sum^N_{i=1}m_{i,t}} \pmod{n^2}
 \end{align}
-which results in a solvable discrete logarithm by using \ref{agg-decryption}, as defined in \cite{joyeScalableSchemePrivacyPreserving2013}, with no more noise term.
+which results in a solvable discrete logarithm by using \eqref{eqn:agg_decryption}, as defined in \cite{joyeScalableSchemePrivacyPreserving2013}, with no more noise term.
 
 The aggregation scheme is proven to achieve aggregator obliviousness (AO), which in that no corrupted colluding subset learns anything about the individual messages of the non-corrupted participants, other than the final sum of messages if the aggregator is corrupted, and is proven in the random oracle model.
 
 % Maybe rename this to Our Scheme or something like that
-\section{Private Weighted Aggregation}
+\section{Our Scheme}
 Explain it in as an overview
 
 % \begin{algorithm}
@@ -240,14 +323,14 @@ Explain it in as an overview
 Give the reduction proof here for pWSAO and implicit indistinguishability of weights. Alternatively, sketch it out here and give reduction proof in the appendix.
 
 
-\section{Private Localisation Preliminaries}
+\section{Private Localisation}
 
 \subsection{Integer Encoding for Real Numbers}
 
 \subsection{Extended Information Filter}
 
 
-\section{Private Localisation with Privacy-Preserving Sensors}
+\section{Private Localisation with Privacy-Preserving Sensors} \label{sec:private_localisation}
 Explain it in as an overview. How is the aggregation scheme used, what does this require from the measurement model, why can this be a problem for normal distance sensors?
 
 Explain how leakage of the final aggregation sum to the navigator means leakage of the average sensor location and measurement to the navigator. This is the reason for the acceptance of this leakage, as we pointed out in the problem statement section.
@@ -392,8 +475,11 @@ Partially supported by the Roman Senate.  % here.
 
 %\end{thebibliography}
 
+% Each appendix must have a short title.
+% Sections and subsections are supported
+% in the appendices.
 \appendix
-\section{A summary of Latin grammar}    % Each appendix must have a short title.
-\section{Some Latin vocabulary}         % Sections and subsections are supported  
-                                        % in the appendices.
+\section{Indistinguishability under the Chosen Plaintext Attack (IND-CPA)} \label{app:ind-cpa}
+\section{Aggregator Obliviousness (AO)} \label{app:ao}
+
 \end{document}
