@@ -30,42 +30,34 @@
 % tex-archive/macros/latex/contrib/supported/elsevier.
 
 
-%\documentclass{elsart}               % The use of LaTeX2e is preferred.
+% The use of LaTeX2e is preferred.
+%\documentclass{elsart}
 
-\documentclass[twocolumn]{autart}    % Enable this line and disable the 
-                                     % preceding line to obtain a two-column 
-                                     % document whose style resembles the
-                                     % printed Automatica style.
+% Enable this line and disable the 
+% preceding line to obtain a two-column 
+% document whose style resembles the
+% printed Automatica style.
+\documentclass[twocolumn]{autart}
 
 
-\usepackage{graphicx}          % Include this line if your 
-                               % document contains figures,
-%\usepackage[dvips]{epsfig}    % or this line, depending on which
-                               % you prefer.
+% Include this line if your 
+% document contains figures,
+\usepackage{graphicx}
+% or this line, depending on which
+% you prefer.
+%\usepackage[dvips]{epsfig}
 
 % User imported packages
 \usepackage{amsmath}
 \usepackage{amsfonts}
+\usepackage{mathtools}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{tikz}
-\usepackage{environ}
-\usepackage{layouts}
 
 
-
-\makeatletter
-\newsavebox{\measure@tikzpicture}
-\NewEnviron{scaletikzpicturetowidth}[1]{%
-  \def\tikz@width{#1}%
-  \def\tikzscale{1}\begin{lrbox}{\measure@tikzpicture}%
-  \BODY
-  \end{lrbox}%
-  \pgfmathparse{#1/\wd\measure@tikzpicture}%
-  \edef\tikzscale{\pgfmathresult}%
-  \BODY
-}
-\makeatother
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
 
 \begin{document}
 
@@ -76,7 +68,8 @@
 % is not shown in output.
 %\runtitle{Insert a suggested running title}
 
-\title{Localisation and Sensor Privacy Using the Extended Information Filter and Secure Weighted Aggregation\thanksref{footnoteinfo}} % Title, preferably not more than 10 words.
+% Title, preferably not more than 10 words.
+\title{Localisation and Sensor Privacy Using the Extended Information Filter and Secure Weighted Aggregation\thanksref{footnoteinfo}}
 
 \thanks[footnoteinfo]{This paper was not presented at any IFAC 
 meeting. Corresponding author Uwe~D.~Hanebeck. Tel. +49--721--608--43909.}
@@ -88,7 +81,8 @@ meeting. Corresponding author Uwe~D.~Hanebeck. Tel. +49--721--608--43909.}
 \author[ISAS]{Benjamin Noack}\ead{noack@kit.edu},
 \author[ISAS]{Uwe D. Hanebeck}\ead{uwe.hanebeck@kit.edu}
 
-\address[ISAS]{Intelligent Sensor-Actuator-Systems Laboratory, Institute for Anthropomatics, Karlsruhe Institute of Technology, 76131 Karlsruhe, Germany}  % Please supply
+% Please supply
+\address[ISAS]{Intelligent Sensor-Actuator-Systems Laboratory, Institute for Anthropomatics, Karlsruhe Institute of Technology, 76131 Karlsruhe, Germany}
 
 % Five to ten keywords,  
 % chosen from the IFAC 
@@ -99,8 +93,8 @@ meeting. Corresponding author Uwe~D.~Hanebeck. Tel. +49--721--608--43909.}
 System state estimation; Data privacy; Sensor fusion; Kalman filters.
 \end{keyword}
 
-
-\begin{abstract} % Abstract of not more than 200 words.
+% Abstract of not more than 200 words.
+\begin{abstract}
 Distributed state estimation and localisation methods have become increasingly popular with the rise of ubiquitous computing, and have led naturally to an increased concern regarding data and estimation privacy. Traditional distributed sensor navigation methods involve the leakage of sensor information or navigator location during localisation protocols and fail to preserve participants’ data privacy. Existing approaches which provide such guarantees, fail to address sensor and navigator privacy in some common model-based non-linear measurement localisation methods forfeiting broad applicability. We define a cryptographically secure weighted aggregation scheme which we apply to the Extended Kalman Filter with range-sensor measurements, and show that navigator location, sensor locations and sensor measurements can remain private during navigation. The security requirements, leakage, and cryptographic proof are given for the private filter and weighted aggregation scheme, and simulations of the filter are used to evaluate the accuracy and performance of the method. Our approach defines a novel, computationally plausible and cryptographically private, model-based localisation filter with direct application to environments where nodes may not be fully trusted and data is considered sensitive.
 \end{abstract}
 
@@ -166,81 +160,124 @@ Fixed sensor subsets of which only whole subsets can be used at once. Maybe a pi
 
 
 \section{Privacy-Preserving Weighted Aggregation}
-For achieveing the goal of private localisation defined in Section \ref{sec:problem_statement} we require a cryptographic scheme which allows a time-series of homomorphically computed linear combinations of encrypted weights, to be summed by a privacy-preserving aggregation scheme. In our case, weights $\omega_1, \dots , \omega_m$ are encrypted and broadcast by the navigator, linear combinations $\sum^m_{j=1}x_{j,i}^{(t)}\omega_i$ are computed by the sensors $i \in \{1, \dots ,n\}$ at time $t$, and aggregation is computed back at the navigator. This has been summarized in Figure \ref{fig:agg_steps}. In Section \ref{sec:private_localisation} we will show how this scheme can be used to compute measurement covariances and measurement vectors homomorphically, and update the Extended Information Filter while preserving privacy. 
+For achieveing the goal of private localisation defined in Section \ref{sec:problem_statement} we require a cryptographic scheme which allows a time-series of homomorphically computed linear combinations of encrypted weights, to be summed by a privacy-preserving aggregation scheme. In our case, at time $t$, weights $\omega_1^{(t)}, \dots , \omega_m^{(t)}$ are encrypted and broadcast by the navigator, linear combinations $y^{(t)}_i=\sum^m_{j=1}x_{j,i}^{(t)}\omega_i^{(t)}$ are computed by the sensors $i \in \{1, \dots ,n\}$, and aggregation is computed back at the navigator. This has been summarized in Figure \ref{fig:agg_steps}. In Section \ref{sec:private_localisation} we will show how this scheme can be used to compute measurement covariances and measurement vectors homomorphically, and update the Extended Information Filter while preserving privacy. 
 
 \begin{figure}[htbp]
 \centering
 \vspace{\baselineskip}
-\begin{tikzpicture}[scale=0.75]
+\begin{tikzpicture}[font=\footnotesize,scale=0.75]
     % Step 1
-    \node at (5,22.5) {1. Broadcast and linear combinations step};
+    \node at (5,22.5) {\small 1. Broadcast and linear combinations step};
     % Navigator
-    \node at (1.5,19.25) {\small Navigator};
-    \fill (1.5,18.25) [blue!40] ellipse (0.5 and 0.5);
+    \node at (1.25,19.25) {Navigator};
+    \fill (1.25,18.25) [blue!40] ellipse (0.5 and 0.5);
     % Sensors
-    \node at (7.75,21.75) {\small Sensor $1$};
-    \fill [red!40] (6.125,19.75) rectangle (9.375,21.25);
-    \node at (7.75,20.5) {\small $\displaystyle y_1 = \sum^m_{i=1}x_{i,1}^{(t)}\omega_i$};
-    \node at (7.75,14.75) {\small Sensor $n$};
-    \fill [red!40] (6.125,15.25) rectangle (9.375,16.75);
-    \node at (7.75,16) {\small $\displaystyle y_n = \sum^m_{i=1}x_{i,n}^{(t)}\omega_i$};
-    \fill [black] (7.75,18.75) circle (0.05);
-    \fill [black] (7.75,17.75) circle (0.05);
-    \fill [black] (7.75,18.25) circle (0.05);
+    \node at (7.5,21.75) {Sensor $1$};
+    \fill [red!40] (5.875,19.75) rectangle (9.5,21.25);
+    \node at (7.75,20.5) {$\displaystyle y_1^{(t)} = \sum^m_{j=1}x_{1,j}^{(t)}\omega_j^{(t)}$};
+    \node at (7.5,14.75) {Sensor $n$};
+    \fill [red!40] (5.875,15.25) rectangle (9.5,16.75);
+    \node at (7.75,16) {$\displaystyle y_n^{(t)} = \sum^m_{j=1}x_{n,j}^{(t)}\omega_j^{(t)}$};
+    \fill [black] (7.5,18.75) circle (0.05);
+    \fill [black] (7.5,17.75) circle (0.05);
+    \fill [black] (7.5,18.25) circle (0.05);
     % Lines
-    \draw [-latex] plot[smooth, tension=.7] coordinates {(2,18.5) (6,20.25)};
-    \draw [-latex] plot[smooth, tension=.7] coordinates {(2,18) (6,16.25)};
-    \node at (4,20.25) {$(\omega_1,\dots ,\omega_m)$};
-    \node at (4,16.25) {$(\omega_1,\dots ,\omega_m)$};
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(1.75,18.5) (5.75,20.25)};
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(1.75,18) (5.75,16.25)};
+    \node at (3.5,20.25) {$(\omega_1^{(t)},\dots ,\omega_m^{(t)})$};
+    \node at (3.5,16.25) {$(\omega_1^{(t)},\dots ,\omega_m^{(t)})$};
     
     % Step 2
-    \node at (5,13.25) {2. Aggregation step};
+    \node at (5,13.25) {\small 2. Aggregation step};
     % Navigator
-    \node at (3,10.75) {\small Navigator};
-    \fill [blue!40] (0.625,8.75) rectangle (5.375,10.25);
-    \node at (3,9.5) {\small $\displaystyle \sum^{n}_{j=1}\sum^{m}_{i=1} x_{i,j}^{(t)}\omega_i = \sum^n_{i=1}y^{(t)}_{i}$};
+    \node at (3.25,10.75) {Navigator};
+    \fill [blue!40] (0.5,8.75) rectangle (5.625,10.25);
+    \node at (3,9.5) {$\displaystyle \sum^{n}_{i=1}\sum^{m}_{j=1} x_{i,j}^{(t)}\omega_j^{(t)} = \sum^n_{i=1}y^{(t)}_{i}$};
     % Sensors
-    \node at (8.5,12.5) {\small Sensor $1$};
-    \fill  (8.5,7.5) [red!40] ellipse (0.5 and 0.5);
-    \node at (8.5,6.5) {\small Sensor $n$};
-    \fill  (8.5,11.5) [red!40] ellipse (0.5 and 0.5);
-    \fill [black] (8.5,10) circle (0.05);
-    \fill [black] (8.5,9) circle (0.05);
-    \fill [black] (8.5,9.5) circle (0.05);
+    \node at (8.75,12.5) {Sensor $1$};
+    \fill  (8.75,7.5) [red!40] ellipse (0.5 and 0.5);
+    \node at (8.75,6.5) {Sensor $n$};
+    \fill  (8.75,11.5) [red!40] ellipse (0.5 and 0.5);
+    \fill [black] (8.75,10) circle (0.05);
+    \fill [black] (8.75,9) circle (0.05);
+    \fill [black] (8.75,9.5) circle (0.05);
     % Lines
-    \draw [-latex] plot[smooth, tension=.7] coordinates {(8,11.25) (5.5,10)};
-    \draw [-latex] plot[smooth, tension=.7] coordinates {(8,7.75) (5.5,9)};
-    \node at (6.5,11.5) {$y_1$};
-    \node at (6.5,7.5) {$y_n$};
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(8.25,11.25) (5.75,10)};
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(8.25,7.75) (5.75,9)};
+    \node at (6.75,11.5) {$y_1^{(t)}$};
+    \node at (6.75,7.5) {$y_n^{(t)}$};
     
     % Bounding rectangles
     \draw [gray] (0,23.25) rectangle (10,14.25);
     \draw [gray] (0,14) rectangle (10,5.5);
 \end{tikzpicture}
 \vspace{\baselineskip}
-\caption{Required weighted aggregation scheme}
+\caption{Required weighted aggregation steps at time $t$}
 \label{fig:agg_steps}
 \end{figure}
 
-The security of a cryptographic scheme is typically defined by a security \textit{game}, which captures both the desired privacy guarantees, as well as the capabilities of attackers \cite{katzIntroductionModernCryptography2008}. Before defining the desired security of our scheme, we note that it has properties of both an additive homomorphic encryption scheme, and a privacy-preserving aggregation scheme. The typical security requirement for a homomorphic encryption scheme is Indistinguishability under the Chosen Plaintext Attack model (IND-CPA) \cite{}. Informally, IND-CPA states that an attacker who can choose plaintext messages to be encrypted at will, gains no additional information about an unkonwn plaintext message when they learn only its encryption. The more formal security game for IND-CPA has been given in Appendix \ref{app:ind-cpa}. Privacy-preserving aggregation, without weights, aims for the security goal of Aggregator Obliviousness (AO) \cite{}. AO states that no colluding subset of participants gains any additional information about the aggregation values from the remaining parties, given only their encryption, with the exception of learning only their sum if the aggregator is among the colluding subset. The game for AO has been given in Appendix \ref{app:ao}.
+The security of a cryptographic scheme is typically defined by a security \textit{game}, which captures both the desired privacy guarantees, as well as the capabilities of attackers \cite{katzIntroductionModernCryptography2008}. Before defining the desired security of our scheme, we note that it has properties of both an additive homomorphic encryption scheme, and a privacy-preserving aggregation scheme. The typical security requirement for a homomorphic encryption scheme is Indistinguishability under the Chosen Plaintext Attack model (IND-CPA) \cite{}. Informally, IND-CPA states that an attacker who can choose plaintext messages to be encrypted at will, gains no additional information about an unknown plaintext message when they learn only its encryption. The formal security game for IND-CPA has been given in Appendix \ref{app:ind-cpa}. Privacy-preserving aggregation, without weights, aims for the security goal of Aggregator Obliviousness (AO) \cite{}. AO states that no colluding subset of participants \textit{excluding} the aggregator gains additional information about the remaining aggregation values given only their encryptions, while any colluding subset \textit{including} the aggregator learns only their sum. The security game for AO has been given in Appendix \ref{app:ao}.
 
-Our desired weighted aggregation method has two security goals. Firstly, that encrypted values are indistinguishable from random to sensors, and secondly, that individual weighted values remain unknown to the navigator, who learns only the final weighted sum. From the definitions above, it is clear that an IND-CPA secure encryption of navigator produced weights is sufficient for the first goal, while the definition of AO needs to be altered to incooporate weights for the second.
+The desired security of our weighted encryption scheme has two goals:
 
-Such an altered aggregation games has been defined in \cite{alexandruEncryptedCooperativeControl2019} as private Weighted Sum Aggregator Obliviousness (pWSAO). In overview, the game states that given given weights --- not the case, need to define our own slightly different version (but we get to name it something else at least)
+\begin{description}
+    \item[Indistinguishable Weights] No colluding subset of sensors gains any additional knowledge about the navigator weights $\omega_j$ from receiving only their encryptions, and encryptions from any previous timesteps.
+    \item[Private Linear Combination Aggregation] No colluding subset \textit{excluding} the aggregator gains additional information about the remaining sensor values to be weighted $x^{(t)}_{i,j}$, where sensor $i$ is not colluding, given only encryptions of their linear combinations $y_i$ and encryptions from any previous timesteps. Any colluding subset \textit{including} the aggregator learns only the sum of all linear combinations weighted by weights of their choice $\sum^n_{i=n}\sum^m_{j=1}x^{(t)}_{i,j}\omega^{(t)}_j$. Note that this implies that $\sum^m_{j=1}x^{(t)}_{1,j}$ may be learned by the colluding subset given weights $(1,0,\dots,0)$, but that individual sensor values $x^{(t)}_{i,j}$ cannot be learned regardless of weight choice.
+\end{description}
 
-and is defined as follows
+From these definitions it is clear that IND-CPA security of weight encryptions is sufficient for the first requirement, while AO is not sufficient for the second. Instead, we give a definition for linear-combination aggregator oblivious Encryption, and the accompanying security game which captures the additional weights, and modified leakage.
 
+\subsection{Linear-Combination Aggregator Oblivious Encryption}
+We define a linear-combination aggregator oblivious encryption scheme as a tuple of the four algorithms $(\operatorfont{Setup}, \operatorfont{Enc}, \operatorfont{CombEnc}, \operatorfont{AggDec})$:
+\begin{description}
+    \item[$\operatorfont{Setup}(\kappa)$] On input of security paramater $\kappa$, generate the aggregator's public and private keys $pk_0$ and $sk_0$, and the remaining user private keys $sk_i$, $(1\leq i \leq n)$.
+    \item[$\operatorfont{Enc}(pk_0, sk_0, \omega)$] At time $t$, the aggregator encrypts weight $\omega$ with its public key $pk_0$, and obtains the encryption $\mathcal{E}_{pk_0}(\omega)$.
+    \item[$\operatorfont{CombEnc}(pk_0, sk_i, \mathcal{E}(\omega_1),\dots,\mathcal{E}(\omega_m), x_{i,1},\dots,x_{i,m})$] At time $t$, user $i$ computes the encrypted linear combination $y_i = \mathcal{E}_{pk_0,sk_i}(\sum^m_{j=1}x_{i,j}\omega_j)$ using its secret key $sk_i$ as $y_i = \operatorfont{CombEnc}(pk_0, sk_i, \mathcal{E}(\omega_1),\dots,\mathcal{E}(\omega_m), x_{i,1},\dots,x_{i,m})$.
+    \item[$\operatorfont{AggDec}(pk_0, sk_0, y_1,\dots,y_n)$] At time $t$, the aggregator computes the aggregation of linear combinations using its private key $sk_0$, as $\sum^{n}_{i=1}\sum^{m}_{j=1} x_{i,j}\omega_j = \operatorfont{AggDec}(pk_0, sk_0, y_1,\dots,y_n)$.
+\end{description}
 
+We define the security notion of Linear-Combination Agregator Obliviousness (LCAO) as the following game between attacker and challenger:
+
+\begin{description}
+    \item[Setup] The challenger runs the $\operatorfont{Setup}$ algorithm and gives $pk_0$ to the attacker
+    \item[Queries] The attacker can now perform encryptions or submit queries that are answered by the challenger. The three types of actions are:
+    \begin{enumerate}
+        \item \textit{Encryption:} The attacker chooses a weight $\omega$ and computes an encryption of $\omega$ under the aggregator's public key $pk_0$, obtaining $\mathcal{E}_{pk_0}(\omega)$.
+        \item \textit{Combine Queries:} The attacker chooses a tuple $(i,t,\mathcal{E}_{pk_0}(\omega_1),\dots,\mathcal{E}_{pk_0}(\omega_m),x_{i,1},\dots,x_{i,m})$ for a unique pair $(i,t)$ and is given back the encryption of the linear combination $\mathcal{E}_{pk_0,sk_i}(\sum^m_{j=1}x_{i,j}\omega_j)$ encrypted under both the aggregator public key $pk_0$ and thesecret key $sk_i$.
+        \item \textit{Compromise queries:} The attacker chooses $i$ and receives the secret key $sk_i$. The aggregator's secret key may also be compromised (when choosing $i=0$).
+    \end{enumerate} 
+    \item[Challenge] Next, the attacker chooses a time $t^*$, and a subset of users $U \subseteq S$ where $S$ is the complete set of users for which no combine queries for time $t^*$ and no compromise queries are made for the duration of the game. The attacker then chooses two series of tuples
+    \begin{equation*}
+        \langle(i,t^*,\mathcal{E}_{pk_0}(\omega_1),\dots,\mathcal{E}_{pk_0}(\omega_m),x_{i,1},\dots,x_{i,m})\,|\,i \in U\rangle
+    \end{equation*}
+    and
+    \begin{equation*}
+        \langle(i,t^*,\mathcal{E}_{pk_0}(\omega_1'),\dots,\mathcal{E}_{pk_0}(\omega_m'),x_{i,1}',\dots,x_{i,m}')\,|\, i \in U\rangle\,,
+    \end{equation*}
+    and gives them to the challenger. In the case that $0 \in U$ (\textit{i.e.} the aggregator is compromised) and $U = S$, it is additionally required that
+    \begin{equation*}
+        \sum^{n}_{i=1}\sum^{m}_{j=1} x_{i,j}\omega_j = \sum^{n}_{i=1}\sum^{m}_{j=1} x_{i,j}'\omega_j'\,.
+    \end{equation*}
+    The challenger then chooses a random bit $b \in \{1,0\}$ and returns encryptions 
+    \begin{equation*}
+        \langle\mathcal{E}_{pk_0,sk_i}(\sum^m_{j=1}x_{i,j}\omega_j)\,|\,i\in U\rangle
+    \end{equation*}
+    if $b=0$, or 
+    \begin{equation*}
+        \langle\mathcal{E}_{pk_0,sk_i}(\sum^m_{j=1}x_{i,j}'\omega_j')\,|\,i\in U\rangle
+    \end{equation*}
+    otherwise.
+    \item[More Queries] The attacker can now perform more encryptions and submit queries, so long as the queries do not break the requiremets in the Challenge stage. That is, $U \subseteq S$.
+    \item[Guess] At the end, the attacker outputs a bit $b'$ and wins the game only if $b' = b$. The advantage of attacker $\mathcal{A}$ is defined as
+    \begin{equation*}
+        \operatorfont{Adv}^{LCAO}(\mathcal{A}) \coloneqq \left\lvert \operatorfont{Pr}[b'=b] - \frac{1}{2}\right\rvert\,.
+    \end{equation*} 
+\end{description}
+
+We say that an encryption scheme meets the security of LCAO if no probabilistic-time adversary has more than negligable advantage in winning this security game.
 
 
 Our weighted aggregation method relies on the decisional composite residuosity assumption (DCRA) originally defined by Paillier in \cite{paillierPublicKeyCryptosystemsBased1999}. The aggregation method can be seen as a combination of the additive homomorphic Paillier encryption scheme, which additionally allows multiplication of an encrypted message with a plaintext value, and the Joye-Libert private stream-aggregation scheme. Both of these schemes base their security on the DCRA, and their descriptions are given briefly below before defining our weighted aggregation scheme.
-
-
-% A number $z$ is said to be an $n$th residue modulo $n^2$ if there exists a number $y \in \mathbb{Z}^{*}_{n^2}$ such that
-% \begin{equation}
-%     z = y^n \pmod{n^2},
-% \end{equation}
-% where $n=pq$ is the product of two large primes. DCRA states that distinguishing an $n$th residue modulo $n^2$ from non $n$th residues is a hard problem, and is shown to be a reduction of the 
 
 \subsection{Paillier Encryption Scheme}
 The Paillier encryption scheme is an additively homomorphic encryption scheme which functions over a finite group $\mathbb{G}$, containing 
