@@ -157,10 +157,101 @@ Rough computational capabilities expected by parties
 Fixed sensor subsets of which only whole subsets can be used at once. Maybe a picture of what this might look like in a high level distributed localisation diagram. Should consider that this sub-grouping would also mean the leakage of the average sensor/measurement of each subset not all sensors at once. This should be considered when choosing sensor subsets and locations.
 
 
+%  .d8888b.                            888                 8888888b.                  888 d8b
+% d88P  Y88b                           888                 888   Y88b                 888 Y8P
+% 888    888                           888                 888    888                 888
+% 888        888d888 888  888 88888b.  888888 .d88b.       888   d88P 888d888 .d88b.  888 888 88888b.d88b.
+% 888        888P"   888  888 888 "88b 888   d88""88b      8888888P"  888P"  d8P  Y8b 888 888 888 "888 "88b
+% 888    888 888     888  888 888  888 888   888  888      888        888    88888888 888 888 888  888  888
+% Y88b  d88P 888     Y88b 888 888 d88P Y88b. Y88..88P      888        888    Y8b.     888 888 888  888  888
+%  "Y8888P"  888      "Y88888 88888P"   "Y888 "Y88P"       888        888     "Y8888  888 888 888  888  888
+%                         888 888
+%                    Y8b d88P 888
+%                     "Y88P"  888
+\section{Cryptography Preliminaries}
+When defining our system security requirements and encryption scheme, we will reference some existing cryptographic security notions, the additively homomorphic Paillier encryption scheme, and the Joye-Libert private aggregation scheme.
 
+% Quickly define homomorphic encryption and private aggregation here??
 
-\section{Privacy-Preserving Weighted Aggregation}
-For achieveing the goal of private localisation defined in Section \ref{sec:problem_statement} we require a cryptographic scheme which allows a time-series of homomorphically computed linear combinations of encrypted weights, to be summed by a privacy-preserving aggregation scheme. In our case, at time $t$, weights $\omega_1^{(t)}, \dots , \omega_m^{(t)}$ are encrypted and broadcast by the navigator, linear combinations $y^{(t)}_i=\sum^m_{j=1}x_{j,i}^{(t)}\omega_i^{(t)}$ are computed by the sensors $i \in \{1, \dots ,n\}$, and aggregation is computed back at the navigator. This has been summarized in Figure \ref{fig:agg_steps}. In Section \ref{sec:private_localisation} we will show how this scheme can be used to compute measurement covariances and measurement vectors homomorphically, and update the Extended Information Filter while preserving privacy. 
+\subsection{Security Notions}
+The security of a cryptographic scheme is typically defined by a security \textit{game}, which captures both the desired privacy guarantees, as well as the capabilities of attackers \cite{katzIntroductionModernCryptography2008}. The typical security notion for a homomorphic encryption scheme is Indistinguishability under Chosen Plaintext Attack (IND-CPA) \cite{}. 
+\begin{definition}
+An encryption scheme meets IND-CPA security if an attacker who can choose plaintext messages to be encrypted at will, gains no additional information about an unknown plaintext message when they learn only its encryption. 
+
+The formal security game for IND-CPA has been given in Appendix \ref{app:ind-cpa}.
+\end{definition}
+Private aggregation schemes aim for the security notion of Aggregator Obliviousness (AO) \cite{}. 
+\begin{definition}
+An encryption scheme meets AO security if no colluding subset of participants \textit{excluding} the aggregator gains additional information about the remaining aggregation values given only their encryptions, while any colluding subset \textit{including} the aggregator learns only their sum. 
+
+The formal security game for AO has been given in Appendix \ref{app:ao}.
+\end{definition}
+
+\subsection{Paillier Encryption Scheme}
+The Paillier encryption scheme \cite{paillierPublicKeyCryptosystemsBased1999} is an additively homomorphic encryption scheme which bases its security on the decisional composite residuosity assumption (DCRA) and meets the security notion of IND-CPA. Key generation of the Paillier scheme is performed by choosing two sufficiently large primes $p$ and $q$, and computing $N=pq$. A generator $g$ is also required for encryption, which is often set to $g=N+1$ when $p$ and $q$ are of equal bit length \cite{}. The public key is defined by $(N, g)$ and secret key by $(p, q)$.
+
+Encryption of a plaintext message $m \in \mathbb{Z}_N$, producing ciphertext $c \in \mathbb{Z}^{*}_{N^2}$, is computed by
+\begin{equation}
+    c = g^m r^N \pmod{N^2}
+\end{equation}
+for a randomly chosen $r \in \mathbb{Z}_{N}$. $r^N$ can be considered the noise term which hides the value $g^m \pmod{N^2}$, which due to the scheme construction, is an easily computable discrete logarithm. The decryption of a ciphertext is computed by
+\begin{equation}
+    m = \frac{L(c^\lambda\pmod{n^2})}{L(g^\lambda\pmod{n^2})} \pmod{n}
+\end{equation}
+where $\lambda = \mathsf{lcm}(p-1, q-1)$ and $L(u) = \frac{u-1}{n}$.
+
+In addition to encryption and decryption, the following homomorphic functions are provided by the Paillier scheme. $\forall m_1,m_2 \in \mathbb{Z}_n$,
+\begin{align}
+    \mathcal{D}(\mathcal{E}(m_1)\mathcal{E}(m_2)\!\pmod{n^2}) &= m_1+m_2\!\pmod{n} \\
+    \mathcal{D}(\mathcal{E}(m_1)g^{m_2}\!\pmod{n^2}) &= m_1+m_2\!\pmod{n} \\
+    \mathcal{D}(\mathcal{E}(m_1)^{m_2}\!\pmod{n^2}) &= m_1m_2\!\pmod{n}\,.
+\end{align}
+
+\subsection{Joye-Libert Private Aggregation Scheme}
+The Joye-Libert private aggregation scheme \cite{joyeScalableSchemePrivacyPreserving2013} is a scheme defined on time-series data and meets the security notion of AO. Similarly to the Paillier scheme, it bases its security on the DCRA. A notable difference to a public-key encryption scheme is the need for a trusted party to perform an initial key generation and distribution step.
+
+Key generation is computed by choosing two equal length and sufficiently large primes $p$ and $q$, and computing $N=pq$. Additionally, hash function $H:\mathbb{Z} \rightarrow \mathbb{Z}_{N^2}$ is defined, and the public key is set to $(N, H)$. $n$ private keys are generated by choosing $sk_i,\,1\leq i \leq n$ uniformly from $\mathbb{Z}_{N^2}$ and distributing them to all users, while the last key is set as
+\begin{equation}
+    sk_0 = -\sum^{n}_{i=1}sk_i \pmod{N^2}\,,
+\end{equation}
+and sent to the aggregator.
+
+Encryption of plaintext $m^{(t)}_{i} \in \mathbb{Z}_N$ to ciphertext $c^{(t)}_{i} \in \mathbb{Z}_{N^2}$ at time $t$ is computed by user $i$ as
+\begin{equation}
+    c^{(t)}_{i} = (N+1)^{m^{(t)}_{i}} H(t)^{sk_i} \pmod{N^2}\,,
+\end{equation}
+where the $H(t)^{sk_i}$ can be considered the noise term which hides the again easily computable discrete logarithm $g^{m^{(t)}_{i}} \pmod{N^2}$, where $g=N+1$.
+
+When all encryptions $c^{(t)}_{i},\,1\leq i \leq n$ are sent to the aggregator, private summation and decryption are computed by the functions
+\begin{equation}
+    c^{(t)} = H(t)^{sk_0}\prod^{n}_{i=1}c^{(t)}_{i} \pmod{N^2}
+\end{equation}
+and
+\begin{equation}
+    \sum^{n}_{i=1}m^{(t)}_{i} = \frac{c^{(t)}-1}{N}\,. \label{eqn:agg_decryption}
+\end{equation}
+Correctness follows from $\sum^{n}_{i=0}sk_i = 0$, and thus
+\begin{align*}
+    &H(t)^{sk_0}\prod^{N}_{i=1}c_{i,t} \pmod{n^2} \\
+    \equiv &H(t)^{sk_0}\prod^{N}_{i=1}(n+1)^{m_{i,t}} H(t)^{sk_i} \pmod{n^2} \\
+    \equiv &H(t)^{\sum^N_{j=0}sk_j} \prod^{N}_{i=1}g^{m_{i,t}} \pmod{n^2} \\
+    \equiv &(n+1)^{\sum^N_{i=1}m_{i,t}} \pmod{n^2}
+\end{align*}
+removing all noise terms.
+
+%  .d8888b.                            888                 8888888b.                  888
+% d88P  Y88b                           888                 888   Y88b                 888
+% 888    888                           888                 888    888                 888
+% 888        888d888 888  888 88888b.  888888 .d88b.       888   d88P 888d888 .d88b.  88888b.
+% 888        888P"   888  888 888 "88b 888   d88""88b      8888888P"  888P"  d88""88b 888 "88b
+% 888    888 888     888  888 888  888 888   888  888      888        888    888  888 888  888
+% Y88b  d88P 888     Y88b 888 888 d88P Y88b. Y88..88P      888        888    Y88..88P 888 d88P
+%  "Y8888P"  888      "Y88888 88888P"   "Y888 "Y88P"       888        888     "Y88P"  88888P"
+%                         888 888
+%                    Y8b d88P 888
+%                     "Y88P"  888
+\section{Private Linear-Combination Aggregation}
+For achieving the goal of private localisation defined in Section \ref{sec:problem_statement} we will require a multi-party protocol for computing linear combinations of weights, and their subsequent aggregation. In the context of navigation, $m$ weights $\omega_1^{(t)}, \dots , \omega_m^{(t)}$ are first broadcast by the navigator, linear combinations $y^{(t)}_i=\sum^m_{j=1}x_{j,i}^{(t)}\omega_i^{(t)}$ are computed by each sensor $1\leq i\leq n$, and aggregation is computed back at the navigator, at every time step $t$. This has been summarized in Figure \ref{fig:agg_steps}. In Section \ref{sec:private_localisation} we will show how this protocol is sufficient to compute measurement covariances and measurement vectors, and update the Extended Information Filter.
 
 \begin{figure}[htbp]
 \centering
@@ -212,38 +303,47 @@ For achieveing the goal of private localisation defined in Section \ref{sec:prob
     \draw [gray] (0,14) rectangle (10,5.5);
 \end{tikzpicture}
 \vspace{\baselineskip}
-\caption{Required weighted aggregation steps at time $t$}
+\caption{Required linear-combination aggregation steps at time $t$}
 \label{fig:agg_steps}
 \end{figure}
 
-The security of a cryptographic scheme is typically defined by a security \textit{game}, which captures both the desired privacy guarantees, as well as the capabilities of attackers \cite{katzIntroductionModernCryptography2008}. Before defining the desired security of our scheme, we note that it has properties of both an additive homomorphic encryption scheme, and a privacy-preserving aggregation scheme. The typical security requirement for a homomorphic encryption scheme is Indistinguishability under the Chosen Plaintext Attack model (IND-CPA) \cite{}. Informally, IND-CPA states that an attacker who can choose plaintext messages to be encrypted at will, gains no additional information about an unknown plaintext message when they learn only its encryption. The formal security game for IND-CPA has been given in Appendix \ref{app:ind-cpa}. Privacy-preserving aggregation, without weights, aims for the security goal of Aggregator Obliviousness (AO) \cite{}. AO states that no colluding subset of participants \textit{excluding} the aggregator gains additional information about the remaining aggregation values given only their encryptions, while any colluding subset \textit{including} the aggregator learns only their sum. The security game for AO has been given in Appendix \ref{app:ao}.
-
-The desired security of our weighted encryption scheme has two goals:
-
+To perform the protocol from Figure \ref{fig:agg_steps} in a secure manner, we must first describe the security properties we aim to achieve. Broadly speaking, we want a cryptographic scheme which allows a time-series of homomorphically computed linear combinations of encrypted weights, to be summed by a private aggregation scheme. That is, we do not want sensors to learn the navigator weights, while we do not want the navigator to learn individual weighted linear combinations. This can be summarised by the two informal security notions:
 \begin{description}
-    \item[Indistinguishable Weights] No colluding subset of sensors gains any additional knowledge about the navigator weights $\omega_j$ from receiving only their encryptions, and encryptions from any previous timesteps.
-    \item[Private Linear Combination Aggregation] No colluding subset \textit{excluding} the aggregator gains additional information about the remaining sensor values to be weighted $x^{(t)}_{i,j}$, where sensor $i$ is not colluding, given only encryptions of their linear combinations $y_i$ and encryptions from any previous timesteps. Any colluding subset \textit{including} the aggregator learns only the sum of all linear combinations weighted by weights of their choice $\sum^n_{i=n}\sum^m_{j=1}x^{(t)}_{i,j}\omega^{(t)}_j$. Note that this implies that $\sum^m_{j=1}x^{(t)}_{1,j}$ may be learned by the colluding subset given weights $(1,0,\dots,0)$, but that individual sensor values $x^{(t)}_{i,j}$ cannot be learned regardless of weight choice.
+    \item[Indistinguishable Weights] No colluding subset of sensors gains any additional knowledge about the navigator weights $\omega_j,\,1\leq j \leq m$ from receiving only their encryptions from the current and previous timesteps, and the ability to encrypt plaintexts of their choice.
+    \item[Private Linear Combination Aggregation] No colluding subset \textit{excluding} the aggregator gains additional information about the remaining sensor values to be weighted $x^{(t)}_{i,j},\,0\leq j\leq m$, where sensor $i$ is not colluding, given only encryptions of their linear combinations $y_i$ from the current and previous timesteps. Any colluding subset \textit{including} the aggregator learns only the sum of all linear combinations weighted by weights of their choice $\sum^n_{i=n}\sum^m_{j=1}x^{(t)}_{i,j}\omega^{(t)}_j$. Note that this implies that $\sum^m_{j=1}x^{(t)}_{1,j}$ may be learned by the colluding subset given weights $(1,0,\dots,0)$, but that individual sensor values $x^{(t)}_{i,j}$ remain private.
 \end{description}
 
-From these definitions it is clear that IND-CPA security of weight encryptions is sufficient for the first requirement, while AO is not sufficient for the second. Instead, we give a definition for linear-combination aggregator oblivious Encryption, and the accompanying security game which captures the additional weights, and modified leakage.
+From these definitions, it is clear that weights encrypted by an IND-CPA secure encryption scheme are sufficient for the first requirement, while a scheme satisfying AO is not sufficient for the second. To formalise the second requirement, we define a novel encryption type ``Linear-Combination Aggregator Oblivious Encryption'' and an accompanying security game, which capture the additional weights and modified leakage of AO.
+
+% 888      .d8888b.        d8888  .d88888b.
+% 888     d88P  Y88b      d88888 d88P" "Y88b
+% 888     888    888     d88P888 888     888
+% 888     888           d88P 888 888     888
+% 888     888          d88P  888 888     888
+% 888     888    888  d88P   888 888     888
+% 888     Y88b  d88P d8888888888 Y88b. .d88P
+% 88888888 "Y8888P" d88P     888  "Y88888P"
+
+
 
 \subsection{Linear-Combination Aggregator Oblivious Encryption}
-We define a linear-combination aggregator oblivious encryption scheme as a tuple of the four algorithms $(\operatorfont{Setup}, \operatorfont{Enc}, \operatorfont{CombEnc}, \operatorfont{AggDec})$:
+We let a linear-combination aggregator oblivious encryption scheme be defined as a tuple of the four algorithms $(\mathsf{Setup}, \mathsf{Enc}, \mathsf{CombEnc}, \mathsf{AggDec})$. For the sake of readbility, we have ommited the time variable $t$ from values $\omega_j$ and $x_{i,j}$.
+
 \begin{description}
-    \item[$\operatorfont{Setup}(\kappa)$] On input of security paramater $\kappa$, generate the aggregator's public and private keys $pk_0$ and $sk_0$, and the remaining user private keys $sk_i$, $(1\leq i \leq n)$.
-    \item[$\operatorfont{Enc}(pk_0, sk_0, \omega)$] At time $t$, the aggregator encrypts weight $\omega$ with its public key $pk_0$, and obtains the encryption $\mathcal{E}_{pk_0}(\omega)$.
-    \item[$\operatorfont{CombEnc}(pk_0, sk_i, \mathcal{E}(\omega_1),\dots,\mathcal{E}(\omega_m), x_{i,1},\dots,x_{i,m})$] At time $t$, user $i$ computes the encrypted linear combination $y_i = \mathcal{E}_{pk_0,sk_i}(\sum^m_{j=1}x_{i,j}\omega_j)$ using its secret key $sk_i$ as $y_i = \operatorfont{CombEnc}(pk_0, sk_i, \mathcal{E}(\omega_1),\dots,\mathcal{E}(\omega_m), x_{i,1},\dots,x_{i,m})$.
-    \item[$\operatorfont{AggDec}(pk_0, sk_0, y_1,\dots,y_n)$] At time $t$, the aggregator computes the aggregation of linear combinations using its private key $sk_0$, as $\sum^{n}_{i=1}\sum^{m}_{j=1} x_{i,j}\omega_j = \operatorfont{AggDec}(pk_0, sk_0, y_1,\dots,y_n)$.
+    \item[$\mathsf{Setup}(\kappa)$] On input of security paramater $\kappa$, generate the aggregator's public and private keys $pk_0$ and $sk_0$, and the remaining user private keys $sk_i,\,1\leq i \leq n$.
+    \item[$\mathsf{Enc}(pk_0, \omega)$] The aggregator and users can encrypt a weight $\omega$ with the aggregator public key $pk_0$, and obtain the encryption $\mathcal{E}_{pk_0}(\omega)$.
+    \item[$\mathsf{CombEnc}(t, pk_0, sk_i, \mathcal{E}_{pk_0}(\omega_1),\dots,\mathcal{E}_{pk_0}(\omega_m), x_{i,1},\dots,x_{i,m})$] At time $t$, user $i$ computes and obtains the encrypted linear combination $y_i = \mathcal{E}_{pk_0,sk_i}(\sum^m_{j=1}x_{i,j}\omega_j)$ using its secret key $sk_i$.
+    \item[$\mathsf{AggDec}(t, pk_0, sk_0, y_1,\dots,y_n)$] At time $t$, the aggregator computes the aggregation of linear combinations $\sum^{n}_{i=1}\sum^{m}_{j=1} x_{i,j}\omega_j$ using its private key $sk_0$.
 \end{description}
 
-We define the security notion of Linear-Combination Agregator Obliviousness (LCAO) as the following game between attacker and challenger:
+Next, we formalise the security notion of Linear-Combination Aggregator Obliviousness (LCAO) as the following game between attacker and challenger:
 
 \begin{description}
-    \item[Setup] The challenger runs the $\operatorfont{Setup}$ algorithm and gives $pk_0$ to the attacker
+    \item[Setup] The challenger runs the $\mathsf{Setup}$ algorithm and gives $pk_0$ to the attacker
     \item[Queries] The attacker can now perform encryptions or submit queries that are answered by the challenger. The three types of actions are:
     \begin{enumerate}
         \item \textit{Encryption:} The attacker chooses a weight $\omega$ and computes an encryption of $\omega$ under the aggregator's public key $pk_0$, obtaining $\mathcal{E}_{pk_0}(\omega)$.
-        \item \textit{Combine Queries:} The attacker chooses a tuple $(i,t,\mathcal{E}_{pk_0}(\omega_1),\dots,\mathcal{E}_{pk_0}(\omega_m),x_{i,1},\dots,x_{i,m})$ for a unique pair $(i,t)$ and is given back the encryption of the linear combination $\mathcal{E}_{pk_0,sk_i}(\sum^m_{j=1}x_{i,j}\omega_j)$ encrypted under both the aggregator public key $pk_0$ and thesecret key $sk_i$.
+        \item \textit{Combine Queries:} The attacker chooses a tuple $(i,t,\mathcal{E}_{pk_0}(\omega_1),\dots,\mathcal{E}_{pk_0}(\omega_m),x_{i,1},\dots,x_{i,m})$ for a unique pair $(i,t)$ and is given back the encryption of the linear combination $\mathcal{E}_{pk_0,sk_i}(\sum^m_{j=1}x_{i,j}\omega_j)$ encrypted under both the aggregator public key $pk_0$ and the secret key $sk_i$.
         \item \textit{Compromise queries:} The attacker chooses $i$ and receives the secret key $sk_i$. The aggregator's secret key may also be compromised (when choosing $i=0$).
     \end{enumerate} 
     \item[Challenge] Next, the attacker chooses a time $t^*$, and a subset of users $U \subseteq S$ where $S$ is the complete set of users for which no combine queries for time $t^*$ and no compromise queries are made for the duration of the game. The attacker then chooses two series of tuples
@@ -267,81 +367,33 @@ We define the security notion of Linear-Combination Agregator Obliviousness (LCA
         \langle\mathcal{E}_{pk_0,sk_i}(\sum^m_{j=1}x_{i,j}'\omega_j')\,|\,i\in U\rangle
     \end{equation*}
     otherwise.
-    \item[More Queries] The attacker can now perform more encryptions and submit queries, so long as the queries do not break the requiremets in the Challenge stage. That is, $U \subseteq S$.
+    \item[More Queries] The attacker can now perform more encryptions and submit queries, so long as the queries do not break the requirements in the Challenge stage. That is, $U \subseteq S$.
     \item[Guess] At the end, the attacker outputs a bit $b'$ and wins the game only if $b' = b$. The advantage of attacker $\mathcal{A}$ is defined as
     \begin{equation*}
-        \operatorfont{Adv}^{LCAO}(\mathcal{A}) \coloneqq \left\lvert \operatorfont{Pr}[b'=b] - \frac{1}{2}\right\rvert\,.
+        \mathsf{Adv}^{LCAO}(\mathcal{A}) \coloneqq \left\lvert \mathsf{Pr}[b'=b] - \frac{1}{2}\right\rvert\,.
     \end{equation*} 
 \end{description}
 
-We say that an encryption scheme meets the security of LCAO if no probabilistic-time adversary has more than negligable advantage in winning this security game.
+\begin{definition}
+    An encryption scheme meets LCAO security if no probabilistic-time adversary has more than a negligible advantage in winning the above security game.
+\end{definition}
+
+In the next section, we will give a solution to an encryption scheme meeting LCAO security, with IND-CPA secure weight encryption, and give a cryptographic proof for its security.
+
+%  .d88888b.                                          888
+% d88P" "Y88b                                         888
+% 888     888                                         888
+% 888     888 888  888 888d888      .d8888b   .d8888b 88888b.   .d88b.  88888b.d88b.   .d88b.
+% 888     888 888  888 888P"        88K      d88P"    888 "88b d8P  Y8b 888 "888 "88b d8P  Y8b
+% 888     888 888  888 888          "Y8888b. 888      888  888 88888888 888  888  888 88888888
+% Y88b. .d88P Y88b 888 888               X88 Y88b.    888  888 Y8b.     888  888  888 Y8b.
+%  "Y88888P"   "Y88888 888           88888P'  "Y8888P 888  888  "Y8888  888  888  888  "Y8888
 
 
-Our weighted aggregation method relies on the decisional composite residuosity assumption (DCRA) originally defined by Paillier in \cite{paillierPublicKeyCryptosystemsBased1999}. The aggregation method can be seen as a combination of the additive homomorphic Paillier encryption scheme, which additionally allows multiplication of an encrypted message with a plaintext value, and the Joye-Libert private stream-aggregation scheme. Both of these schemes base their security on the DCRA, and their descriptions are given briefly below before defining our weighted aggregation scheme.
 
-\subsection{Paillier Encryption Scheme}
-The Paillier encryption scheme is an additively homomorphic encryption scheme which functions over a finite group $\mathbb{G}$, containing 
-
-% TODO not true I think - just keep it simple instead - a subgroup where the DCRA holds and is of an unknown order, and another subgroup where discrete logarithms are easily computable.
-
-Key generation of the Paillier scheme is performed by choosing two sufficiently large primes $p$ and $q$, and computing $n=pq$. A generator $g$ is also required for encryption, which is often set to $g=n+1$ when $p$ and $q$ are of equal bit length \cite{}. The public key is then given by $(n, g)$ and secret key by $(p, q)$.
-
-Encryption of a plaintext message $m \in \mathbb{Z}_n$, producing ciphertext $c \in \mathbb{Z}^{*}_{n^2}$, is computed by
-\begin{equation}
-    c = g^m r^n \pmod{n^2}
-\end{equation}
-for a randomly chosen $r \in \mathbb{Z}_{n}$. The $r^n$ term can be considered as the noise which hides the value $g^m \pmod{n^2}$, which due to the scheme construction, is an easily computable discrete logarithm. The decryption of a ciphertext is computed by
-\begin{equation}
-    m = \frac{L(c^\lambda\pmod{n^2})}{L(g^\lambda\pmod{n^2})} \pmod{n}
-\end{equation}
-where $\lambda = \operatorfont{lcm}(p-1, q-1)$ and $L(u) = \frac{u-1}{n}$.
-
-In addition to encryption and decryption, the following homomorphic functions are provided by the Paillier scheme. $\forall m_1,m_2 \in \mathbb{Z}_n$,
-\begin{align}
-    \mathcal{D}(\mathcal{E}(m_1)\mathcal{E}(m_2)\!\pmod{n^2}) &= m_1+m_2\!\pmod{n} \\
-    \mathcal{D}(\mathcal{E}(m_1)g^{m_2}\!\pmod{n^2}) &= m_1+m_2\!\pmod{n} \\
-    \mathcal{D}(\mathcal{E}(m_1)^{m_2}\!\pmod{n^2}) &= m_1m_2\!\pmod{n}\,.
-\end{align}
-
-The scheme is shown to be indistinguishable under the chosen plaintext attack model (IND-CPA), which is considered the strongest form of security acheivable by a homomorphic encryption scheme \cite{}.
-
-\subsection{Joye-Libert Privacy-Preserving Aggregation}
-The Joye-Libert private stream aggregation scheme allows, at each time-step, encrypted time-series values originating from $N$ different measuring parties, to be summed up and decrypted by an aggregator. Time-series values are encrypted by their measuring party's private encryption key, and decrypted by the aggregator using its private key. The scheme functions over the same finite group $\mathbb{G}$ as the Paillier encryption scheme above.
-
-A notable difference in key-generation for the aggregation scheme from a public-key scheme such as Paillier's scheme, is the requirement of an offline generation and distribution step by some trusted party. Similar to the Paillier scheme, key generation first requires choosing two sufficiently large, equal length, primes $p$ and $q$ and computing $n=pq$. In addition to $n$, a hash function $H:\mathbb{Z} \rightarrow \mathbb{Z}_{n^2}$ is defined, and the public key is set to $(n, H)$. The private keys are generated by choosing $N$ keys $sk_i,\,i \in \{1,\dots,N\}$ uniformly from $\mathbb{Z}_{n^2}$ and distributing them to all measuring parties, while the last key is set to
-\begin{equation}
-    sk_0 = -\sum^{N}_{i=1}sk_i \pmod{n^2}\,,
-\end{equation}
-and sent to the aggregator.
-
-Encryption of plaintext $m_{i,t} \in \mathbb{Z}_n$ to ciphertext $c_{i,t} \in \mathbb{Z}_{n^2}$ at time $t$ is computed by participant $i$ as
-\begin{equation}
-    c_{i,t} = (n+1)^{m_{i,t}} H(t)^{sk_i} \pmod{n^2}\,,
-\end{equation}
-As with the interpretation of the noise term in the Paillier scheme, here $H(t)^{sk_i}$ can be seen as noise which hides the easily computable discrete logarithm $g^{m_{i,t}} \pmod{n^2}$, where $g=n+1$.
-
-When all encryptions $c_{i,t},\,i \in \{1,\dots,N\}$ are sent to the aggregator, private summation and decryption are computed by the functions
-\begin{equation}
-    c_{t} = H(t)^{sk_0}\prod^{N}_{i=1}c_{i,t} \pmod{n^2}
-\end{equation}
-and
-\begin{equation}
-    \sum^{N}_{i=1}m_{i,t} = \frac{c_{t}-1}{n}\,. \label{eqn:agg_decryption}
-\end{equation}
-Correctness follows from $\sum^{N}_{i=0}sk_i = 0$, and therefore
-\begin{align}
-    &H(t)^{sk_0}\prod^{N}_{i=1}c_{i,t} \pmod{n^2} \\
-    \equiv &H(t)^{sk_0}\prod^{N}_{i=1}(n+1)^{m_{i,t}} H(t)^{sk_i} \pmod{n^2} \\
-    \equiv &H(t)^{\sum^N_{j=0}sk_j} \prod^{N}_{i=1}g^{m_{i,t}} \pmod{n^2} \\
-    \equiv &(n+1)^{\sum^N_{i=1}m_{i,t}} \pmod{n^2}
-\end{align}
-which results in a solvable discrete logarithm by using \eqref{eqn:agg_decryption}, as defined in \cite{joyeScalableSchemePrivacyPreserving2013}, with no more noise term.
-
-The aggregation scheme is proven to achieve aggregator obliviousness (AO), which in that no corrupted colluding subset learns anything about the individual messages of the non-corrupted participants, other than the final sum of messages if the aggregator is corrupted, and is proven in the random oracle model.
-
-% Maybe rename this to Our Scheme or something like that
 \section{Our Scheme}
-Explain it in as an overview
+%Both scheme base their security on the decisional composite residuosity assumption (DCRA)
+Explain it here
 
 % \begin{algorithm}
 %     \caption{Paillier Key Generation}\label{paillier_key_gen}
@@ -360,7 +412,7 @@ Explain it in as an overview
 Give the reduction proof here for pWSAO and implicit indistinguishability of weights. Alternatively, sketch it out here and give reduction proof in the appendix.
 
 
-\section{Private Localisation}
+\section{Private Localisation Preliminaries}
 
 \subsection{Integer Encoding for Real Numbers}
 
