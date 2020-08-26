@@ -161,21 +161,32 @@ Rough computational capabilities expected by parties
 Fixed sensor subsets of which only whole subsets can be used at once. Maybe a picture of what this might look like in a high level distributed localisation diagram. Should consider that this sub-grouping would also mean the leakage of the average sensor/measurement of each subset not all sensors at once. This should be considered when choosing sensor subsets and locations.
 
 
-%  .d8888b.                            888                 8888888b.                  888 d8b
-% d88P  Y88b                           888                 888   Y88b                 888 Y8P
-% 888    888                           888                 888    888                 888
-% 888        888d888 888  888 88888b.  888888 .d88b.       888   d88P 888d888 .d88b.  888 888 88888b.d88b.
-% 888        888P"   888  888 888 "88b 888   d88""88b      8888888P"  888P"  d8P  Y8b 888 888 888 "888 "88b
-% 888    888 888     888  888 888  888 888   888  888      888        888    88888888 888 888 888  888  888
-% Y88b  d88P 888     Y88b 888 888 d88P Y88b. Y88..88P      888        888    Y8b.     888 888 888  888  888
-%  "Y8888P"  888      "Y88888 88888P"   "Y888 "Y88P"       888        888     "Y8888  888 888 888  888  888
-%                         888 888
-%                    Y8b d88P 888
-%                     "Y88P"  888
+% 
+%  .d8888b.                            888                 8888888b.                  888 d8b               
+% d88P  Y88b                           888                 888   Y88b                 888 Y8P               
+% 888    888                           888                 888    888                 888                   
+% 888        888d888 888  888 88888b.  888888 .d88b.       888   d88P 888d888 .d88b.  888 888 88888b.d88b.  
+% 888        888P"   888  888 888 "88b 888   d88""88b      8888888P"  888P"  d8P  Y8b 888 888 888 "888 "88b 
+% 888    888 888     888  888 888  888 888   888  888      888        888    88888888 888 888 888  888  888 
+% Y88b  d88P 888     Y88b 888 888 d88P Y88b. Y88..88P      888        888    Y8b.     888 888 888  888  888 
+%  "Y8888P"  888      "Y88888 88888P"   "Y888 "Y88P"       888        888     "Y8888  888 888 888  888  888 
+%                         888 888                                                                           
+%                    Y8b d88P 888                                                                           
+%                     "Y88P"  888                                                                           
+% 
+
 \section{Cryptography Preliminaries} \label{sec:crypto_prelim}
 When defining our system security requirements and encryption scheme, we will reference some existing cryptographic security notions, the additively homomorphic Paillier encryption scheme, and the Joye-Libert private aggregation scheme.
 
-% Quickly define homomorphic encryption and private aggregation here??
+% 
+%  ######  ########  ######  ##     ## ########  #### ######## ##    ## 
+% ##    ## ##       ##    ## ##     ## ##     ##  ##     ##     ##  ##  
+% ##       ##       ##       ##     ## ##     ##  ##     ##      ####   
+%  ######  ######   ##       ##     ## ########   ##     ##       ##    
+%       ## ##       ##       ##     ## ##   ##    ##     ##       ##    
+% ##    ## ##       ##    ## ##     ## ##    ##   ##     ##       ##    
+%  ######  ########  ######   #######  ##     ## ####    ##       ##    
+% 
 
 \subsection{Security Notions}
 The security of a cryptographic scheme is typically defined by a security \textit{game}, which captures both the desired privacy guarantees, as well as the capabilities of attackers \cite{katzIntroductionModernCryptography2008}. The typical security notion for a homomorphic encryption scheme is Indistinguishability under Chosen Plaintext Attack (IND-CPA) \cite{chaseSecurityHomomorphicEncryption2017}. 
@@ -190,6 +201,16 @@ An encryption scheme meets AO security if no colluding subset of participants \t
 
 The formal security game for AO has been given in Appendix \ref{app:ao}.
 \end{definition}
+
+% 
+% ########     ###    #### ##       ##       #### ######## ########  
+% ##     ##   ## ##    ##  ##       ##        ##  ##       ##     ## 
+% ##     ##  ##   ##   ##  ##       ##        ##  ##       ##     ## 
+% ########  ##     ##  ##  ##       ##        ##  ######   ########  
+% ##        #########  ##  ##       ##        ##  ##       ##   ##   
+% ##        ##     ##  ##  ##       ##        ##  ##       ##    ##  
+% ##        ##     ## #### ######## ######## #### ######## ##     ## 
+% 
 
 \subsection{Paillier Encryption Scheme} \label{subsec:paillier_scheme}
 The Paillier encryption scheme \cite{paillierPublicKeyCryptosystemsBased1999} is an additively homomorphic encryption scheme which bases its security on the decisional composite residuosity assumption (DCRA) and meets the security notion of IND-CPA. Key generation of the Paillier scheme is performed by choosing two sufficiently large primes $p$ and $q$, and computing $N=pq$. A generator $g$ is also required for encryption, which is often set to $g=N+1$ when $p$ and $q$ are of equal bit length \cite{katzIntroductionModernCryptography2008}. The public key is defined by $(N, g)$ and secret key by $(p, q)$.
@@ -210,6 +231,16 @@ In addition to encryption and decryption, the following homomorphic functions ar
     \mathcal{D}(\mathcal{E}(m_1)g^{m_2}\!\pmod{N^2}) &= m_1+m_2\!\pmod{N} \\
     \mathcal{D}(\mathcal{E}(m_1)^{m_2}\!\pmod{N^2}) &= m_1m_2\!\pmod{N}\,. \label{eqn:paillier_hom_mult}
 \end{align}
+
+% 
+%       ##         ##    ## 
+%       ##          ##  ##  
+%       ##           ####   
+%       ## #######    ##    
+% ##    ##            ##    
+% ##    ##            ##    
+%  ######             ##    
+% 
 
 \subsection{Joye-Libert Private Aggregation Scheme} \label{subsec:joye_libert_scheme}
 The Joye-Libert private aggregation scheme \cite{joyeScalableSchemePrivacyPreserving2013} is a scheme defined on time-series data and meets the security notion of AO. Similarly to the Paillier scheme, it bases its security on the DCRA. A notable difference to a public-key encryption scheme is the need for a trusted party to perform an initial key generation and distribution step.
@@ -245,17 +276,20 @@ Correctness follows from $\sum^{n}_{i=0}sk_i = 0$, and thus
 \end{equation*}
 removing all noise terms.
 
-%  .d8888b.                            888                 8888888b.                  888
-% d88P  Y88b                           888                 888   Y88b                 888
-% 888    888                           888                 888    888                 888
-% 888        888d888 888  888 88888b.  888888 .d88b.       888   d88P 888d888 .d88b.  88888b.
-% 888        888P"   888  888 888 "88b 888   d88""88b      8888888P"  888P"  d88""88b 888 "88b
-% 888    888 888     888  888 888  888 888   888  888      888        888    888  888 888  888
-% Y88b  d88P 888     Y88b 888 888 d88P Y88b. Y88..88P      888        888    Y88..88P 888 d88P
-%  "Y8888P"  888      "Y88888 88888P"   "Y888 "Y88P"       888        888     "Y88P"  88888P"
-%                         888 888
-%                    Y8b d88P 888
-%                     "Y88P"  888
+% 
+%  .d8888b.                            888                 8888888b.                  888      
+% d88P  Y88b                           888                 888   Y88b                 888      
+% 888    888                           888                 888    888                 888      
+% 888        888d888 888  888 88888b.  888888 .d88b.       888   d88P 888d888 .d88b.  88888b.  
+% 888        888P"   888  888 888 "88b 888   d88""88b      8888888P"  888P"  d88""88b 888 "88b 
+% 888    888 888     888  888 888  888 888   888  888      888        888    888  888 888  888 
+% Y88b  d88P 888     Y88b 888 888 d88P Y88b. Y88..88P      888        888    Y88..88P 888 d88P 
+%  "Y8888P"  888      "Y88888 88888P"   "Y888 "Y88P"       888        888     "Y88P"  88888P"  
+%                         888 888                                                              
+%                    Y8b d88P 888                                                              
+%                     "Y88P"  888                                                              
+% 
+
 \section{Private Linear-Combination Aggregation}
 For achieving the goal of private localisation defined in Section \ref{sec:problem_statement} we will require a multi-party protocol for computing linear combinations of weights, and their subsequent aggregation. In the context of navigation, $m$ weights $\omega_1^{(t)}, \dots , \omega_m^{(t)}$ are first broadcast by the navigator, linear combinations $y^{(t)}_i=\sum^m_{j=1}x_{j,i}^{(t)}\omega_i^{(t)}$ are computed by each sensor $1\leq i\leq n$, and aggregation is computed back at the navigator, at every time step $t$. This has been summarized in Figure \ref{fig:agg_steps}. In Section \ref{sec:private_localisation} we will show how this protocol is sufficient to compute measurement covariances and measurement vectors, and update the Extended Information Filter.
 
@@ -325,16 +359,15 @@ To perform the protocol from Figure \ref{fig:agg_steps} in a secure manner, we m
 
 From the informal definitions above, it is clear that weights encrypted by an IND-CPA secure encryption scheme are sufficient for the first requirement, while a scheme satisfying AO is not sufficient for the second. To formalise the second requirement, we define a novel encryption type ``Linear-Combination Aggregator Oblivious Encryption'' and an accompanying security game, which capture the additional weights and modified leakage of AO.
 
-% 888      .d8888b.        d8888  .d88888b.
-% 888     d88P  Y88b      d88888 d88P" "Y88b
-% 888     888    888     d88P888 888     888
-% 888     888           d88P 888 888     888
-% 888     888          d88P  888 888     888
-% 888     888    888  d88P   888 888     888
-% 888     Y88b  d88P d8888888888 Y88b. .d88P
-% 88888888 "Y8888P" d88P     888  "Y88888P"
-
-
+% 
+% ##        ######     ###     #######  
+% ##       ##    ##   ## ##   ##     ## 
+% ##       ##        ##   ##  ##     ## 
+% ##       ##       ##     ## ##     ## 
+% ##       ##       ######### ##     ## 
+% ##       ##    ## ##     ## ##     ## 
+% ########  ######  ##     ##  #######  
+% 
 
 \subsection{Linear-Combination Aggregator Oblivious Encryption} \label{subsec:lcao}
 We let a linear-combination aggregator oblivious encryption scheme be defined as a tuple of the four algorithms $(\mathsf{Setup}, \mathsf{Enc}, \mathsf{CombEnc}, \mathsf{AggDec})$, defined as
@@ -390,16 +423,19 @@ Next, we formalise the security notion of Linear-Combination Aggregator Obliviou
 
 In the next section, we will give a solution to an encryption scheme meeting LCAO security, with IND-CPA secure weight encryption, and give a cryptographic proof for its security.
 
-%  .d88888b.                                          888
-% d88P" "Y88b                                         888
-% 888     888                                         888
-% 888     888 888  888 888d888      .d8888b   .d8888b 88888b.   .d88b.  88888b.d88b.   .d88b.
-% 888     888 888  888 888P"        88K      d88P"    888 "88b d8P  Y8b 888 "888 "88b d8P  Y8b
-% 888     888 888  888 888          "Y8888b. 888      888  888 88888888 888  888  888 88888888
-% Y88b. .d88P Y88b 888 888               X88 Y88b.    888  888 Y8b.     888  888  888 Y8b.
-%  "Y88888P"   "Y88888 888           88888P'  "Y8888P 888  888  "Y8888  888  888  888  "Y8888
-
-
+% 
+%  .d88888b.                         .d8888b.           888                                      
+% d88P" "Y88b                       d88P  Y88b          888                                      
+% 888     888                       Y88b.               888                                      
+% 888     888 888  888 888d888       "Y888b.    .d8888b 88888b.   .d88b.  88888b.d88b.   .d88b.  
+% 888     888 888  888 888P"            "Y88b. d88P"    888 "88b d8P  Y8b 888 "888 "88b d8P  Y8b 
+% 888     888 888  888 888                "888 888      888  888 88888888 888  888  888 88888888 
+% Y88b. .d88P Y88b 888 888          Y88b  d88P Y88b.    888  888 Y8b.     888  888  888 Y8b.     
+%  "Y88888P"   "Y88888 888           "Y8888P"   "Y8888P 888  888  "Y8888  888  888  888  "Y8888  
+%                                                                                                
+%                                                                                                
+%                                                                                                
+% 
 
 \section{Our Scheme} \label{sec:our_scheme}
 Our scheme is based on the Paillier and Joye-Libert schemes introduced in Section \ref{sec:crypto_prelim}, and similarly bases its security on the DCRA. As with Joye-Libert's private aggregation scheme, a trusted party is required for the initial distribution of user secret keys. Below, we give definitions for the four algorithms comprising the linear-combination aggregation encryption scheme.
@@ -448,6 +484,16 @@ Our scheme is based on the Paillier and Joye-Libert schemes introduced in Sectio
 \end{description}
 
 some summary here
+
+% 
+% ########  ########   #######   #######  ######## 
+% ##     ## ##     ## ##     ## ##     ## ##       
+% ##     ## ##     ## ##     ## ##     ## ##       
+% ########  ########  ##     ## ##     ## ######   
+% ##        ##   ##   ##     ## ##     ## ##       
+% ##        ##    ##  ##     ## ##     ## ##       
+% ##        ##     ##  #######   #######  ##       
+% 
 
 \subsection{Proof}
 To prove the security of our introduced scheme, we recall the desired security properties of an LCAO secure scheme with IND-CPA secure encrypted weights. From the definition above, weights encrypted with public key $pk_0$ are identical to encryptions of the Paillier scheme, and therefore meet security notion IND-CPA. We omit this proof here and refer readers to the security proof of the Paillier encryption scheme \cite{paillierPublicKeyCryptosystemsBased1999} instead.
@@ -510,16 +556,19 @@ for some negligible functions $\eta_1$ and $\eta_2$. (\textit{i.e.} if we assume
     for security parameter $\kappa$. \qed
 \end{pf}
 
-% 888                            8888888b.                  888 d8b
-% 888                            888   Y88b                 888 Y8P
-% 888                            888    888                 888
-% 888      .d88b.   .d8888b      888   d88P 888d888 .d88b.  888 888 88888b.d88b.
-% 888     d88""88b d88P"         8888888P"  888P"  d8P  Y8b 888 888 888 "888 "88b
-% 888     888  888 888           888        888    88888888 888 888 888  888  888
-% 888     Y88..88P Y88b.         888        888    Y8b.     888 888 888  888  888
-% 88888888 "Y88P"   "Y8888P      888        888     "Y8888  888 888 888  888  888
-
-
+% 
+% 888                            8888888b.                  888 d8b               
+% 888                            888   Y88b                 888 Y8P               
+% 888                            888    888                 888                   
+% 888      .d88b.   .d8888b      888   d88P 888d888 .d88b.  888 888 88888b.d88b.  
+% 888     d88""88b d88P"         8888888P"  888P"  d8P  Y8b 888 888 888 "888 "88b 
+% 888     888  888 888           888        888    88888888 888 888 888  888  888 
+% 888     Y88..88P Y88b.         888        888    Y8b.     888 888 888  888  888 
+% 88888888 "Y88P"   "Y8888P      888        888     "Y8888  888 888 888  888  888 
+%                                                                                 
+%                                                                                 
+%                                                                                 
+% 
 
 \section{Private Localisation Preliminaries}
 
