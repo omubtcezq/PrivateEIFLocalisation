@@ -178,13 +178,13 @@ When defining our system security requirements and encryption scheme, we will re
 % Quickly define homomorphic encryption and private aggregation here??
 
 \subsection{Security Notions}
-The security of a cryptographic scheme is typically defined by a security \textit{game}, which captures both the desired privacy guarantees, as well as the capabilities of attackers \cite{katzIntroductionModernCryptography2008}. The typical security notion for a homomorphic encryption scheme is Indistinguishability under Chosen Plaintext Attack (IND-CPA) \cite{}. 
+The security of a cryptographic scheme is typically defined by a security \textit{game}, which captures both the desired privacy guarantees, as well as the capabilities of attackers \cite{katzIntroductionModernCryptography2008}. The typical security notion for a homomorphic encryption scheme is Indistinguishability under Chosen Plaintext Attack (IND-CPA) \cite{chaseSecurityHomomorphicEncryption2017}. 
 \begin{definition}
 An encryption scheme meets IND-CPA security if an attacker who can choose plaintext messages to be encrypted at will, gains no additional information about an unknown plaintext message when they learn only its encryption. 
 
 The formal security game for IND-CPA has been given in Appendix \ref{app:ind_cpa}.
 \end{definition}
-Private aggregation schemes aim for the security notion of Aggregator Obliviousness (AO) \cite{}. 
+Private aggregation schemes aim for the security notion of Aggregator Obliviousness (AO) \cite{shiPrivacyPreservingAggregationTimeSeries2011}. 
 \begin{definition}
 An encryption scheme meets AO security if no colluding subset of participants \textit{excluding} the aggregator gains additional information about the remaining aggregation values given only their encryptions, while any colluding subset \textit{including} the aggregator learns only their sum. 
 
@@ -192,7 +192,7 @@ The formal security game for AO has been given in Appendix \ref{app:ao}.
 \end{definition}
 
 \subsection{Paillier Encryption Scheme} \label{subsec:paillier_scheme}
-The Paillier encryption scheme \cite{paillierPublicKeyCryptosystemsBased1999} is an additively homomorphic encryption scheme which bases its security on the decisional composite residuosity assumption (DCRA) and meets the security notion of IND-CPA. Key generation of the Paillier scheme is performed by choosing two sufficiently large primes $p$ and $q$, and computing $N=pq$. A generator $g$ is also required for encryption, which is often set to $g=N+1$ when $p$ and $q$ are of equal bit length \cite{}. The public key is defined by $(N, g)$ and secret key by $(p, q)$.
+The Paillier encryption scheme \cite{paillierPublicKeyCryptosystemsBased1999} is an additively homomorphic encryption scheme which bases its security on the decisional composite residuosity assumption (DCRA) and meets the security notion of IND-CPA. Key generation of the Paillier scheme is performed by choosing two sufficiently large primes $p$ and $q$, and computing $N=pq$. A generator $g$ is also required for encryption, which is often set to $g=N+1$ when $p$ and $q$ are of equal bit length \cite{katzIntroductionModernCryptography2008}. The public key is defined by $(N, g)$ and secret key by $(p, q)$.
 
 Encryption of a plaintext message $m \in \mathbb{Z}_N$, producing ciphertext $c \in \mathbb{Z}^{*}_{N^2}$, is computed by
 \begin{equation}
@@ -465,12 +465,12 @@ for some negligible functions $\eta_1$ and $\eta_2$. (\textit{i.e.} if we assume
         \begin{description}
             \item[\textit{Weight Query}] When $\mathcal{A}$ submits a weight query $t$, choose weights $\omega^{(t)}_j,\,1 \leq j \leq m$ and random values $r_j \in \mathbb{Z}_N,\,1 \leq j \leq m$, and return encryptions 
             \begin{equation*}
-                (N+1)^{(\omega^{(t)}_{j})}r_j^N\pmod{N^2},\,1\leq j\leq m
+                (N+1)^{\omega^{(t)}_{j}}r_j^N\pmod{N^2},\,1\leq j\leq m
             \end{equation*}
             to $\mathcal{A}$.
             \item[\textit{Combine Query}] When $\mathcal{A}$ submits combine query $(i, t, x^{(t)}_{i,1},\dots,x^{(t)}_{i,m})$, choose weights $\omega^{(t)}_j,1 \leq j \leq m$ if not already chosen for time $t$, and make an AO encryption query $(i, t, \sum^m_{j=1}x^{(t)}_{i,j}\omega^{(t)}_j)$ to $\mathcal{C}$. The received response is of the form $(N+1)^{\sum^m_{j=1}x^{(t)}_{i,j}\omega^{(t)}_j}H(t)^{sk_i}$; multiply it by $r^N$ for a random $r \in \mathbb{Z}_N$ and return 
             \begin{equation*}
-                (N+1)^{\sum^m_{j=1}x^{(t)}_{i,j}\omega^{(t)}_j}r_i^N H(t)^{sk_i} \pmod{N^2}
+                (N+1)^{\sum^m_{j=1}x^{(t)}_{i,j}\omega^{(t)}_j}r^N H(t)^{sk_i} \pmod{N^2}
             \end{equation*}
             to $\mathcal{A}$.
             \item[\textit{Compromise Query}] When $\mathcal{A}$ submits compromise query $i$, make the same compromise query $i$ to $\mathcal{C}$, and return the recieved secret key $sk_i$ to $\mathcal{A}$.
@@ -497,7 +497,7 @@ for some negligible functions $\eta_1$ and $\eta_2$. (\textit{i.e.} if we assume
         \end{equation*}
         for an unkonwn $b \in \{0,1\}$. Multiply series elements by $r_i^N,\,1 \leq i \leq n$ for randomly chosen $r_i \in \mathbb{Z}_N$ and return
         \begin{equation*}
-            \langle(N+1)^{\sum^m_{j=1}x^{(t^*)(b)}_{i,j}\omega^{(t^*)}_j}r_i^N H(t^*)^{sk_i}\,|\,i\in U\rangle\,,
+            \langle(N+1)^{\sum^m_{j=1}x^{(t^*)(b)}_{i,j}\omega^{(t^*)}_j}r_i^N H(t^*)^{sk_i}\,|\,i\in U\rangle
         \end{equation*}
         to $\mathcal{A}$.
         \item[Guess] When $\mathcal{A}$ makes guess $b'$, make the same guess $b'$ to $\mathcal{C}$.
