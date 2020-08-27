@@ -408,7 +408,7 @@ Next, we formalise the security notion of Linear-Combination Aggregator Obliviou
     \end{equation*}
     for weights $\omega^{(t^*)}_j,\,1\leq j \leq m$ returned by a \textit{Weight Query} with chosen time $t^*$. The challenger then chooses a random bit $b \in \{1,0\}$ and returns encryptions 
     \begin{equation*}
-        \langle\mathcal{E}_{pk_0,sk_i}(\sum^m_{j=1}x^{(t^*)(b)}_{i,j}\omega^{(t^*)}_j)\,|\,i\in U\rangle\,.
+        \langle\mathcal{E}_{pk_0,sk_i}(\sum^m_{j=1}x^{(t^*)(b)}_{i,j}\omega^{(t^*)}_j)\,|\,i\in S\rangle\,.
     \end{equation*}
     \item[More Queries] The attacker can now perform more encryptions and submit queries, so long as the queries do not break the requirements in the Challenge stage. That is, $S \subseteq U$.
     \item[Guess] At the end, the attacker outputs a bit $b'$ and wins the game only if $b' = b$. The advantage of an attacker $\mathcal{A}$ is defined as
@@ -741,6 +741,73 @@ Partially supported by the Roman Senate.  % here.
 % in the appendices.
 \appendix
 \section{Indistinguishability under Chosen Plaintext Attack (IND-CPA)} \label{app:ind_cpa}
+A public-key encryption scheme is defined by the tuple of algorithms $(\mathsf{Setup}, \mathsf{Enc}, \mathsf{Dec})$, defined as
+\begin{description}
+    \item[$\mathsf{Setup}(\kappa)$] On input of security paramater $\kappa$, generate public key $pk$ and secret key $sk$
+    \item[$\mathsf{Enc}(pk, x)$] Encryption of value $x$ is computable using the public key $pk$, obtaining $\mathcal{E}_{pk}(x)$.
+    \item[$\mathsf{Dec}(sk, \mathcal{E}_{pk}(x))$] Decryption of value $x$ is computable using the secret key $sk$.
+\end{description}
+
+The security game between attacker and challenger for IND-CPA is given by
+\begin{description}
+    \item[Setup] The challenger runs the $\mathsf{Setup}$ algorithm and gives public key $pk$ to the attacker
+    \item[Encryptions] The attacker may compute encryptions using the public key $pk$.
+    \item[Challenge] Next, the attacker chooses two values
+    \begin{equation*}
+        x^{(0)} \text{ and } x^{(1)}
+    \end{equation*}
+    and gives them to the challenger. The challenger then chooses a random bit $b \in \{1,0\}$ and returns the encryption
+    \begin{equation*}
+        \mathcal{E}_{pk}(x^{(b)}).
+    \end{equation*}
+    \item[More Encryptions] The attacker can now compute more encryptions with the public key $pk$.
+    \item[Guess] At the end, the attacker outputs a bit $b'$ and wins the game only if $b' = b$. The advantage of an attacker $\mathcal{A}$ is defined as
+    \begin{equation*}
+        \mathsf{Adv}^{IND-CPA}(\mathcal{A}) \coloneqq \left\lvert \Pr [b'=b] - \frac{1}{2}\right\rvert\,.
+    \end{equation*} 
+\end{description}
+
 \section{Aggregator Obliviousness (AO)} \label{app:ao}
+An aggregator oblivious encryption scheme is defined by the tuple of algorithms $(\mathsf{Setup}, \mathsf{Enc}, \mathsf{AggDec})$, defined as
+\begin{description}
+    \item[$\mathsf{Setup}(\kappa)$] On input of security paramater $\kappa$, generate public parameters $\mathsf{pub}$, the user private keys $sk_i,\,1\leq i \leq n$, and the aggregator's private key $sk_0=-\sum^n_{i=1}sk_i$.
+    \item[$\mathsf{Enc}(t, sk_i, x^{(t)}_i)$] At time $t$, user $i$ computes and obtains the encrypted value $y^{(t)}_i = \mathcal{E}_{sk_i}(x^{(t)}_i)$ using its secret key $sk_i$.
+    \item[$\mathsf{AggDec}(t, sk_0, y^{(t)}_1,\dots,y^{(t)}_n)$] At time $t$, the aggregator computes the aggregation of values $\sum^{n}_{i=1} x^{(t)}_i$ using its private key $sk_0$.
+\end{description}
+
+The security game between attacker and challenger for AO is given by
+\begin{description}
+    \item[Setup] The challenger runs the $\mathsf{Setup}$ algorithm and gives public parameters $\mathsf{pub}$ to the attacker
+    \item[Queries] The attacker can now submit queries that are answered by the challenger. The types of queries are:
+    \begin{enumerate}
+        \item \textit{Combine Queries:} The attacker chooses a tuple $(i,t,x^{(t)}_i$ such that for any two chosen combine query tuples $(i,t,x^{(t)}_i)$ and $(i',t',x^{\prime(t')}_{i'}$, the following condition holds:
+        \begin{equation*}
+            i = i' \wedge t = t' \implies x^{(t)}_{i} = x^{\prime(t')}_{i'}\,.
+        \end{equation*}
+        They are given back the encryption of the value $\mathcal{E}_{sk_i}(x^{(t)}_i)$ encrypted under the secret key $sk_i$.
+        \item \textit{Compromise queries:} The attacker chooses $i$ and receives the secret key $sk_i$. The aggregator's secret key may also be compromised (when choosing $i=0$).
+    \end{enumerate} 
+    \item[Challenge] Next, the attacker chooses a time $t^*$, and a subset of users $S \subseteq U$ where $U$ is the complete set of users for which no combine queries, for time $t^*$, and no compromise queries, are made for the duration of the game. The attacker then chooses two series of tuples
+    \begin{equation*}
+        \langle(i,t^*,x^{(t^*)(0)}_i)\,|\,i \in S\rangle
+    \end{equation*}
+    and
+    \begin{equation*}
+        \langle(i,t^*,x^{(t^*)(1)}_i)\,|\, i \in S\rangle\,,
+    \end{equation*}
+    and gives them to the challenger. In the case that $0 \in S$ (\textit{i.e.} the aggregator is compromised) and $S = U$, it is additionally required that
+    \begin{equation*}
+        \sum_{i\in S} x^{(t^*)(0)}_i = \sum_{i \in S} x^{(t^*)(1)}_i\,.
+    \end{equation*}
+    The challenger then chooses a random bit $b \in \{1,0\}$ and returns encryptions 
+    \begin{equation*}
+        \langle\mathcal{E}_{sk_i}(x^{(t^*)(b)}_i)\,|\,i\in S\rangle\,.
+    \end{equation*}
+    \item[More Queries] The attacker can now submit more queries, so long as the queries do not break the requirements in the Challenge stage. That is, $S \subseteq U$.
+    \item[Guess] At the end, the attacker outputs a bit $b'$ and wins the game only if $b' = b$. The advantage of an attacker $\mathcal{A}$ is defined as
+    \begin{equation*}
+        \mathsf{Adv}^{AO}(\mathcal{A}) \coloneqq \left\lvert \Pr [b'=b] - \frac{1}{2}\right\rvert\,.
+    \end{equation*} 
+\end{description}
 
 \end{document}
