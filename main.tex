@@ -73,7 +73,7 @@
 %\runtitle{Insert a suggested running title}
 
 % Title, preferably not more than 10 words.
-\title{Localisation and Sensor Privacy Using the Extended Information Filter and Secure Weighted Aggregation\thanksref{footnoteinfo}}
+\title{Localisation and Sensor Privacy Using the Extended Information Filter and Private Linear-Combination Aggregation\thanksref{footnoteinfo}}
 
 \thanks[footnoteinfo]{This paper was not presented at any IFAC 
 meeting. Corresponding author Uwe~D.~Hanebeck. Tel. +49--721--608--43909.}
@@ -99,7 +99,7 @@ System state estimation; Data privacy; Sensor fusion; Kalman filters.
 
 % Abstract of not more than 200 words.
 \begin{abstract}
-Distributed state estimation and localisation methods have become increasingly popular with the rise of ubiquitous computing, and have led naturally to an increased concern regarding data and estimation privacy. Traditional distributed sensor navigation methods involve the leakage of sensor information or navigator location during localisation protocols and fail to preserve participants’ data privacy. Existing approaches which provide such guarantees, fail to address sensor and navigator privacy in some common model-based non-linear measurement localisation methods forfeiting broad applicability. We define a cryptographically secure weighted aggregation scheme which we apply to the Extended Kalman Filter with range-sensor measurements, and show that navigator location, sensor locations and sensor measurements can remain private during navigation. The security requirements, leakage, and cryptographic proof are given for the private filter and weighted aggregation scheme, and simulations of the filter are used to evaluate the accuracy and performance of the method. Our approach defines a novel, computationally plausible and cryptographically private, model-based localisation filter with direct application to environments where nodes may not be fully trusted and data is considered sensitive.
+Distributed state estimation and localisation methods have become increasingly popular with the rise of ubiquitous computing, and have led naturally to an increased concern regarding data and estimation privacy. Traditional distributed sensor navigation methods involve the leakage of sensor information or navigator location during localisation protocols and fail to preserve participants’ data privacy. Existing approaches which provide such guarantees fail to address sensor and navigator privacy in some common, model-based, non-linear measurement, localisation methods and forfeit broad applicability. We define a cryptographically secure linear-combination aggregation scheme which we apply to the Extended Kalman Filter with range-sensor measurements, and show that navigator location, sensor locations and sensor measurements can remain private during navigation. The security requirements, leakage, and cryptographic proof are given for the private filter and aggregation scheme, and simulations of the filter are used to evaluate the accuracy and performance of the method. Our approach defines a novel, computationally plausible and cryptographically private, model-based localisation filter with direct application to environments where nodes may not be fully trusted and data is considered sensitive.
 \end{abstract}
 
 \end{frontmatter}
@@ -227,9 +227,9 @@ where $\lambda = \mathsf{lcm}(p-1, q-1)$ and $L(u) = \frac{u-1}{N}$.
 
 In addition to encryption and decryption, the following homomorphic functions are provided by the Paillier scheme. $\forall m_1,m_2 \in \mathbb{Z}_N$,
 \begin{align}
-    \mathcal{D}(\mathcal{E}(m_1)\mathcal{E}(m_2)\!\pmod{N^2}) &= m_1+m_2\!\pmod{N} \\
-    \mathcal{D}(\mathcal{E}(m_1)g^{m_2}\!\pmod{N^2}) &= m_1+m_2\!\pmod{N} \\
-    \mathcal{D}(\mathcal{E}(m_1)^{m_2}\!\pmod{N^2}) &= m_1m_2\!\pmod{N}\,. \label{eqn:paillier_hom_mult}
+    \mathcal{D}(\mathcal{E}(m_1)\mathcal{E}(m_2) \hspace{-7pt} \pmod{N^2}) &= m_1+m_2 \hspace{-7pt} \pmod{N} \\
+    \mathcal{D}(\mathcal{E}(m_1)g^{m_2} \hspace{-7pt} \pmod{N^2}) &= m_1+m_2\hspace{-7pt}\pmod{N} \\
+    \mathcal{D}(\mathcal{E}(m_1)^{m_2} \hspace{-7pt} \pmod{N^2}) &= m_1m_2 \hspace{-7pt} \pmod{N}\,. \label{eqn:paillier_hom_mult}
 \end{align}
 
 % 
@@ -246,9 +246,9 @@ In addition to encryption and decryption, the following homomorphic functions ar
 The Joye-Libert private aggregation scheme \cite{joyeScalableSchemePrivacyPreserving2013} is a scheme defined on time-series data and meets the security notion of AO. Similarly to the Paillier scheme, it bases its security on the DCRA. A notable difference to a public-key encryption scheme is the need for a trusted party to perform an initial key generation and distribution step.
 
 Key generation is computed by choosing two equal length and sufficiently large primes $p$ and $q$, and computing $N=pq$. Additionally, hash function $H:\mathbb{Z} \rightarrow \mathbb{Z}_{N^2}^*$ is defined, and the public key is set to $(N, H)$. $n$ private keys are generated by choosing $sk_i,\,1\leq i\leq n$ uniformly from $\mathbb{Z}_{N^2}$ and distributing them to all users, while the last key is set as
-\begin{equation}
+\begin{equation*}
     sk_0 = -\sum^{n}_{i=1}sk_i \pmod{N^2}\,,
-\end{equation}
+\end{equation*}
 and sent to the aggregator.
 
 Encryption of plaintext $m^{(t)}_{i} \in \mathbb{Z}_N$ to ciphertext $c^{(t)}_{i} \in \mathbb{Z}_{N^2}$ at time $t$ is computed by user $i$ as
@@ -483,6 +483,8 @@ Our scheme is based on the Paillier and Joye-Libert schemes introduced in Sectio
     for some values $r_i,r' \in \mathbb{Z}_N,\,1\leq i \leq n$.
 \end{description}
 
+Additionally, we note that in the above construction, all weights $\omega^{(t)}_j$ and values $x^{(t)}_{i,j}$ are integers, and that resulting linear combinations and summations are computed $\pmod{N}$.
+
 % 
 % ########  ########   #######   #######  ######## 
 % ##     ## ##     ## ##     ## ##     ## ##       
@@ -571,6 +573,7 @@ for some negligible functions $\eta_1$ and $\eta_2$. (\textit{i.e.} if we assume
 \section{Private Localisation Preliminaries}
 
 \subsection{Integer Encoding for Real Numbers}
+Point out the integer range limit introduced by our scheme, $x<N$, for both the weights and the values.
 
 \subsection{Extended Information Filter}
 
