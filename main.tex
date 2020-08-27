@@ -291,7 +291,7 @@ removing all noise terms.
 % 
 
 \section{Private Linear-Combination Aggregation}
-For achieving the goal of private localisation defined in Section \ref{sec:problem_statement} we will require a multi-party protocol for computing linear combinations of weights, and their subsequent aggregation. In the context of navigation, $m$ weights $\omega_1^{(t)}, \dots , \omega_m^{(t)}$ are first broadcast by the navigator, linear combinations $y^{(t)}_i=\sum^m_{j=1}x_{j,i}^{(t)}\omega_i^{(t)}$ are computed by each sensor $1\leq i\leq n$, and aggregation is computed back at the navigator, at every time step $t$. This has been summarized in Figure \ref{fig:agg_steps}. In Section \ref{sec:private_localisation} we will show how this protocol is sufficient to compute measurement covariances and measurement vectors, and update the Extended Information Filter.
+For achieving the goal of private localisation defined in Section \ref{sec:problem_statement} we will require a multi-party protocol for computing linear combinations of weights, and their subsequent aggregation. In the context of navigation, $m$ weights $\omega_j^{(t)}, 1 \leq j \leq m$ are first broadcast by the navigator, linear combinations $y^{(t)}_i=\sum^m_{j=1}x_{j,i}^{(t)}\omega_i^{(t)}$ are computed by each sensor $1\leq i\leq n$, and aggregation is computed back at the navigator, at every time step $t$. This has been summarized in Figure \ref{fig:agg_steps}. In Section \ref{sec:private_localisation} we will show how this protocol can be sufficient to compute measurement covariances and measurement vectors, and update the Extended Information Filter.
 
 \begin{figure}[htbp]
 \centering
@@ -411,7 +411,7 @@ Next, we formalise the security notion of Linear-Combination Aggregator Obliviou
         \langle\mathcal{E}_{pk_0,sk_i}(\sum^m_{j=1}x^{(t^*)(b)}_{i,j}\omega^{(t^*)}_j)\,|\,i\in U\rangle\,.
     \end{equation*}
     \item[More Queries] The attacker can now perform more encryptions and submit queries, so long as the queries do not break the requirements in the Challenge stage. That is, $S \subseteq U$.
-    \item[Guess] At the end, the attacker outputs a bit $b'$ and wins the game only if $b' = b$. The advantage of attacker $\mathcal{A}$ is defined as
+    \item[Guess] At the end, the attacker outputs a bit $b'$ and wins the game only if $b' = b$. The advantage of an attacker $\mathcal{A}$ is defined as
     \begin{equation*}
         \mathsf{Adv}^{LCAO}(\mathcal{A}) \coloneqq \left\lvert \Pr [b'=b] - \frac{1}{2}\right\rvert\,.
     \end{equation*} 
@@ -462,7 +462,7 @@ Our scheme is based on the Paillier and Joye-Libert schemes introduced in Sectio
             &= H(t)^{sk_i}(N+1)^{\sum^{m}_{j=1}x^{(t)}_{i,j}\omega^{(t)}_j} r_{i}^{N} \pmod{N^2}\,,
         \end{split}
     \end{equation*}
-    for some values $r_i,r_j \in \mathbb{Z}_N\,,1\leq j \leq m$.
+    for some values $r_i,r_j \in \mathbb{Z}_N\,,1\leq j \leq m$. Here, $r_i^N$ and $H(t)^{sk_i}$ can be considered the noise terms corresponding to the two levels of encryption from $pk_0$ and $sk_i$, respectively.
 
     \item[$\mathsf{AggDec}(t, pk_0, sk_0, y^{(t)}_1,\dots,y^{(t)}_n)$] Aggregation is computed as $y^{(t)} = \prod^n_{i=1}y^{(t)}_i \pmod{N^2}$, removing aggregation noise terms, and is followed by Paillier decryption
     \begin{equation}
@@ -483,8 +483,6 @@ Our scheme is based on the Paillier and Joye-Libert schemes introduced in Sectio
     for some values $r_i,r' \in \mathbb{Z}_N,\,1\leq i \leq n$.
 \end{description}
 
-some summary here
-
 % 
 % ########  ########   #######   #######  ######## 
 % ##     ## ##     ## ##     ## ##     ## ##       
@@ -495,14 +493,14 @@ some summary here
 % ##        ##     ##  #######   #######  ##       
 % 
 
-\subsection{Proof}
+\subsection{Security Proof}
 To prove the security of our introduced scheme, we recall the desired security properties of an LCAO secure scheme with IND-CPA secure encrypted weights. From the definition above, weights encrypted with public key $pk_0$ are identical to encryptions of the Paillier scheme, and therefore meet security notion IND-CPA. We omit this proof here and refer readers to the security proof of the Paillier encryption scheme \cite{paillierPublicKeyCryptosystemsBased1999} instead.
 
 To show our scheme meets the security notion of LCAO, we prove by contrapositive that for an adversary $\mathcal{A}$ playing against a challenger using \textit{our scheme}, we can create an adversary $\mathcal{A}'$ playing against a challenger using the \textit{Joye-Libert scheme}, such that
 \begin{equation*}
     \mathsf{Adv}^{LCAO}(\mathcal{A}) > \eta_1(\kappa) \implies \mathsf{Adv}^{AO}(\mathcal{A}') > \eta_2(\kappa)\,,
 \end{equation*}
-for some negligible functions $\eta_1$ and $\eta_2$. (\textit{i.e.} if we assume our scheme is not LCAO secure, then the Joye-Libert scheme is not AO secure.) This is a contradiction to the Joye-Libert AO proof in \cite{joyeScalableSchemePrivacyPreserving2013}, and will thus conclude our proof.
+for some negligible functions $\eta_1$ and $\eta_2$. (\textit{i.e.} if we assume our scheme is not LCAO secure, then the Joye-Libert scheme is not AO secure.) This is a contradiction to the Joye-Libert AO proof in \cite{joyeScalableSchemePrivacyPreserving2013}, and will thus conclude our proof. The function $H$ used by our scheme is treated as a \textit{random oracle} in the Joye-Libert AO proof and will, therefore, prove our scheme secure in the random oracle model as well.
 \begin{pf}
     Consider adversary $\mathcal{A}$ playing the LCAO game defined in Section \ref{subsec:lcao}. The following is a construction of an adversary $\mathcal{A}'$ playing the AO game in Appendix \ref{app:ao} against a challenger $\mathcal{C}$ using the Joye-Libert aggregation scheme from Section \ref{subsec:joye_libert_scheme}.
     \begin{description}
@@ -541,7 +539,7 @@ for some negligible functions $\eta_1$ and $\eta_2$. (\textit{i.e.} if we assume
         \begin{equation*}
             \langle(N+1)^{\sum^m_{j=1}x^{(t^*)(b)}_{i,j}\omega^{(t^*)}_j}H(t^*)^{sk_i}\,|\,i\in U\rangle\,,
         \end{equation*}
-        for an unkonwn $b \in \{0,1\}$. Multiply series elements by $r_i^N,\,1 \leq i \leq n$ for randomly chosen $r_i \in \mathbb{Z}_N$ and return
+        for an unknown $b \in \{0,1\}$. Multiply series elements by $r_i^N,\,1 \leq i \leq n$ for randomly chosen $r_i \in \mathbb{Z}_N$ and return
         \begin{equation*}
             \langle(N+1)^{\sum^m_{j=1}x^{(t^*)(b)}_{i,j}\omega^{(t^*)}_j}r_i^N H(t^*)^{sk_i}\,|\,i\in U\rangle
         \end{equation*}
