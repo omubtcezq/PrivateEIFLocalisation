@@ -104,6 +104,20 @@ Distributed state estimation and localisation methods have become increasingly p
 
 \end{frontmatter}
 
+% 
+% 8888888          888                    
+%   888            888                    
+%   888            888                    
+%   888   88888b.  888888 888d888 .d88b.  
+%   888   888 "88b 888    888P"  d88""88b 
+%   888   888  888 888    888    888  888 
+%   888   888  888 Y88b.  888    Y88..88P 
+% 8888888 888  888  "Y888 888     "Y88P"  
+%                                         
+%                                         
+%                                         
+% 
+
 \section{Introduction}
 
 
@@ -125,6 +139,16 @@ Another example of function providing encryption, and a generalisation of privat
 
 Several of the aforementioned encryption schemes have found uses in secure localisation, estimation, and control.
 
+% 
+% ##       #### ######## 
+% ##        ##     ##    
+% ##        ##     ##    
+% ##        ##     ##    
+% ##        ##     ##    
+% ##        ##     ##    
+% ######## ####    ##    
+% 
+
 \subsection{Relevant Literature on Encrypted Localisation and Estimation}
 
 Model-free localisation using homomorphic encryption examples include polygon thing, WSN examples which protect against adversaries but in the case of the WSN paper. don't preserve anchor privacy. Importantly, model-based filtering and localisation provide more accurate estimates and these are not applicable there.
@@ -140,9 +164,33 @@ Briefly describe navigator scenario and our contributions
 Section Summary
 %In Section \ref{sec:private_localisation} we will show how this scheme can be used to compute the measurement covariance and measurement vector homomorphically at each sensor, and allow the navigator to update their 
 
-\subsection{Notation}
-Notation
+% 
+% ##    ##  #######  ########    ###    ######## ####  #######  ##    ## 
+% ###   ## ##     ##    ##      ## ##      ##     ##  ##     ## ###   ## 
+% ####  ## ##     ##    ##     ##   ##     ##     ##  ##     ## ####  ## 
+% ## ## ## ##     ##    ##    ##     ##    ##     ##  ##     ## ## ## ## 
+% ##  #### ##     ##    ##    #########    ##     ##  ##     ## ##  #### 
+% ##   ### ##     ##    ##    ##     ##    ##     ##  ##     ## ##   ### 
+% ##    ##  #######     ##    ##     ##    ##    ####  #######  ##    ## 
+% 
 
+\subsection{Notation}
+Notation. Reminder to include rounding symbol
+
+
+% 
+% 8888888b.                  888      
+% 888   Y88b                 888      
+% 888    888                 888      
+% 888   d88P 888d888 .d88b.  88888b.  
+% 8888888P"  888P"  d88""88b 888 "88b 
+% 888        888    888  888 888  888 
+% 888        888    Y88..88P 888 d88P 
+% 888        888     "Y88P"  88888P"  
+%                                     
+%                                     
+%                                     
+% 
 
 \section{Problem Statement} \label{sec:problem_statement}
 
@@ -571,12 +619,78 @@ for some negligible functions $\eta_1$ and $\eta_2$. (\textit{i.e.} if we assume
 % 
 
 \section{Private Localisation Preliminaries}
+The localisation filter we introduce requires real-valued inputs and functions, and relies on a non-linear measurement model. We make use of an existing real-number encoding scheme which supports the homomorphic operations we'll require and an algebraic reformulation of the Extended Kalman Filter which reduces the filter update step to only use these operations.
+
+% 
+% ######## ##    ##  ######   #######  ########  #### ##    ##  ######   
+% ##       ###   ## ##    ## ##     ## ##     ##  ##  ###   ## ##    ##  
+% ##       ####  ## ##       ##     ## ##     ##  ##  ####  ## ##        
+% ######   ## ## ## ##       ##     ## ##     ##  ##  ## ## ## ##   #### 
+% ##       ##  #### ##       ##     ## ##     ##  ##  ##  #### ##    ##  
+% ##       ##   ### ##    ## ##     ## ##     ##  ##  ##   ### ##    ##  
+% ######## ##    ##  ######   #######  ########  #### ##    ##  ######   
+% 
 
 \subsection{Integer Encoding for Real Numbers}
-Point out the integer range limit introduced by our scheme, $x<N$, for both the weights and the values.
+
+% TODO remove when not needed - for its simlicity, and applicability to our multiplication and bound requirements, is described in \cite{farokhiSecurePrivateControl2017}. It provides any number of homomorphic additions, and a predefined number of homomorphic multiplications.
+
+
+In the encryption scheme introduced, weights and values are limited to integer values, and operations computed $\pmod{N}$ bound meaningful inputs to $x \in \mathbb{Z}_N$ for any weight or value $x$. The encoding scheme we have used 
+
+
+
+
+The encoding scheme is defined by the quantisation parameter $f$, representing the number of bits used to quantise the fractional part of a real number, and $N$ the modulus to use for handling negative numbers.
+
+Encoding of a real number $a \in \mathbb{R}$ to an integer $e \in \mathbb{Z}$ is computed by
+\begin{equation}
+    e = \left\lfloor 2^{(m+1)f} a \right\rceil \pmod{N}\,,
+\end{equation}
+and decoding after $m$ homomorphic multiplications is computed by
+\begin{equation}
+    a = 
+    \begin{dcases}
+        \frac{e\hspace{-7pt}\pmod{N}}{2^{(m+1)f}}, &e\hspace{-7pt}\pmod{N} \leq \left\lfloor\frac{N}{2}\right\rfloor \\
+        -\frac{N - e\hspace{-7pt}\pmod{N}}{2^{(m+1)f}}, &e\hspace{-7pt}\pmod{N} > \left\lfloor\frac{N}{2}\right\rfloor \\
+    \end{dcases}\,.
+\end{equation}
+
+Note that adding encoding number to already encoded number requires the number of multiplications to be matched
+
+that for the largest number of multiplications $m$, parameters for the encoding scheme when used with our ecncryption scheme should be defined such that
+\begin{equation*}
+    something \leq something\,else
+\end{equation*}
+
+encodings grow in size exponentially for each multilpication.
+
+% 
+% ######## #### ######## 
+% ##        ##  ##       
+% ##        ##  ##       
+% ######    ##  ######   
+% ##        ##  ##       
+% ##        ##  ##       
+% ######## #### ##       
+% 
 
 \subsection{Extended Information Filter}
 
+
+% 
+% 8888888b.          d8b               888                       
+% 888   Y88b         Y8P               888                       
+% 888    888                           888                       
+% 888   d88P 888d888 888 888  888      888      .d88b.   .d8888b 
+% 8888888P"  888P"   888 888  888      888     d88""88b d88P"    
+% 888        888     888 Y88  88P      888     888  888 888      
+% 888        888     888  Y8bd8P       888     Y88..88P Y88b.    
+% 888        888     888   Y88P        88888888 "Y88P"   "Y8888P 
+%                                                                
+%                                                                
+%                                                                
+% 
 
 \section{Private Localisation with Privacy-Preserving Sensors} \label{sec:private_localisation}
 Explain it in as an overview. How is the aggregation scheme used, what does this require from the measurement model, why can this be a problem for normal distance sensors?
@@ -584,6 +698,7 @@ Explain it in as an overview. How is the aggregation scheme used, what does this
 Explain how leakage of the final aggregation sum to the navigator means leakage of the average sensor location and measurement to the navigator. This is the reason for the acceptance of this leakage, as we pointed out in the problem statement section.
 
 \subsection{Requirements for Measurement Model}
+Must be such that Jacobian consists of linear combinations of state-related variables
 
 \subsection{Localisation Measurement Modification}
 Show here the weighted integrals that give mean and variance of the new noise. If wanting to show more working, do this in the appendix section, but probably not needed.
@@ -618,6 +733,20 @@ Give the algorithm as pseudocode (including encoding and encryption)
 % \end{algorithm}
 
 
+% 
+% 8888888b.                            888 888             
+% 888   Y88b                           888 888             
+% 888    888                           888 888             
+% 888   d88P .d88b.  .d8888b  888  888 888 888888 .d8888b  
+% 8888888P" d8P  Y8b 88K      888  888 888 888    88K      
+% 888 T88b  88888888 "Y8888b. 888  888 888 888    "Y8888b. 
+% 888  T88b Y8b.          X88 Y88b 888 888 Y88b.       X88 
+% 888   T88b "Y8888   88888P'  "Y88888 888  "Y888  88888P' 
+%                                                          
+%                                                          
+%                                                          
+% 
+
 \section{Results}
 Time results can be captured in one graph. Y-axis is time, X-axis is the number of sensors, each line (different colour) will show how the runtime changes as sensors are increased for different Paillier bit-sizes (at least 3: 512, 1024, 2048). Every data point should be the average over some X number of simulations.
 
@@ -630,6 +759,20 @@ Plot 2 will plot the RMSE as the average distance of sensors changes. Fixed enco
 Plot 3 will accompany plot 3 and display the 4 layouts (arrow for ground truth and points for the sensors).
 
 A well-defined example.
+
+% 
+%  .d8888b.                             
+% d88P  Y88b                            
+% 888    888                            
+% 888         .d88b.  88888b.   .d8888b 
+% 888        d88""88b 888 "88b d88P"    
+% 888    888 888  888 888  888 888      
+% Y88b  d88P Y88..88P 888  888 Y88b.    
+%  "Y8888P"   "Y88P"  888  888  "Y8888P 
+%                                       
+%                                       
+%                                       
+% 
 
 \section{Conclusion}
 Possible future work to consider writing here:
