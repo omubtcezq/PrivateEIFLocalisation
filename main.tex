@@ -56,12 +56,8 @@
 \usepackage{tikz}
 %\usepackage{microtype}
 
-
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}
-
-\theoremstyle{remark}
-\newtheorem{remark}{Remark}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
 
 \begin{document}
 
@@ -238,17 +234,17 @@ When defining our system security requirements and encryption scheme, we will re
 
 \subsection{Security Notions}
 The security of a cryptographic scheme is typically defined by a security \textit{game}, which captures both the desired privacy guarantees, as well as the capabilities of attackers \cite{katzIntroductionModernCryptography2008}. The typical security notion for a homomorphic encryption scheme is Indistinguishability under Chosen Plaintext Attack (IND-CPA) \cite{chaseSecurityHomomorphicEncryption2017}. 
-\begin{definition}
+\begin{defn}
 An encryption scheme meets IND-CPA security if an attacker who can choose plaintext messages to be encrypted at will, gains no additional information about an unknown plaintext message when they learn only its encryption. 
 
 The formal security game for IND-CPA has been given in Appendix \ref{app:ind_cpa}.
-\end{definition}
+\end{defn}
 Private aggregation schemes aim for the security notion of Aggregator Obliviousness (AO) \cite{shiPrivacyPreservingAggregationTimeSeries2011}. 
-\begin{definition}
+\begin{defn}
 An encryption scheme meets AO security if no colluding subset of participants \textit{excluding} the aggregator gains additional information about the remaining aggregation values given only their encryptions, while any colluding subset \textit{including} the aggregator learns only their sum. 
 
 The formal security game for AO has been given in Appendix \ref{app:ao}.
-\end{definition}
+\end{defn}
 
 % 
 % ########     ###    #### ##       ##       #### ######## ########  
@@ -401,9 +397,9 @@ To perform the protocol from Figure \ref{fig:agg_steps} in a secure manner, we m
     \item[Private Linear Combination Aggregation] No colluding subset \textit{excluding} the aggregator gains additional information about the remaining sensor values to be weighted $x^{(t)}_{i,j},\,0\leq j\leq m$, where sensor $i$ is not colluding, given only encryptions of their linear combinations $y_i$ from the current and previous timesteps. Any colluding subset \textit{including} the aggregator learns only the sum of all linear combinations weighted by weights of their choice, $\sum^n_{i=n}\sum^m_{j=1}x^{(t)}_{i,j}\omega^{(t)}_j$.
 \end{description}
 
-\begin{remark}
+\begin{rem}
     The notion of a leakage function including parameters from the aggregator requires extra care to be taken when giving its definition. Since an attacker may compromise the aggregator, they have control over the choice of these parameters, and therefore over the leakage function. We note that in the leakage function above, $\sum^n_{i=n}\sum^m_{j=1}x^{(t)}_{i,j}\omega^{(t)}_j$, an individual sum weighted by the same weight may be learned by the colluding subset, \textit{e.g.} $\sum^m_{j=1}x^{(t)}_{1,j}$ given weights $(1,0,\dots,0)$, but that individual sensor values $x^{(t)}_{i,j}$ remain private due to the requirement that all sensors receive the same weights.
-\end{remark}
+\end{rem}
 
 From the informal definitions above, it is clear that weights encrypted by an IND-CPA secure encryption scheme are sufficient for the first requirement, while a scheme satisfying AO is not sufficient for the second. To formalise the second requirement, we define a novel encryption type ``Linear-Combination Aggregator Oblivious Encryption'' and an accompanying security game, which capture the additional weights and modified leakage of AO.
 
@@ -465,9 +461,9 @@ Next, we formalise the security notion of Linear-Combination Aggregator Obliviou
     \end{equation*} 
 \end{description}
 
-\begin{definition}
+\begin{defn}
     An encryption scheme meets LCAO security if no adversary, running in probabilistic-time with respect to security parameter, has more than a negligible advantage in winning the above security game. Probabilities are taken over randomness introduced by $\mathcal{A}$, and in $\mathsf{Setup}$, $\mathsf{Enc}$ and $\mathsf{CombEnc}$.
-\end{definition}
+\end{defn}
 
 In the next section, we will give a solution to an encryption scheme meeting LCAO security, with IND-CPA secure weight encryption, and give a cryptographic proof for its security.
 
@@ -499,7 +495,7 @@ Our scheme is based on the Paillier and Joye-Libert schemes introduced in Sectio
 
     \item[$\mathsf{CombEnc}(t, pk_0, sk_i, \mathcal{E}_{pk_0}(\omega_1^{(t)}),\dots,\mathcal{E}_{pk_0}(\omega_m^{(t)}), x^{(t)}_{i,1},\dots,x^{(t)}_{i,m})$] The linear combination encryption step at time $t$ is computed as 
     \begin{equation}
-        y^{(t)}_i = H(t)^{sk_i}\prod^{m}_{j=1}\mathcal{E}_{pk_0}(\omega^{(t)}_j)^{x^{(t)}_{i,j}} \pmod{N^2}\,,
+        y^{(t)}_i = H(t)^{sk_i}\prod^{m}_{j=1}\mathcal{E}_{pk_0}(\omega^{(t)}_j)^{x^{(t)}_{i,j}} \pmod{N^2}\,,\label{eqn:our_scheme_lin_comb}
     \end{equation}
     and makes use of the homomorphic property \eqref{eqn:paillier_hom_mult}. Correctness follows from
     \begin{equation*}
@@ -619,7 +615,7 @@ for some negligible functions $\eta_1$ and $\eta_2$. (\textit{i.e.} if we assume
 % 
 
 \section{Private Localisation Preliminaries}
-The localisation filter we introduce requires real-valued inputs and functions, and relies on a non-linear measurement model. We make use of an existing real-number encoding scheme which supports the homomorphic operations we'll require and an algebraic reformulation of the Extended Kalman Filter which reduces the filter update step to only use these operations.
+The localisation filter we introduce requires real-valued inputs and functions, and relies on a non-linear measurement model. We make use of a real-number encoding scheme which supports the required homomorphic operations and an algebraic reformulation of the Extended Kalman Filter which reduces the filter update step to use only these operations.
 
 % 
 % ######## ##    ##  ######   #######  ########  #### ##    ##  ######   
@@ -636,34 +632,48 @@ The localisation filter we introduce requires real-valued inputs and functions, 
 % TODO remove when not needed - for its simlicity, and applicability to our multiplication and bound requirements, is described in \cite{farokhiSecurePrivateControl2017}. It provides any number of homomorphic additions, and a predefined number of homomorphic multiplications.
 
 
-In the encryption scheme introduced, weights and values are limited to integer values, and operations computed $\pmod{N}$ bound meaningful inputs to $x \in \mathbb{Z}_N$ for any weight or value $x$. The encoding scheme we have used 
+In the encryption scheme introduced, weights and values are restricted to integers and all operations are computed $\pmod{N}$, thus bounding meaningful inputs to $\{x : x \in \mathbb{Z}_N\}$. For this reason, a quantisation and integer mapping method for real numbers is required for their encryption and homomorphic processing. We quantise with a generalised Q number format \cite{oberstarFixedPointRepresentationFractional2007} due to implementation simplicity and applicability.
 
-
-
-
-The encoding scheme is defined by the quantisation parameter $f$, representing the number of bits used to quantise the fractional part of a real number, and $N$ the modulus to use for handling negative numbers.
-
-Encoding of a real number $a \in \mathbb{R}$ to an integer $e \in \mathbb{Z}$ is computed by
-\begin{equation}
-    e = \left\lfloor 2^{(m+1)f} a \right\rceil \pmod{N}\,,
-\end{equation}
-and decoding after $m$ homomorphic multiplications is computed by
-\begin{equation}
-    a = 
-    \begin{dcases}
-        \frac{e\hspace{-7pt}\pmod{N}}{2^{(m+1)f}}, &e\hspace{-7pt}\pmod{N} \leq \left\lfloor\frac{N}{2}\right\rfloor \\
-        -\frac{N - e\hspace{-7pt}\pmod{N}}{2^{(m+1)f}}, &e\hspace{-7pt}\pmod{N} > \left\lfloor\frac{N}{2}\right\rfloor \\
-    \end{dcases}\,.
-\end{equation}
-
-Note that adding encoding number to already encoded number requires the number of multiplications to be matched
-
-that for the largest number of multiplications $m$, parameters for the encoding scheme when used with our ecncryption scheme should be defined such that
+We define a subset of rational numbers in terms of a range $r \in \mathbb{N}$ and fractional precision $f \in \mathbb{N}$. This contrasts with the common definition given in terms of total bits $a$ and fractional bits $b$ \cite{oberstarFixedPointRepresentationFractional2007,schulzedarupEncryptedCooperativeControl2019,farokhiSecurePrivateControl2017}, but allows for a direct mapping to integer ranges which are not powers of two. Rational subset $\mathbb{Q}_{r,f}$ is given by
 \begin{equation*}
-    something \leq something\,else
+    \mathbb{Q}_{r,f} = \left\{q : f^{-1} | q \wedge -\left\lfloor\frac{r}{2}\right\rfloor \leq q < \left\lfloor\frac{r}{2}\right\rfloor \right\}\,,
 \end{equation*}
+and we quantise any real number $x$ by taking the nearest rational $q \in \mathbb{Q}_{r,f}$. That is, $\argmin_{q\in\mathbb{Q}_{r,f}} |x-q|$. In this form, mapping rationals $\mathbb{Q}_{r,f}$ to the encryption scheme range $\mathbb{Z}_N$ is achieved by choosing $r=N$, and handling negatives with modulo arithmetic. In addition, we note that the Q number format requires a precision factor $f$ to be removed after each encoded multiplication, which is not supported by our encryption scheme. This is captured by a third parameter $m$; the number of \textit{additional} multiplication factors to add or remove from encodings.
 
-encodings grow in size exponentially for each multilpication.
+The combined quantisation and encoding function $\mathsf{E}_{r,f,m}(x)$ of a given a real number $x \in \mathbb{R}$, integer range $\mathbb{Z}_N$, and the desired scaling for $m$ prior encoded multiplications, is given by
+\begin{equation}
+    \mathsf{E}_{N,f,m}(x) = \left\lfloor f^{m+1} x \right\rceil \pmod{N}\,. \label{eqn:encode}
+\end{equation}
+Decoding of integer $e \in \mathbb{Z}_N$, is given by
+\begin{equation}
+    \mathsf{E}^{-1}_{N,f,m}(e) \!=\! 
+    \begin{dcases}
+        \frac{e\hspace{-8pt}\pmod{N}}{f^{m+1}}, &e\hspace{-8pt}\pmod{N} \leq \left\lfloor\frac{N}{2}\right\rfloor \\
+        -\frac{N - e\hspace{-8pt}\pmod{N}}{f^{m+1}}, &\text{otherwise} \\
+    \end{dcases}.
+\end{equation}
+
+This encoding scheme provides the following homomorphic operations,
+\begin{equation}
+    \begin{split}
+        \mathsf{E}_{N,f,m}(a_1) + \mathsf{E}_{N,f,m}(a_2)& \pmod{N} =\\
+        &\mathsf{E}_{N,f,m}(a_1+a_2)
+    \end{split}
+\end{equation}
+and
+\begin{equation}
+    \begin{split}
+        \mathsf{E}_{N,f,m}(a_1)\mathsf{E}_{N,f,m}(a_2)& \pmod{N} =\\
+        &\mathsf{E}_{N,f,m+1}(a_1a_2)\,,
+    \end{split}
+\end{equation}
+noting that the modulus corresponds with the encrypted homomorphic operations in \eqref{eqn:our_scheme_lin_comb}.
+
+The choice of a high fractional precision $f$ may reduce quantisation erros introduced in \eqref{eqn:encode}, however, risks an overflow following too many multiplications. Given the largest number of expected multiplications $m_{max}$, and the largest expected decoded value $x$, the parameter should be chosen such that the following condition holds
+\begin{equation*}
+    \left|f^{m_{max}+1}x\right| < \left\lfloor \frac{N}{2} \right\rfloor\,.
+\end{equation*}
+In practice, $N$ is typicaly very large ($N>2^{1024}$) and this condition can be ignored.
 
 % 
 % ######## #### ######## 
