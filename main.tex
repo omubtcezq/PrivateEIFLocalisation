@@ -715,6 +715,16 @@ Using the EIF and distance sensors, we see that the required computation of meas
 
 We wish to encrypt current state information and use the encryption scheme defined to compute measurement information $H^\top R^{-1}(z - h(x) + Hx)$ and $H^\top R^{-1}H$ as a linear combination of state information, and encrypt it for aggregation. Thus allowing the navigator to only learn sums $\sum^n_{i=1}H^\top R^{-1}_i(z_i - h(x) + Hx)$ and $\sum^n_{i=1}H^\top R_i^{-1}H$ and update its position.
 
+% 
+% ##     ##   ###    ##     ##    ###      ########  ########  #######   ######  
+% ##     ##  ##       ##   ##       ##     ##     ## ##       ##     ## ##    ## 
+% ##     ## ##         ## ##         ##    ##     ## ##       ##     ## ##       
+% ######### ##          ###          ##    ########  ######   ##     ##  ######  
+% ##     ## ##         ## ##         ##    ##   ##   ##       ##  ## ##       ## 
+% ##     ##  ##       ##   ##       ##     ##    ##  ##       ##    ##  ##    ## 
+% ##     ##   ###    ##     ##    ###      ##     ## ########  ##### ##  ######  
+% 
+
 \subsection{Requirements for Measurement Model}
 % Must be such that Jacobian consists of linear combinations of state-related variables
 
@@ -730,7 +740,17 @@ and can therefore be considered as a linear combination of all elements $a_{i,m}
 
 Next, we show how this can be achieved for the specific case of 2-dimensional localisation, with range-only sensors.
 
-\subsection{Localisation Measurement Modification}
+% 
+%  #######  ########   ######     ##     ##  #######  ########  ######## ##       
+% ##     ## ##     ## ##    ##    ###   ### ##     ## ##     ## ##       ##       
+% ##     ## ##     ## ##          #### #### ##     ## ##     ## ##       ##       
+% ##     ## ########   ######     ## ### ## ##     ## ##     ## ######   ##       
+% ##     ## ##     ##       ##    ##     ## ##     ## ##     ## ##       ##       
+% ##     ## ##     ## ##    ##    ##     ## ##     ## ##     ## ##       ##       
+%  #######  ########   ######     ##     ##  #######  ########  ######## ######## 
+% 
+
+\subsection{Localisation Measurement Model}
 % Show here the weighted integrals that give mean and variance of the new noise. If wanting to show more working, do this in the appendix section, but probably not needed.
 
 % Point out here that the further away the sensor is when it makes its distance measurement (the larger the measurement) the more Gaussian the noise and the better the filter. Give flight navigation as an applicable example with typically high distances.
@@ -754,23 +774,7 @@ The Jacobian $H$ for the measurement function above at $x_{loc,0}=(x_0, y_0)$ is
 \end{equation*}
 The problem with the above function $h$ and Jacobian $H$ is that they cannot be reformulated as a linear combination of weights, where weights are defined by functions of $x$ and $y$, and do not include $s_x$ and $s_y$.
 
-Our proposed solution to this problem, is squaring sensor measurements used for the filter.
-\begin{equation*}
-    \begin{split}
-        z^2 &= (h(x) + n)^2 \\
-        &= h(x)^2 + 2nh(x) + n^2
-    \end{split}\,,
-\end{equation*}
-where noise term $2nh(x) + n^2$ has mean $\sigma^2$ and standard deviation $2(2h(x)^2\sigma^2 + \sigma^4)$. We account for the non-zero mean by offsetting the the squared measurement and taking this as the adjust measurement model $h'(x) = h(x)^2$, and
-\begin{equation*}
-    \begin{split}
-        z' &= h'(x) + 2nh(x) + n^2 - \sigma^2 \\
-        &= h'(x) + n'
-    \end{split}\,,
-\end{equation*}
-with variance approximated as $2(2z^2\sigma^2 + \sigma^4)$, which uses the original measurement $z$ as an unbiased estimate for $h(x)$.
-
-While the above transformation provides a measurement model that no longer has Gaussian noise, it allows for the linear formulation required for the encryption scheme, and privacy of $H^{\prime\top} R^{\prime -1}(z' - h(x) + Hx)$ and $H^{\prime\top} R^{\prime -1}H'$. The adjusted measurement function is now given by
+Our proposed solution to this problem, is working with the adjust measurement function $h'(x) = h(x)^2$. The method for modifying a normal range-sensor measurment in this way and handling the no-longer Gaussian, distance-dependant variance of the measurement noise, will be discussed in Section \ref{subsec:range_measurement_mod}. While this transformation complicated the measurement model noise, it allows for the linear formulation required for the encryption scheme, and the privacy of $H^{\prime\top} R^{\prime -1}(z' - h(x) + Hx)$ and $H^{\prime\top} R^{\prime -1}H'$. The adjusted measurement function is now given by
 \begin{equation*}
     \begin{split}
         h'(x) &= \left(\|x_{loc} - s_{loc}\|\right)^2 \\
@@ -803,12 +807,50 @@ and
     \end{bmatrix}\,.
 \end{equation*}
 
-The above formulation allows the use of our encryption scheme given to privately aggregate measurement matrix and vector above. Scheme encrypted weights $x$, $x^2$, $x^3$, $y$, $xy$, $x^2y$, $y^2$, $xy^2$ and $y^3$ are computed at each time step at the navigator, and each element of the measurement matrix and vector above is computed as a linear combination and prepared for aggregation at the navigator. 
+The above formulation allows the application of our encryption scheme to the private aggregation of the measurement matrix and vector above. The scheme's encrypted weights $x$, $x^2$, $x^3$, $y$, $xy$, $x^2y$, $y^2$, $xy^2$ and $y^3$ are computed at each time step by the navigator, and each element of the measurement matrix and vector above is computed as a linear combination and prepared for aggregation by the sensors. 
 
 Lastly, since we aggregate multiple linear combinations at each time step (each element in the result matrix and vector comes from a seperate aggregation), we require unique hash values for each aggregation. This is handled by hashing $t \| i \| j$ rather than $t$ for each element $x_{i,j}$ when computing combined aggregation encryption in \eqref{eqn:our_scheme_lin_comb}.
 
-% Maybe name the scheme? That would be in the heading here
+% 
+%  ######   #######  ##     ##    ###    ########  ######## ########     ######## 
+% ##    ## ##     ## ##     ##   ## ##   ##     ## ##       ##     ##         ##  
+% ##       ##     ## ##     ##  ##   ##  ##     ## ##       ##     ##        ##   
+%  ######  ##     ## ##     ## ##     ## ########  ######   ##     ##       ##    
+%       ## ##  ## ## ##     ## ######### ##   ##   ##       ##     ##      ##     
+% ##    ## ##    ##  ##     ## ##     ## ##    ##  ##       ##     ##     ##      
+%  ######   ##### ##  #######  ##     ## ##     ## ######## ########     ######## 
+% 
+
+\subsection{Range Measurement Modification} \label{subsec:range_measurement_mod}
+The conversion of measurement function $h'(x) = h(x)^2$ is in practice complicated by gausian nature of the range sensor measurement noise. As we only know $z = h(x) + n$, where $n~\mathcal{N}(0,\sigma)$, we can estimate the new measurement $z'= z^2$. This results in the new measurement
+\begin{equation*}
+    \begin{split}
+        z^2 &= (h(x) + n)^2 \\
+        &= h(x)^2 + 2nh(x) + n^2 \\
+        &= h'(x) + 2nh(x) + n^2
+    \end{split}\,,
+\end{equation*}
+where noise term $2nh(x) + n^2$ has mean $\sigma^2$ and standard deviation $2(2h(x)^2\sigma^2 + \sigma^4)$. We account for the non-zero mean by offsetting the the squared measurement and taking this as the adjusted measurement model
+\begin{equation*}
+    \begin{split}
+        z' &= h'(x) + 2nh(x) + n^2 - \sigma^2 \\
+        &= h'(x) + n'
+    \end{split}\,,
+\end{equation*}
+with variance of $n'$ approximated as $2(2z^2\sigma^2 + \sigma^4)$, by using the original measurement $z$ as an unbiased estimate for $h(x)$.
+
+% 
+%    ###    ##        ######    #######  ########  #### ######## ##     ## ##     ## 
+%   ## ##   ##       ##    ##  ##     ## ##     ##  ##     ##    ##     ## ###   ### 
+%  ##   ##  ##       ##        ##     ## ##     ##  ##     ##    ##     ## #### #### 
+% ##     ## ##       ##   #### ##     ## ########   ##     ##    ######### ## ### ## 
+% ######### ##       ##    ##  ##     ## ##   ##    ##     ##    ##     ## ##     ## 
+% ##     ## ##       ##    ##  ##     ## ##    ##   ##     ##    ##     ## ##     ## 
+% ##     ## ########  ######    #######  ##     ## ####    ##    ##     ## ##     ## 
+% 
+
 \subsection{Algorithm}
+% Maybe name the scheme? That would be in the heading here
 Piece together the whole algorithm here.
 Give the algorithm as pseudocode (including encoding and encryption, possible as separate procedures)
 
@@ -826,6 +868,17 @@ Give the algorithm as pseudocode (including encoding and encryption, possible as
 %         \EndProcedure
 %     \end{algorithmic}
 % \end{algorithm}
+
+% 
+% ##       ########    ###    ##    ##    ###     ######   ######## 
+% ##       ##         ## ##   ##   ##    ## ##   ##    ##  ##       
+% ##       ##        ##   ##  ##  ##    ##   ##  ##        ##       
+% ##       ######   ##     ## #####    ##     ## ##   #### ######   
+% ##       ##       ######### ##  ##   ######### ##    ##  ##       
+% ##       ##       ##     ## ##   ##  ##     ## ##    ##  ##       
+% ######## ######## ##     ## ##    ## ##     ##  ######   ######## 
+% 
+
 \subsection{Leakage}
 We recall the assumptions made in problem formulation and our encryption scheme, and the allowed leakage of the encryption scheme. Sensors are honest but curious, meaning sensor values cannot be modified from what is measured, and the protocol is followed exactly, and that the navigator sends the same state information to all sensors at each time step. This is justified to an extent with wireless broadcasting being received by all sensors in a typical localisation setting.
 
