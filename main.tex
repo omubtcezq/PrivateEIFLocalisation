@@ -171,7 +171,7 @@ Section Summary
 % 
 
 \subsection{Notation}
-Notation. Reminder to include rounding symbol
+Notation. Reminder to include symbols for: rounding, concatenation, ``divides''
 
 
 % 
@@ -628,10 +628,6 @@ The localisation filter we introduce requires real-valued inputs and functions, 
 % 
 
 \subsection{Integer Encoding for Real Numbers}
-
-% TODO remove when not needed - for its simlicity, and applicability to our multiplication and bound requirements, is described in \cite{farokhiSecurePrivateControl2017}. It provides any number of homomorphic additions, and a predefined number of homomorphic multiplications.
-
-
 In the encryption scheme introduced, weights and values are restricted to integers and all operations are computed $\pmod{N}$, thus bounding meaningful inputs to $\{x : x \in \mathbb{Z}_N\}$. For this reason, a quantisation and integer mapping method for real numbers is required for their encryption and homomorphic processing. We quantise with a generalised Q number format \cite{oberstarFixedPointRepresentationFractional2007} due to implementation simplicity and applicability.
 
 We define a subset of rational numbers in terms of a range $r \in \mathbb{N}$ and fractional precision $f \in \mathbb{N}$. This contrasts with the common definition given in terms of total bits $a$ and fractional bits $b$ \cite{oberstarFixedPointRepresentationFractional2007,schulzedarupEncryptedCooperativeControl2019,farokhiSecurePrivateControl2017}, but allows for a direct mapping to integer ranges which are not powers of two. Rational subset $\mathbb{Q}_{r,f}$ is given by
@@ -644,7 +640,7 @@ The combined quantisation and encoding function $\mathsf{E}_{r,f,m}(x)$ of a giv
 \begin{equation}
     \mathsf{E}_{N,f,m}(x) = \left\lfloor f^{m+1} x \right\rceil \pmod{N}\,. \label{eqn:encode}
 \end{equation}
-Decoding of integer $e \in \mathbb{Z}_N$, is given by
+Decoding of an integer $e \in \mathbb{Z}_N$, is given by
 \begin{equation}
     \mathsf{E}^{-1}_{N,f,m}(e) \!=\! 
     \begin{dcases}
@@ -669,11 +665,11 @@ and
 \end{equation}
 noting that the modulus corresponds with the encrypted homomorphic operations in \eqref{eqn:our_scheme_lin_comb}.
 
-The choice of a high fractional precision $f$ may reduce quantisation erros introduced in \eqref{eqn:encode}, however, risks an overflow following too many multiplications. Given the largest number of expected multiplications $m_{max}$, and the largest expected decoded value $x$, the parameter should be chosen such that the following condition holds
+The choice of a high fractional precision $f$ may reduce quantisation errors introduced in \eqref{eqn:encode}, however, risks an overflow following too many multiplications. Given the largest number of expected multiplications $m_{max}$, and the largest expected decoded value $x$, the parameter should be chosen such that the following condition holds
 \begin{equation*}
     \left|f^{m_{max}+1}x\right| < \left\lfloor \frac{N}{2} \right\rfloor\,.
 \end{equation*}
-In practice, $N$ is typicaly very large ($N>2^{1024}$) and this condition can be ignored.
+In practice, $N$ is typically very large ($N>2^{1024}$) and this condition can be ignored.
 
 % 
 % ######## #### ######## 
@@ -686,6 +682,14 @@ In practice, $N$ is typicaly very large ($N>2^{1024}$) and this condition can be
 % 
 
 \subsection{Extended Information Filter}
+EIF is a reformulation of the EKF where the update step is reduced to sums. Makes it especially easier for processing multiple measurements.
+
+Prediction step can be computed in either the EIF form or the equivalent EKF state and covariance can be computed and the prediction computed normally
+
+% The Extended Information Filter (EIF) is an algebraic reformulation of the Extended Kalman Filter (EKF) such that the update step is reduced to a simple summation. Given process and measurement models \eqref{} and \eqref{}, the EIF update equation is given by
+% \begin{equation}
+%     a
+% \end{equation}
 
 
 % 
@@ -703,29 +707,110 @@ In practice, $N$ is typicaly very large ($N>2^{1024}$) and this condition can be
 % 
 
 \section{Private Localisation with Privacy-Preserving Sensors} \label{sec:private_localisation}
-Explain it in as an overview. How is the aggregation scheme used, what does this require from the measurement model, why can this be a problem for normal distance sensors?
+% Explain it in as an overview. How is the aggregation scheme used, what does this require from the measurement model, why can this be a problem for normal distance sensors?
 
-Explain how leakage of the final aggregation sum to the navigator means leakage of the average sensor location and measurement to the navigator. This is the reason for the acceptance of this leakage, as we pointed out in the problem statement section.
+% Explain how leakage of the final aggregation sum to the navigator means leakage of the average sensor location and measurement to the navigator. This is the reason for the acceptance of this leakage, as we pointed out in the problem statement section.
+
+Using the EIF and distance sensors, we see that the required computation of measurement vector and matrices is reduced to computing $H^\top R^{-1}(z - h(x) + Hx)$ and $H^\top R^{-1}H$, for one-dimensional $R$ and jacobian $H$, at each sensor. As this is requires current state information $x$, relevant attributes need to be sent to the sensors. 
+
+We wish to encrypt current state information and use the encryption scheme defined to compute measurement information $H^\top R^{-1}(z - h(x) + Hx)$ and $H^\top R^{-1}H$ as a linear combination of state information, and encrypt it for aggregation. Thus allowing the navigator to only learn sums $\sum^n_{i=1}H^\top R^{-1}_i(z_i - h(x) + Hx)$ and $\sum^n_{i=1}H^\top R_i^{-1}H$ and update its position.
 
 \subsection{Requirements for Measurement Model}
-Must be such that Jacobian consists of linear combinations of state-related variables
+% Must be such that Jacobian consists of linear combinations of state-related variables
+
+The requirement introduced above, is that $H^\top R^{-1}(z - h(x) + Hx)$ and $H^\top R^{-1}H$ can be computed as linear combinations of state-derived variables. Here $H$ is a Jacobian and includes current state information as well.
+
+State-derived variables refer to state vector elements, as well as non-linear functions of these elements, which do not require sensor position or measurement information to be computed. As our encryption scheme described above, only supports linear combinations of weights, in this case state-derived variables, all non-linear functions required for measurements information to be computed, need to be treated as individual weights to be combined.
+
+From the definition of matrix multiplication, we see that any $KxL$ matrix $D=ABC$, where $B$ has dimensions $MxN$, has element $d_{i,j}$ defined by
+\begin{equation*}
+    d_{i,j} = \sum^{N}_{n=1}\sum^{M}_{m=1}a_{i,m}b_{m,n}c_{n,j}\,,
+\end{equation*}
+and can therefore be considered as a linear combination of all elements $a_{i,m}c_{n,j}$. Applying this to the measurement matrix and vector $H^\top R^{-1}(z - h(x) + Hx)$ and $H^\top R^{-1}H$, we require that all values of $h(x)$, and all elements in Jacobian $H$ be linear combinations of state-derived variables
+
+Next, we show how this can be achieved for the specific case of 2-dimensional localisation, with range-only sensors.
 
 \subsection{Localisation Measurement Modification}
-Show here the weighted integrals that give mean and variance of the new noise. If wanting to show more working, do this in the appendix section, but probably not needed.
+% Show here the weighted integrals that give mean and variance of the new noise. If wanting to show more working, do this in the appendix section, but probably not needed.
 
-Point out here that the further away the sensor is when it makes its distance measurement (the larger the measurement) the more Gaussian the noise and the better the filter. Give flight navigation as an applicable example with typically high distances.
+% Point out here that the further away the sensor is when it makes its distance measurement (the larger the measurement) the more Gaussian the noise and the better the filter. Give flight navigation as an applicable example with typically high distances.
 
-Additionally increased range accuracy may be possible when sensors know the process model of the navigator, allowing them to run their own filter (more accurate than only measurements but not as accurate as the navigator's estimate from multiple sensors) and use their filtered estimated distance as the scaling factor when computing the modified measurement variance.
+% Additionally increased range accuracy may be possible when sensors know the process model of the navigator, allowing them to run their own filter (more accurate than only measurements but not as accurate as the navigator's estimate from multiple sensors) and use their filtered estimated distance as the scaling factor when computing the modified measurement variance.
 
-\subsection{Expanding Aggregation for Multi-dimensional Inputs}
-Give 1D example that's intuitive (with $a^2b$) and then reduce the equivalent ND case ($A^\top BA$) to a set of weighted sums.
+From our problem statements in Section $\cdot$, we specify the goal of private localisation in the 2-dimensional case, using range-only sensors. Given the current location estimate $x_{loc} = (x,y)$, which may comprise only part of the filter state estimate, and sensor location $s_{loc} = (s_x, s_y)$, the measurement equation is given by
+\begin{equation*}
+    \begin{split}
+        h(x) &= \|x_{loc} - s_{loc}\| \\
+        &= \sqrt{(x - s_x)^2 + (y - s_y)^2}\,.
+    \end{split}
+\end{equation*}
+The Jacobian $H$ for the measurement function above at $x_{loc,0}=(x_0, y_0)$ is then given by
+\begin{equation*}
+    H = 
+    \begin{bmatrix}
+        a & b \\
+        c & d
+    \end{bmatrix}\,.
+\end{equation*}
+The problem with the above function $h$ and Jacobian $H$ is that they cannot be reformulated as a linear combination of weights, where weights are defined by functions of $x$ and $y$, and do not include $s_x$ and $s_y$.
 
-Ensure that timestamps are concatenated with the position so that no aggregation values are blinded by the same noise.
+Our proposed solution to this problem, is squaring sensor measurements used for the filter.
+\begin{equation*}
+    \begin{split}
+        z^2 &= (h(x) + n)^2 \\
+        &= h(x)^2 + 2nh(x) + n^2
+    \end{split}\,,
+\end{equation*}
+where noise term $2nh(x) + n^2$ has mean $\sigma^2$ and standard deviation $2(2h(x)^2\sigma^2 + \sigma^4)$. We account for the non-zero mean by offsetting the the squared measurement and taking this as the adjust measurement model $h'(x) = h(x)^2$, and
+\begin{equation*}
+    \begin{split}
+        z' &= h'(x) + 2nh(x) + n^2 - \sigma^2 \\
+        &= h'(x) + n'
+    \end{split}\,,
+\end{equation*}
+with variance approximated as $2(2z^2\sigma^2 + \sigma^4)$, which uses the original measurement $z$ as an unbiased estimate for $h(x)$.
+
+While the above transformation provides a measurement model that no longer has Gaussian noise, it allows for the linear formulation required for the encryption scheme, and privacy of $H^{\prime\top} R^{\prime -1}(z' - h(x) + Hx)$ and $H^{\prime\top} R^{\prime -1}H'$. The adjusted measurement function is now given by
+\begin{equation*}
+    \begin{split}
+        h'(x) &= \left(\|x_{loc} - s_{loc}\|\right)^2 \\
+        &= (x - s_x)^2 + (y - s_y)^2 \\
+        &= x^2 + y^2 -2s_xx -2s_yy +s_x^2 +s_y^2
+    \end{split}\,,
+\end{equation*}
+and Jacobian $H'$ by
+\begin{equation*}
+    H' = 
+    \begin{bmatrix}
+        a & b \\
+        c & d
+    \end{bmatrix}\,.
+\end{equation*}
+The above function and jacobian elements are linear combinations of state-derived functions $x$, $x^2$, $y$, $xy$ and $y^2$. From our equation $\cdot$ in the previous section, we can now define $H^{\prime\top} R^{\prime -1}(z' - h(x) + Hx)$ and $H^{\prime\top} R^{\prime -1}H'$ in terms of state-derived functions $x$, $x^2$, $x^3$, $y$, $xy$, $x^2y$, $y^2$, $xy^2$ and $y^3$.
+\begin{equation*}
+    H^{\prime\top} R^{\prime -1}(z' - h(x) + Hx) = 
+    \begin{bmatrix}
+        a \\
+        b
+    \end{bmatrix}
+\end{equation*}
+and
+\begin{equation*}
+    H^{\prime\top} R^{\prime -1}H' = 
+    \begin{bmatrix}
+        a & b \\
+        c & d
+    \end{bmatrix}\,.
+\end{equation*}
+
+The above formulation allows the use of our encryption scheme given to privately aggregate measurement matrix and vector above. Scheme encrypted weights $x$, $x^2$, $x^3$, $y$, $xy$, $x^2y$, $y^2$, $xy^2$ and $y^3$ are computed at each time step at the navigator, and each element of the measurement matrix and vector above is computed as a linear combination and prepared for aggregation at the navigator. 
+
+Lastly, since we aggregate multiple linear combinations at each time step (each element in the result matrix and vector comes from a seperate aggregation), we require unique hash values for each aggregation. This is handled by hashing $t \| i \| j$ rather than $t$ for each element $x_{i,j}$ when computing combined aggregation encryption in \eqref{eqn:our_scheme_lin_comb}.
 
 % Maybe name the scheme? That would be in the heading here
 \subsection{Algorithm}
 Piece together the whole algorithm here.
-Give the algorithm as pseudocode (including encoding and encryption)
+Give the algorithm as pseudocode (including encoding and encryption, possible as separate procedures)
 
 
 
@@ -741,6 +826,14 @@ Give the algorithm as pseudocode (including encoding and encryption)
 %         \EndProcedure
 %     \end{algorithmic}
 % \end{algorithm}
+\subsection{Leakage}
+We recall the assumptions made in problem formulation and our encryption scheme, and the allowed leakage of the encryption scheme. Sensors are honest but curious, meaning sensor values cannot be modified from what is measured, and the protocol is followed exactly, and that the navigator sends the same state information to all sensors at each time step. This is justified to an extent with wireless broadcasting being received by all sensors in a typical localisation setting.
+
+From the above restrictions, sensors learn only their measurements $x_i$, and the navigator learns only the sums $\sum^n_{i=1}H^\top R^{-1}_i(z_i - h(x) + Hx)$ and $\sum^n_{i=1}H^\top R_i^{-1}H$.
+
+For malicious subsets not including the navigator, it is clear that they learn nothing more about the navigator location than what they can deduce given only their own measurements.
+
+The navigator, which may maliciously choose weights at every time step, is always restricted to learning at most the sum $\sum^n_{i=1} a_i$ for some values $a_i$ derived from sensor $i$ location and measurement. It is therefore intuitive to say that at most the navigator can learn the average of values kept private, that is, the navigator can at most learn the average position and location of sensors. The same can be said for any corrupted subset of honest but curious sensors and malicious navigator.
 
 
 % 
@@ -760,7 +853,7 @@ Give the algorithm as pseudocode (including encoding and encryption)
 \section{Results}
 Time results can be captured in one graph. Y-axis is time, X-axis is the number of sensors, each line (different colour) will show how the runtime changes as sensors are increased for different Paillier bit-sizes (at least 3: 512, 1024, 2048). Every data point should be the average over some X number of simulations.
 
-Accuracy plots will describe error due to encoding and the average distance of the sensors to the navigator. All plots will use the same ground truth and initial state and covariance estimates (this way average error at each timestep from multiple runs makes sense).
+Accuracy plots will describe error due to encoding and the average distance of the sensors to the navigator. All plots will use the same ground truth and initial state and covariance estimates (this way average error at each timestep from multiple runs makes sense):
 
 Plot 1 will plot the RMSE of the average of X runs at each encoding size. A fixed layout of 4 mediumly spaced sensor will be used, and a fixed Paillier bit size.
 
@@ -768,7 +861,7 @@ Plot 2 will plot the RMSE as the average distance of sensors changes. Fixed enco
 
 Plot 3 will accompany plot 3 and display the 4 layouts (arrow for ground truth and points for the sensors).
 
-A well-defined example.
+Discuss the meaning of the small changes in accuracy, and runtimes when using the same encryption size, that is, point out it is a generally robust method.
 
 % 
 %  .d8888b.                             
@@ -785,8 +878,7 @@ A well-defined example.
 % 
 
 \section{Conclusion}
-Possible future work to consider writing here:
-Hardware implementations, measurement handling which preservers Gaussian noise, or non-Gaussian noise methods, ways of sending less information form the navigator to the sensors at each time step, active sensor attacker model, different state encryptions received at sensors.
+Possible future work to consider: Hardware implementations, measurement handling which preservers Gaussian noise, or non-Gaussian noise methods, ways of sending less information form the navigator to the sensors at each time step, active sensor attacker model, different state encryptions received at sensors or a way to confirm they are the same.
 
 %---Rest is template---
 
