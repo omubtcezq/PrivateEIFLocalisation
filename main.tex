@@ -171,7 +171,7 @@ Section Summary
 % 
 
 \subsection{Notation}
-Notation. Reminder to include symbols for: rounding, concatenation, ``divides''
+Notation. Reminder to include symbols for: rounding, concatenation, ``divides'', vector norm
 
 
 % 
@@ -189,20 +189,47 @@ Notation. Reminder to include symbols for: rounding, concatenation, ``divides''
 % 
 
 \section{Problem Statement} \label{sec:problem_statement}
+% Restate the scenario but more formally. Give a concrete example - plane and signal towers.
 
-Restate the scenario but more formally. Give a concrete example - plane and signal towers.
+% Exact security guarantees we aim for, as well as the definitions for these guarantees (pWSAO and indistinguishability but in context of localisation as well). Note that learning only the sum in aggregation (as is normal in AO) would, in this case, tell the navigator the average location and measurements of all sensors, which is fine as it does not disclose any exact sensor.
 
-Exact security guarantees we aim for, as well as the definitions for these guarantees (pWSAO and indistinguishability but in context of localisation as well). Note that learning only the sum in aggregation (as is normal in AO) would, in this case, tell the navigator the average location and measurements of all sensors, which is fine as it does not disclose any exact sensor.
+% Passive attacks only from sensors to learn navigator position (Otherwise one could do some kind of attack that would send a fake measurement and note the change in its own measurements - possible this would give away the average of other sensors' measurements but unclear). Any largely incorrect inputs from sensors may also be detectable by comparison to alternative navigator onboard sensors (GPS etc.). Justify by saying sensors need to behave for localisation to work in the first place.
 
-Passive attacks only from sensors to learn navigator position (Otherwise one could do some kind of attack that would send a fake measurement and note the change in its own measurements - possible this would give away the average of other sensors' measurements but unclear). Any largely incorrect inputs from sensors may also be detectable by comparison to alternative navigator onboard sensors (GPS etc.). Justify by saying sensors need to behave for localisation to work in the first place.
+% Active attacks from navigator to find sensor location allowed, but assume that weights sent to all sensors are the same. In a wireless setting, all sensors would receive all broadcast weights anyway. While special hardware, which may support directional broadcasting or receiving, could be used to locate sensors individually this is beyond the scope of what is considered in our problem.
 
-Active attacks from navigator to find sensor location allowed, but assume that weights sent to all sensors are the same. In a wireless setting, all sensors would receive all broadcast weights anyway. While special hardware, which may support directional broadcasting or receiving, could be used to locate sensors individually this is beyond the scope of what is considered in our problem.
+% Point out that learning the aggregation of sensor outputs, which contains measurement and location information also means that the average location and measurement of the sensors may be leaked, and is accepted as a part of the leakage as it is inferrable from the aggregation scheme and any functioning model-based localisation where measurements are not known
 
-Point out that learning the aggregation of sensor outputs, which contains measurement and location information also means that the average location and measurement of the sensors may be leaked, and is accepted as a part of the leakage as it is inferrable from the aggregation scheme and any functioning model-based localisation where measurements are not known
+% Rough computational capabilities expected by parties
 
-Rough computational capabilities expected by parties
+% Fixed sensor subsets of which only whole subsets can be used at once. Maybe a picture of what this might look like in a high level distributed localisation diagram. Should consider that this sub-grouping would also mean the leakage of the average sensor/measurement of each subset not all sensors at once. This should be considered when choosing sensor subsets and locations.
 
-Fixed sensor subsets of which only whole subsets can be used at once. Maybe a picture of what this might look like in a high level distributed localisation diagram. Should consider that this sub-grouping would also mean the leakage of the average sensor/measurement of each subset not all sensors at once. This should be considered when choosing sensor subsets and locations.
+The problem we will consider is a model-based localisation estimation problem in the presence of $n$ range-only sensors. This is defined by the typical process model
+\begin{equation}
+    x_k = f(x_{k-1})+w_k
+\end{equation}
+and measurement model
+\begin{equation}
+    z_k = h(x_k)+v_k\,,
+\end{equation}
+at time $k$, with zero-mean Gaussian noises $w_k \sim \mathcal{N}(0, Q)$ and $v_k \sim \mathcal{N}(0, R)$. The measurement function $h(\cdot)$ for range-sensors is dependant on state location vector $x_{k,loc}$ and sensor location $s_{i,loc},\,1\leq i \leq n$. It is given by
+\begin{equation}
+    h(x_k) = \|x_{k,loc} - s_{i,loc}\|\,.
+\end{equation}
+We are interested in running the above estimation filter in which the estimator (in this case navigator) does not disclose state information $x_k$ to sensors, while sensors do not disclose their individual measurements $z_k$, and locations $s_{i,loc}$, to the navigator.
+
+We motivate this scenario with the example of aircraft navigation, when in the presence of privately-owned range-measuring towers. It is reasonable to assume that the current state of an aircraft may wish to be kept private from unknown tower-owning parties, while sensor tower locations may not wish to be disclosed to any navigating aircraft.
+
+In addition to the broad security desires above, we set some restrictions on the capabilities of participants in the navigation scenario, under which we will prove the security of our proposed scheme.
+\begin{description}
+    \item[Navigator] Due to the desire to keep sensor measurements and locations private from the navigator, and the non-linear nature of the measurement model considered, our protocol will require bi-directional communication between sensors and navigator. We will assume that information broadcast by the navigator is received by \textit{all} sensors, and their received information is always equal. In the context of wireless communication, such as aircraft locations, commonly used non-directional antennas are such that this assumption is reasonable. While hardware-specific methods may exist for broadcasting different information to individual sensors, we will consider this beyond the scope of our work.
+    \item[Sensors] We will adopt the honest-but-curious attacker model for sensors in our localisation method. That is, sensors will be assumed to follow the derived procedure correctly, but may use any gained sensitive information for other purposes. This is an inherent problem in estimation theory, often requiring inconsistency or outlier detection by the estimator. When keeping individual sensor measurements private, it can complicate this detection. For this reason, we exclude the possibility of Byzantine-failing sensors to simplify our construction and leave this for future work.
+\end{description}
+
+Leakage of information will be discussed in more detail in Section \ref{subsec:leakage}, where leakage formalised in the developed linear-combination aggregation scheme is considered in our localisation problem context. Accepted leakage of private information will be bound by the average of private sensor values. That is, the average location and average measurement of all honest sensors are at most what can be leaked to the navigator, while no information about the navigator state will be leaked to sensors.
+
+The computational requirements of the navigator and sensors are predominantly defined by encryption, decryption and homomorphic operations. We make the implicit assumption that all involved parties are computationally capable of computing the described encryption scheme and filter.
+
+A problem that arises in some navigation environments when constrained by the requirement that all sensors receive navigator broadcast information, is when some sensors are not within measurement range at all times. We note that this can be handled by considering subsets of sensors for which overlapping measurement ranges can be used as separate areas within which our localisation method can be performed using only the relevant subset of sensors. As a navigator moves from one such area to another, it will perform the protocol with the new set of sensors whose signal it is in range of.
 
 
 % 
@@ -768,13 +795,13 @@ The Jacobian $H$ for the measurement function above at $x_{loc,0}=(x_0, y_0)$ is
 \begin{equation*}
     H = 
     \begin{bmatrix}
-        a & b \\
-        c & d
+        \frac{x_0 - s_x}{\sqrt{(x_0 - s_x)^2 + (y_0 - s_y)^2}} \\
+        \frac{y_0 - s_y}{\sqrt{(x_0 - s_x)^2 + (y_0 - s_y)^2}} 
     \end{bmatrix}\,.
 \end{equation*}
 The problem with the above function $h$ and Jacobian $H$ is that they cannot be reformulated as a linear combination of weights, where weights are defined by functions of $x$ and $y$, and do not include $s_x$ and $s_y$.
 
-Our proposed solution to this problem, is working with the adjust measurement function $h'(x) = h(x)^2$. The method for modifying a normal range-sensor measurment in this way and handling the no-longer Gaussian, distance-dependant variance of the measurement noise, will be discussed in Section \ref{subsec:range_measurement_mod}. While this transformation complicated the measurement model noise, it allows for the linear formulation required for the encryption scheme, and the privacy of $H^{\prime\top} R^{\prime -1}(z' - h(x) + Hx)$ and $H^{\prime\top} R^{\prime -1}H'$. The adjusted measurement function is now given by
+Our proposed solution to this problem, is working with the adjust measurement function $h'(x) = h(x)^2$. The method for modifying a normal range-sensor measurement in this way and handling the no-longer Gaussian measurement noise with variance dependant on distance, will be discussed in Section \ref{subsec:range_measurement_mod}. While this transformation complicated the measurement model noise, it allows for the linear formulation required for the encryption scheme, and the privacy of $H^{\prime\top} R^{\prime -1}(z' - h(x) + Hx)$ and $H^{\prime\top} R^{\prime -1}H'$. The adjusted measurement function is now given by
 \begin{equation*}
     \begin{split}
         h'(x) &= \left(\|x_{loc} - s_{loc}\|\right)^2 \\
@@ -786,30 +813,53 @@ and Jacobian $H'$ by
 \begin{equation*}
     H' = 
     \begin{bmatrix}
-        a & b \\
-        c & d
+        2x_0 - 2s_x \\
+        2y_0 - 2s_y
     \end{bmatrix}\,.
 \end{equation*}
 The above function and jacobian elements are linear combinations of state-derived functions $x$, $x^2$, $y$, $xy$ and $y^2$. From our equation $\cdot$ in the previous section, we can now define $H^{\prime\top} R^{\prime -1}(z' - h(x) + Hx)$ and $H^{\prime\top} R^{\prime -1}H'$ in terms of state-derived functions $x$, $x^2$, $x^3$, $y$, $xy$, $x^2y$, $y^2$, $xy^2$ and $y^3$.
 \begin{equation*}
-    H^{\prime\top} R^{\prime -1}(z' - h(x) + Hx) = 
-    \begin{bmatrix}
-        a \\
-        b
-    \end{bmatrix}
+    \begin{split}
+        H&^{\prime\top} R^{\prime -1}(z' - h(x) + Hx) = \\
+        &\begin{bmatrix}
+            \begin{split}
+                &(2R^{\prime -1}z')x + (-2R^{\prime -1}s_xz) + (-2R^{\prime -1}s_x^2)x \\
+                &\quad+ (2R^{\prime -1}s_x^3) + (-2R^{\prime -1}s_y^2)x + (2R^{\prime -1}s_xs_y^2) \\
+                &\quad+ (2R^{\prime -1})x^3 + (-R^{\prime -1}s_x)x^2 + (2R^{\prime -1})xy^2 \\
+                &\quad+ (-2R^{\prime -1}s_x)y^2
+            \end{split}
+            \vspace{5pt}\\
+            \begin{split}
+                &(2R^{\prime -1}z)y + (-2R^{\prime -1}s_yz) + (-2R^{\prime -1}s_x^2)y \\
+                &\quad+ (2R^{\prime -1}s_ys_x^2) + (-2R^{\prime -1}s_y^2)y + (2R^{\prime -1}s_y^3) \\
+                &\quad+ (2R^{\prime -1})x^2y + (-2R^{\prime -1}s_y)x^2 + (2R^{\prime -1})y^3 \\
+                &\quad+ (-2R^{\prime -1}s_y)y^2
+            \end{split}
+        \end{bmatrix}
+    \end{split}
 \end{equation*}
 and
 \begin{equation*}
     H^{\prime\top} R^{\prime -1}H' = 
     \begin{bmatrix}
-        a & b \\
-        c & d
-    \end{bmatrix}\,.
+        \alpha_{11} & \alpha_{12} \\
+        \alpha_{21} & \alpha_{22}
+    \end{bmatrix}\,,
 \end{equation*}
+with
+\begin{align*}
+    \alpha_{11} &= (4R^{\prime -1})x^2 + (-8R^{\prime -1}s_x)x + (4R^{\prime -1}s_x^2) \\
+    \begin{split}
+        \alpha_{12} &= (4R^{\prime -1})xy + (-4R^{\prime -1}s_y)x + (-4R^{\prime -1}s_x)y \\
+        &\qquad+ (4R^{\prime -1}s_xs_y)
+    \end{split}\\
+    \alpha_{21} &= \alpha_{12} \\
+    \alpha_{22} &= (4R^{\prime -1})y^2 + (-8R^{\prime -1}s_y)y + (4R^{\prime -1}s_y^2)\,.
+\end{align*}
 
 The above formulation allows the application of our encryption scheme to the private aggregation of the measurement matrix and vector above. The scheme's encrypted weights $x$, $x^2$, $x^3$, $y$, $xy$, $x^2y$, $y^2$, $xy^2$ and $y^3$ are computed at each time step by the navigator, and each element of the measurement matrix and vector above is computed as a linear combination and prepared for aggregation by the sensors. 
 
-Lastly, since we aggregate multiple linear combinations at each time step (each element in the result matrix and vector comes from a seperate aggregation), we require unique hash values for each aggregation. This is handled by hashing $t \| i \| j$ rather than $t$ for each element $x_{i,j}$ when computing combined aggregation encryption in \eqref{eqn:our_scheme_lin_comb}.
+Lastly, since we aggregate multiple linear combinations at each time step $k$ (each element in the result matrix and vector comes from a separate aggregation), we require unique hash values for each aggregation. This is handled by hashing by using setting time variable $t$ as concatenation $k \| i \| j$ for each element $x_{i,j}$. Aggregation of each element is now performed under a different encryption scheme ``time'', when computing \eqref{eqn:our_scheme_lin_comb}.
 
 % 
 %  ######   #######  ##     ##    ###    ########  ######## ########     ######## 
@@ -830,7 +880,7 @@ The conversion of measurement function $h'(x) = h(x)^2$ is in practice complicat
         &= h'(x) + 2nh(x) + n^2
     \end{split}\,,
 \end{equation*}
-where noise term $2nh(x) + n^2$ has mean $\sigma^2$ and standard deviation $2(2h(x)^2\sigma^2 + \sigma^4)$. We account for the non-zero mean by offsetting the the squared measurement and taking this as the adjusted measurement model
+where noise term $2nh(x) + n^2$ has mean $\sigma^2$ and standard deviation $2(2h(x)^2\sigma^2 + \sigma^4)$. We account for the non-zero mean by offsetting the squared measurement and taking this as the adjusted measurement model
 \begin{equation*}
     \begin{split}
         z' &= h'(x) + 2nh(x) + n^2 - \sigma^2 \\
@@ -879,7 +929,7 @@ Give the algorithm as pseudocode (including encoding and encryption, possible as
 % ######## ######## ##     ## ##    ## ##     ##  ######   ######## 
 % 
 
-\subsection{Leakage}
+\subsection{Leakage} \label{subsec:leakage}
 We recall the assumptions made in problem formulation and our encryption scheme, and the allowed leakage of the encryption scheme. Sensors are honest but curious, meaning sensor values cannot be modified from what is measured, and the protocol is followed exactly, and that the navigator sends the same state information to all sensors at each time step. This is justified to an extent with wireless broadcasting being received by all sensors in a typical localisation setting.
 
 From the above restrictions, sensors learn only their measurements $x_i$, and the navigator learns only the sums $\sum^n_{i=1}H^\top R^{-1}_i(z_i - h(x) + Hx)$ and $\sum^n_{i=1}H^\top R_i^{-1}H$.
@@ -993,15 +1043,18 @@ Possible future work to consider: Hardware implementations, measurement handling
 % A word or two to conclude, and this even includes some inline 
 % maths:  $R(x,t)\sim t^{-\beta}g(x/t^\alpha)\exp(-|x|/t^\alpha)$.
 
-\begin{ack}                               % Place acknowledgements
-Partially supported by the Roman Senate.  % here.
+% Place acknowledgements
+% here.
+\begin{ack}                               
+Partially supported by zim
 \end{ack}
 
-\bibliographystyle{plain}        % Include this if you use bibtex 
-                                 % and a bib file to produce the 
-                                 % bibliography (preferred). The
-                                 % correct style is generated by
-                                 % Elsevier at the time of printing.
+% Include this if you use bibtex 
+% and a bib file to produce the 
+% bibliography (preferred). The
+% correct style is generated by
+% Elsevier at the time of printing.
+\bibliographystyle{plain}
 \bibliography{BibTeX/PrivateEIFLocalisation}
 
 %\begin{thebibliography}{99}     % Otherwise use the  
