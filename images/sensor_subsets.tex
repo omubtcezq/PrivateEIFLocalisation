@@ -1,27 +1,27 @@
 \usetikzlibrary{math}
-\begin{tikzpicture}
+\begin{tikzpicture}[font=\footnotesize]
 
 % Sizes
-\tikzmath{\srange = 6; \sradius = 0.05;}
+\tikzmath{\srange = 3.54; \sradius = 0.04;}
 
 % Sensor locations (sensor 3 is shared)
-\coordinate (s1) at (3.5873,-9.3952);
-\coordinate (s2) at (8.0873,-10.8952);
-\coordinate (s3) at (6.0873,-6.3952);
-\coordinate (s4) at (8.0873,-3.3952);
-\coordinate (s5) at (11.0873,-5.8952);
+\coordinate (s1) at (1.4086,-4.5869);
+\coordinate (s2) at (4.0633,-5.9948);
+\coordinate (s3) at (3.1235,-3.2054);
+\coordinate (s4) at (4.5563,-1.6861);
+\coordinate (s5) at (5.9909,-3.5635);
 
 % Navigator location
-\coordinate (nav_loc) at (7.5,-7.5);
+\coordinate (nav_loc) at (4,-4);
 
 % Bounding rectangle
 \coordinate (brect_start) at (0,0);
-\coordinate (brect_end) at (15.0, -15.0);
+\coordinate (brect_end) at (8.0, -8.0);
 
 
 % Gray range circles
 \begin{scope}
-\clip (0,0) rectangle (15,-15);
+\clip (brect_start) rectangle (brect_end);
 \draw[gray!50] (s1) circle (\srange);
 \draw[gray!50] (s2) circle (\srange);
 \draw[gray!50] (s3) circle (\srange);
@@ -56,18 +56,18 @@
 \end{scope}
 
 % Sensors
-\draw[fill=black] (s1) circle (\sradius);
-\draw[fill=black] (s2) circle (\sradius);
-\draw[fill=black] (s3) circle (\sradius);
-\draw[fill=black] (s4) circle (\sradius);
-\draw[fill=black] (s5) circle (\sradius);
+\fill[red] (s1) circle (\sradius);
+\fill[red] (s2) circle (\sradius);
+\fill[red] (s3) circle (\sradius);
+\fill[red] (s4) circle (\sradius);
+\fill[red] (s5) circle (\sradius);
 
 % Bounding box
 \draw[gray] (brect_start) rectangle (brect_end);
 
 % Navigator
 \clip (brect_start) rectangle (brect_end);
-\begin{scope}[shift={(nav_loc)},rotate=-40,xscale=0.3,yscale=0.35]
+\begin{scope}[shift={(nav_loc)},rotate=-40,xscale=0.25,yscale=0.3]
 % Plane
 \draw[fill]  plot[smooth, tension=.6] coordinates {
 (-0.65,-0.9) 
@@ -103,6 +103,11 @@
 % Trail
 \fill[bottom color=white, top color=gray] (-0.05, -1.5) rectangle (0.05, -50);
 \end{scope}
+\node[label=1] at (s1) {};
+\node[label=2] at (s2) {};
+\node[label=3] at (s3) {};
+\node[label=4] at (s4) {};
+\node[label=5] at (s5) {};
 \end{tikzpicture}
 
 

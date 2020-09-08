@@ -56,9 +56,8 @@
 \usepackage{tikz}
 %\usepackage{microtype}
 
-% Added operators
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\argmin}{arg\,min}
+% User local packages
+\usepackage{ISASmacros/isasmathmacros}
 
 % Tikz settings
 \usetikzlibrary{math}
@@ -175,7 +174,7 @@ Section Summary
 % 
 
 \subsection{Notation}
-Notation. Reminder to include symbols for: rounding, concatenation, ``divides'', vector norm
+Notation. Reminder to include symbols for: rounding, concatenation, ``divides'', vector norm, vector indexing (also note starts at 0)
 
 
 % 
@@ -207,31 +206,69 @@ Notation. Reminder to include symbols for: rounding, concatenation, ``divides'',
 
 % Fixed sensor subsets of which only whole subsets can be used at once. Maybe a picture of what this might look like in a high level distributed localisation diagram. Should consider that this sub-grouping would also mean the leakage of the average sensor/measurement of each subset not all sensors at once. This should be considered when choosing sensor subsets and locations.
 
-The problem we will consider is a two-dimensional model-based localisation estimation problem in the presence of $n$ range-only sensors. This is defined by the typical process model
-\begin{equation}
-    x_k = f(x_{k-1})+w_k
-\end{equation}
-and measurement model
-\begin{equation}
-    z_k = h(x_k)+v_k\,,
-\end{equation}
-at time $k$, with zero-mean Gaussian noises $w_k \sim \mathcal{N}(0, Q)$ and $v_k \sim \mathcal{N}(0, R)$. The measurement function $h(\cdot)$ for range-sensors is dependant on state location vector $x_{k,loc}$ and sensor location $s_{i,loc},\,1\leq i \leq n$. It is given by
-\begin{equation}
-    h(x_k) = \|x_{k,loc} - s_{i,loc}\|\,.
-\end{equation}
-We are interested in running the above estimation filter in which the estimator (in this case navigator) does not disclose state information $x_k$ to sensors, while sensors do not disclose their individual measurements $z_k$, and locations $s_{i,loc}$, to the navigator.
+The localisation scenario we consider in this work is that of model-based self-navigation using range-only sensors. We consider localisation in the two-dimensional case for simplicty, but will derive methods suitable for an extension to the three-dimensional equivalent.
 
-We motivate this scenario with the example of aircraft navigation, when in the presence of privately-owned range-measuring towers. It is reasonable to assume that the current state of an aircraft may wish to be kept private from unknown tower-owning parties, while sensor tower locations may not wish to be disclosed to any navigating aircraft. Although we will consider the two-dimensional case for simplicity, the extension to three dimensions is trivial at the cost of communication complexity, as will be made clear in Section \ref{subsec:observation_model}.
+The navigator state is defined as 
+\begin{equation}
+    \vec{x} = 
+    \begin{bmatrix}
+        x & dx & y & dy
+    \end{bmatrix}^\top\,.
+\end{equation}
+A known process model is followed, which at time $k$ is given by
+\begin{equation}
+    \mean{x}_k = f(\mean{x}_{k-1})+\rvec{w}_k\,, \label{eqn:process_model}
+\end{equation}
+with zero-mean Gaussian process noise $w_k \sim \mathcal{N}(\vec{0},\mat{Q})$. The measurement model is dependant on sensor $i$ and given by
+\begin{equation}
+    z_k = h_i(\mean{x}_k)+\rv{v}_k\,, \label{eqn:measurement_model}
+\end{equation}
+with noise $\rv{v}_k \sim \mathcal{N}(\vec{0},\mat{R})$, while the measurement function $h_i$, for sensor $i$ at location
+\begin{equation}
+    \vec{s}_i = 
+    \begin{bmatrix}
+        x_{i} & y_{i}
+    \end{bmatrix}^\top\,,
+\end{equation} 
+is defined as
+\begin{equation}
+    \begin{split}
+        h_i(\mean{x}_k) &= \left\|
+        \begin{bmatrix}
+            \mean{x}_{k[0]} \\
+            \mean{x}_{k[2]}
+        \end{bmatrix}
+        - \vec{s}_{i}\right\| \\
+        &= \sqrt{(\mean{x}_{k[0]}-x_{i})^2 + (\mean{x}_{k[2]}-y_{i})^2}\,.
+    \end{split}
+\end{equation}
+We wish to run a state estimation filter with models \eqref{eqn:process_model} and \eqref{eqn:measurement_model} such that all involved sensors $1 \leq i \leq n$ do not learn the estimated state $\mean{x}_k$ and the navigator does not learn sensor locations $\vec{s}_i,\,1 \leq i \leq n$ or their measurements $z_k$ at any time $k$.
 
-In addition to the broad security desires above, we set some restrictions on the capabilities of participants in the navigation scenario, under which we will prove the security of our proposed scheme.
+We motivate these goals with an example. When considering aircraft navigation in the presence of privately-owned range-measuring towers, it is reasonable to assume that the current state of an aircraft may not wish to be disclosed to unknown tower-owning parties. Similarly, tower locations may wish to be kept private from unidentified navigating aircraft. However, the additional safety to passengers, provided by accurate aircraft localisation, may be a goal of all those involved.
+
+% 
+%  ######     ###    ########     ###    ########  #### ##       #### ######## #### ########  ######  
+% ##    ##   ## ##   ##     ##   ## ##   ##     ##  ##  ##        ##     ##     ##  ##       ##    ## 
+% ##        ##   ##  ##     ##  ##   ##  ##     ##  ##  ##        ##     ##     ##  ##       ##       
+% ##       ##     ## ########  ##     ## ########   ##  ##        ##     ##     ##  ######    ######  
+% ##       ######### ##        ######### ##     ##  ##  ##        ##     ##     ##  ##             ## 
+% ##    ## ##     ## ##        ##     ## ##     ##  ##  ##        ##     ##     ##  ##       ##    ## 
+%  ######  ##     ## ##        ##     ## ########  #### ######## ####    ##    #### ########  ######  
+% 
+
+\subsection{Participant Capabilities} 
+Before we can define concrete security requirements and a filtering protocol, we require some assumptions on the capabilities of the navigator and sensors in our problem scenario.
+
 \begin{description}
-    \item[Navigator] Due to the desire to keep sensor measurements and locations private from the navigator, and the non-linear nature of the measurement model considered, our protocol will require bi-directional communication between sensors and navigator. We will assume that information broadcast by the navigator is received by \textit{all} sensors, and their received information is always equal. In the context of wireless communication, such as aircraft locations, commonly used non-directional antennas are such that this assumption is reasonable. While hardware-specific methods may exist for broadcasting different information to individual sensors, we will consider this beyond the scope of our work.
-    \item[Sensors] We will adopt the honest-but-curious attacker model for sensors in our localisation method. That is, sensors will be assumed to follow the derived procedure correctly, but may use any gained sensitive information for other purposes. This is an inherent problem in estimation theory, often requiring inconsistency or outlier detection by the estimator. When keeping individual sensor measurements private, it can complicate this detection. For this reason, we exclude the possibility of Byzantine-failing sensors to simplify our construction and leave this for future work.
+    \item[Global navigator broadcast] Due to sensor location privacy and model non-linearity, bi-directional communication between navigator and sensors is required. We make the assumption that broadcast information from the navigator is received by \textit{all} sensors involved in the protocol.
+     
+    \item[Consistent navigator broadcast] Received information is always equal. 
+    \item[Honest-but-curious sensors] We adopt the honest-but-curious attacker model for sensors in our localisation method. That is, sensors will be assumed to follow the derived procedure correctly, but may use any gained sensitive information for other purposes. 
+    \item[Computational capabilities] The computational requirements of the navigator and sensors are predominantly defined by encryption, decryption and homomorphic operations. We make the implicit assumption that all involved parties are computationally capable of computing the described encryption scheme and filter.
 \end{description}
+% In the context of wireless communication, such as aircraft locations, commonly used non-directional antennas are such that this assumption is reasonable. While hardware-specific methods may exist for broadcasting different information to individual sensors, we will consider this beyond the scope of our work.
 
-Leakage of information will be discussed in more detail in Section \ref{subsec:leakage}, where leakage formalised in the developed linear-combination aggregation scheme is considered in our localisation problem context. Accepted leakage of private information will be bound by the average of private sensor values. That is, the average location and average measurement of all honest sensors are at most what can be leaked to the navigator, while no information about the navigator state will be leaked to sensors.
-
-The computational requirements of the navigator and sensors are predominantly defined by encryption, decryption and homomorphic operations. We make the implicit assumption that all involved parties are computationally capable of computing the described encryption scheme and filter.
+% This is an inherent problem in estimation theory, often requiring inconsistency or outlier detection by the estimator. When keeping individual sensor measurements private, it can complicate this detection. For this reason, we exclude the possibility of Byzantine-failing sensors to simplify our construction and leave this for future work.
 
 A problem that arises in some navigation environments when constrained by the requirement that all sensors receive navigator broadcast information, is when some sensors are not within measurement range at all times. We note that this can be handled by considering subsets of sensors for which overlapping measurement ranges can be used as separate areas within which our localisation method can be performed using only the relevant subset of sensors. As a navigator moves from one such area to another, it will perform the protocol with the new set of sensors whose signal it is in range of.
 
@@ -241,7 +278,7 @@ A problem that arises in some navigation environments when constrained by the re
     % Sizes
     \tikzmath{\srange = 3.54; \sradius = 0.04;}
     % Sensor locations (sensor 3 is shared)
-    \coordinate (s1) at (1.132,-4.4338);
+    \coordinate (s1) at (1.4086,-4.5869);
     \coordinate (s2) at (4.0633,-5.9948);
     \coordinate (s3) at (3.1235,-3.2054);
     \coordinate (s4) at (4.5563,-1.6861);
@@ -333,6 +370,7 @@ A problem that arises in some navigation environments when constrained by the re
         % Trail
         \fill[bottom color=white, top color=gray] (-0.05, -1.5) rectangle (0.05, -50);
     \end{scope}
+    % Sensor labels
     \node[label=1] at (s1) {};
     \node[label=2] at (s2) {};
     \node[label=3] at (s3) {};
@@ -342,6 +380,19 @@ A problem that arises in some navigation environments when constrained by the re
 \caption{An example of sensor subsets; $\{1,2,3\}$ and $\{3,4,5\}$, and the areas where the navigator is in range of all sensors within a subset.}
 \label{fig:sensor_subsets}
 \end{figure}
+
+% 
+% ##       ########    ###    ##    ##    ###     ######   ######## 
+% ##       ##         ## ##   ##   ##    ## ##   ##    ##  ##       
+% ##       ##        ##   ##  ##  ##    ##   ##  ##        ##       
+% ##       ######   ##     ## #####    ##     ## ##   #### ######   
+% ##       ##       ######### ##  ##   ######### ##    ##  ##       
+% ##       ##       ##     ## ##   ##  ##     ## ##    ##  ##       
+% ######## ######## ##     ## ##    ## ##     ##  ######   ######## 
+% 
+
+\subsection{Inherent Leakage}
+Leakage of information will be discussed in more detail in Section \ref{subsec:leakage}, where leakage formalised in the developed linear-combination aggregation scheme is considered in our localisation problem context. Accepted leakage of private information will be bound by the average of private sensor values. That is, the average location and average measurement of all honest sensors are at most what can be leaked to the navigator, while no information about the navigator state will be leaked to sensors.
 
 % 
 %  .d8888b.                            888                 8888888b.                  888 d8b               
