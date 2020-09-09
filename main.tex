@@ -160,8 +160,18 @@ In addition to applying suitable encryption schemes to signal processing tasks, 
 
 Briefly describe navigator scenario and our contributions
 
-Section Summary
-%In Section \ref{sec:private_localisation} we will show how this scheme can be used to compute the measurement covariance and measurement vector homomorphically at each sensor, and allow the navigator to update their 
+--
+
+%Section Summary
+% \ref{sec:problem_statement}
+% \ref{sec:crypto_prelim}
+% \ref{sec:lcao_definition}
+% \ref{sec:our_scheme}
+% \ref{sec:loc_prelim}
+% \ref{sec:private_localisation}
+% \ref{sec:results}
+% \ref{sec:conclusion}
+In Section \ref{sec:problem_statement} we introduce the localisation problem and the restrictions on involved parties. Section \ref{sec:crypto_prelim} summarises cryptographic preliminaries and Sections \ref{sec:lcao_definition} and \ref{sec:our_scheme} introduce a novel security notion of linear-combination aggregation obliviousness and an encryption scheme which satisfies it. Section \ref{sec:loc_prelim} summarises localisation preliminaries, before we introduce our private localisation method in Section \ref{sec:private_localisation}, using the introduced encryption scheme. In Section \ref{sec:results} we give and analyse simulation results, before concluding our work in Section \ref{sec:conclusion}.
 
 % 
 % ##    ##  #######  ########    ###    ######## ####  #######  ##    ## 
@@ -258,20 +268,18 @@ We motivate these goals with an example. When considering aircraft navigation in
 
 \subsection{Participant Capabilities} 
 Before we can define concrete security requirements and a filtering protocol, we require some assumptions on the capabilities of the navigator and sensors in our problem scenario.
-
 \begin{description}
     \item[Global navigator broadcast] Due to sensor location privacy and model non-linearity, bi-directional communication between navigator and sensors is required. We make the assumption that broadcast information from the navigator is received by \textit{all} sensors involved in the protocol.
-     
-    \item[Consistent navigator broadcast] Received information is always equal. 
-    \item[Honest-but-curious sensors] We adopt the honest-but-curious attacker model for sensors in our localisation method. That is, sensors will be assumed to follow the derived procedure correctly, but may use any gained sensitive information for other purposes. 
-    \item[Computational capabilities] The computational requirements of the navigator and sensors are predominantly defined by encryption, decryption and homomorphic operations. We make the implicit assumption that all involved parties are computationally capable of computing the described encryption scheme and filter.
+    
+    A problem caused by this requirement is apparent in the context of aircraft navigation. It may be the case that some sensors are not within range of a navigator broadcast. We loosely propose that this scenario can be handled by pre-defined sensor subsets during an initial step by a trusted party. This has been captured in Figure \ref{fig:sensor_subsets}.
+    \item[Consistent navigator broadcast] Further, we make the assumption that broadcast information from the navigator is recieved equal by all sensors. This means the navigator may not send different information to individual sensors during a single timestep.
+    
+    In the context of wireless communication, the wide-spread use of cheap non-directional antennas make this assumption reasonable.
+    \item[Honest-but-curious sensors] We adopt the honest-but-curious attacker model for all involved sensors, meaning they are assumed to follow the localisation procedure correctly but may store or use any gained sensitive information. 
+    
+    Misbehaving sensors are a known problem in estimation theory, often requiring inconsistency or outlier detection mechanisms. As privacy-preserving implementations of such mechanisms require additional complications, we do not consider the scenario in this work.
+    \item[Computational capabilities] The computational requirements for computing encryptions and homomorphic operations are typically more costly than their plaintext equivalents. We make the implicit assumption that all involved parties are computationally capable of computing the required encryption and filter operations.
 \end{description}
-% In the context of wireless communication, such as aircraft locations, commonly used non-directional antennas are such that this assumption is reasonable. While hardware-specific methods may exist for broadcasting different information to individual sensors, we will consider this beyond the scope of our work.
-
-% This is an inherent problem in estimation theory, often requiring inconsistency or outlier detection by the estimator. When keeping individual sensor measurements private, it can complicate this detection. For this reason, we exclude the possibility of Byzantine-failing sensors to simplify our construction and leave this for future work.
-
-A problem that arises in some navigation environments when constrained by the requirement that all sensors receive navigator broadcast information, is when some sensors are not within measurement range at all times. We note that this can be handled by considering subsets of sensors for which overlapping measurement ranges can be used as separate areas within which our localisation method can be performed using only the relevant subset of sensors. As a navigator moves from one such area to another, it will perform the protocol with the new set of sensors whose signal it is in range of.
-
 \begin{figure}[htbp]
 \centering
 \begin{tikzpicture}[font=\footnotesize,scale=0.9375]
@@ -392,7 +400,7 @@ A problem that arises in some navigation environments when constrained by the re
 % 
 
 \subsection{Inherent Leakage}
-Leakage of information will be discussed in more detail in Section \ref{subsec:leakage}, where leakage formalised in the developed linear-combination aggregation scheme is considered in our localisation problem context. Accepted leakage of private information will be bound by the average of private sensor values. That is, the average location and average measurement of all honest sensors are at most what can be leaked to the navigator, while no information about the navigator state will be leaked to sensors.
+Leakage of information will be discussed in more detail in Section \ref{subsec:leakage}, however, we stress that in any estimation problem where process and measurement models are known, knowledge of sequential state estimates naturally leads to the leakage of some measurement information. For this reason, we accept that average information about sensors may be leaked at each time step and instead show that individual sensor information remains private.
 
 % 
 %  .d8888b.                            888                 8888888b.                  888 d8b               
@@ -523,7 +531,7 @@ removing all noise terms.
 %                     "Y88P"  888                                                              
 % 
 
-\section{Private Linear-Combination Aggregation}
+\section{Private Linear-Combination Aggregation} \label{sec:lcao_definition}
 For achieving the goal of private localisation defined in Section \ref{sec:problem_statement} we will require a multi-party protocol for computing linear combinations of weights, and their subsequent aggregation. In the context of navigation, $m$ weights $\omega_j^{(t)}, 1 \leq j \leq m$ are first broadcast by the navigator, linear combinations $y^{(t)}_i=\sum^m_{j=1}x_{j,i}^{(t)}\omega_i^{(t)}$ are computed by each sensor $1\leq i\leq n$, and aggregation is computed back at the navigator, at every time step $t$. This has been summarized in Figure \ref{fig:agg_steps}. In Section \ref{sec:private_localisation} we will show how this protocol can be sufficient to compute measurement covariances and measurement vectors, and update the Extended Information Filter.
 
 \begin{figure}[htbp]
@@ -803,7 +811,7 @@ for some negligible functions $\eta_1$ and $\eta_2$. (\textit{i.e.} if we assume
 %                                                                                 
 % 
 
-\section{Private Localisation Preliminaries}
+\section{Private Localisation Preliminaries} \label{sec:loc_prelim}
 The localisation filter we introduce requires real-valued inputs and functions, and relies on a non-linear measurement model. We make use of a real-number encoding scheme which supports the required homomorphic operations and an algebraic reformulation of the Extended Kalman Filter which reduces the filter update step to use only these operations.
 
 % 
@@ -1115,7 +1123,7 @@ The navigator, which may maliciously choose weights at every time step, is alway
 %                                                          
 % 
 
-\section{Results}
+\section{Results} \label{sec:results}
 Time results can be captured in one graph. Y-axis is time, X-axis is the number of sensors, each line (different colour) will show how the runtime changes as sensors are increased for different Paillier bit-sizes (at least 3: 512, 1024, 2048). Every data point should be the average over some X number of simulations.
 
 Accuracy plots will describe error due to encoding and the average distance of the sensors to the navigator. All plots will use the same ground truth and initial state and covariance estimates (this way average error at each timestep from multiple runs makes sense):
@@ -1142,7 +1150,7 @@ Discuss the meaning of the small changes in accuracy, and runtimes when using th
 %                                       
 % 
 
-\section{Conclusion}
+\section{Conclusion} \label{sec:conclusion}
 Possible future work to consider: Hardware implementations, measurement handling which preservers Gaussian noise, or non-Gaussian noise methods, ways of sending less information form the navigator to the sensors at each time step, active sensor attacker model, different state encryptions received at sensors or a way to confirm they are the same.
 
 %---Rest is template---
