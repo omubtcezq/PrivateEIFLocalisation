@@ -227,7 +227,7 @@ The navigator state is defined as
 \end{equation}
 A known process model is followed, which at time $k$ is given by
 \begin{equation}
-    \mean{x}_k = f(\mean{x}_{k-1})+\rvec{w}_k\,, \label{eqn:process_model}
+    \mean{x}_k = \vec{f}(\mean{x}_{k-1})+\rvec{w}_k\,, \label{eqn:process_model}
 \end{equation}
 with zero-mean Gaussian process noise $w_k \sim \mathcal{N}(\vec{0},\mat{Q})$. The measurement model is dependant on sensor $i$ and given by
 \begin{equation}
@@ -879,14 +879,40 @@ In practice, $N$ is typically very large ($N>2^{1024}$) and this condition can b
 % 
 
 \subsection{Extended Information Filter}
-EIF is a reformulation of the EKF where the update step is reduced to sums. Makes it especially easier for processing multiple measurements.
+Given process and measurement models \eqref{eqn:process_model} and \eqref{eqn:measurement_model}, the Extended Information Filter (EIF) is a reformulation of the Extended Kalman Filter (EKF), such that the update equations are simpified to sums of measurement information from each sensor. This requires the conversion of state estimate $\mean{x}_k$ and estimate covariance $\mat{P}_k$ to the information vector and matrix forms
+\begin{equation}
+    \mean{y}_k = \mat{P}_k^{-1}\mean{x}_k
+\end{equation}
+and
+\begin{equation}
+    \mat{Y}_k = \mat{P}_k^{-1}\,.
+\end{equation}
+In this form, the update equations for $n$ measurements at time $k$ are given by
+\begin{equation}
+    \mat{Y}_k = \mat{Y}_{k-1} + \sum^n_{i=1}\mat{H}^\top_{k,i} \mat{R}^{-1}_i \mat{H}_{k,i}
+\end{equation}
+and
+\begin{equation}
+    \mean{y}_k = \mean{y}_{k-1} + \sum^n_{i=1}\mat{H}^\top_{k,i} \mat{R}^{-1}_i (z_{k,i} - h_i(\mean{x}_k) + \mat{H}_{k,i}\mean{x}_k)\,,
+\end{equation}
+with Jacobian
+\begin{equation}
+    \mat{H}_{k,i} = \left.\frac{\partial h_i}{\partial \vec{x}}\right|_{\mean{x}_k}
+\end{equation}
+for each sensor $1 \leq i \leq n$. 
 
-Prediction step can be computed in either the EIF form or the equivalent EKF state and covariance can be computed before performing the prediction step in EKF form and converting the result back.
+Computing the prediction step of the filter can be done by converting the information vector and matrix back to state estimate and covariance with
+\begin{equation}
+    \mat{P}_k = \mat{Y}_k^{-1}
+\end{equation}
+and
+\begin{equation}
+    \mean{x}_k = \mat{P}_k\mean{y}_k\,,
+\end{equation}
+and using the normal EKF prediction equations
 
-% The Extended Information Filter (EIF) is an algebraic reformulation of the Extended Kalman Filter (EKF) such that the update step is reduced to a simple summation. Given process and measurement models \eqref{} and \eqref{}, the EIF update equation is given by
-% \begin{equation}
-%     a
-% \end{equation}
+%Prediction step can be computed in either the EIF form or the equivalent EKF state and covariance can be computed before performing the prediction step in EKF form and converting the result back.
+
 
 
 % 
