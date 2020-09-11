@@ -879,7 +879,7 @@ In practice, $N$ is typically very large ($N>2^{1024}$) and this condition can b
 % 
 
 \subsection{Extended Information Filter}
-Given process and measurement models \eqref{eqn:process_model} and \eqref{eqn:measurement_model}, the Extended Information Filter (EIF) is a reformulation of the Extended Kalman Filter (EKF), such that the update equations are simpified to sums of measurement information from each sensor. This requires the conversion of state estimate $\mean{x}_k$ and estimate covariance $\mat{P}_k$ to the information vector and matrix forms
+Given process and measurement models \eqref{eqn:process_model} and \eqref{eqn:measurement_model}, the Extended Information Filter (EIF) is a reformulation of the Extended Kalman Filter (EKF), such that the update equations are simplified to sums of measurement information from each sensor. This requires the conversion of state estimate $\mean{x}_k$ and estimate covariance $\mat{P}_k$ to the information vector and matrix forms
 \begin{equation}
     \mean{y}_k = \mat{P}_k^{-1}\mean{x}_k
 \end{equation}
@@ -899,21 +899,7 @@ with Jacobian
 \begin{equation}
     \mat{H}_{k,i} = \left.\frac{\partial h_i}{\partial \vec{x}}\right|_{\mean{x}_k}
 \end{equation}
-for each sensor $1 \leq i \leq n$. 
-
-Computing the prediction step of the filter can be done by converting the information vector and matrix back to state estimate and covariance with
-\begin{equation}
-    \mat{P}_k = \mat{Y}_k^{-1}
-\end{equation}
-and
-\begin{equation}
-    \mean{x}_k = \mat{P}_k\mean{y}_k\,,
-\end{equation}
-and using the normal EKF prediction equations
-
-%Prediction step can be computed in either the EIF form or the equivalent EKF state and covariance can be computed before performing the prediction step in EKF form and converting the result back.
-
-
+for each sensor $1 \leq i \leq n$. Computing the filter's prediction step can be either computed in the information filter form, or by first converting the information vector and matrix back to the state estimate and covariance, and using the normal EKF prediction equations.
 
 % 
 % 8888888b.          d8b               888                       
