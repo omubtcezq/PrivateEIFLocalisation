@@ -216,7 +216,7 @@ Notation. Reminder to include symbols for: rounding, concatenation, ``divides'',
 
 % Fixed sensor subsets of which only whole subsets can be used at once. Maybe a picture of what this might look like in a high level distributed localisation diagram. Should consider that this sub-grouping would also mean the leakage of the average sensor/measurement of each subset not all sensors at once. This should be considered when choosing sensor subsets and locations.
 
-The localisation scenario we consider in this work is that of model-based self-navigation using range-only sensors. We consider localisation in the two-dimensional case for simplicty, but will derive methods suitable for an extension to the three-dimensional equivalent.
+The localisation scenario we consider in this work is that of model-based self-navigation using range-only sensors. We consider localisation in the two-dimensional case for simplicity but will derive methods suitable for an extension to the three-dimensional equivalent.
 
 The navigator state is defined as 
 \begin{equation}
@@ -271,8 +271,8 @@ Before we can define concrete security requirements and a filtering protocol, we
 \begin{description}
     \item[Global navigator broadcast] Due to sensor location privacy and model non-linearity, bi-directional communication between navigator and sensors is required. We make the assumption that broadcast information from the navigator is received by \textit{all} sensors involved in the protocol.
     
-    A problem caused by this requirement is apparent in the context of aircraft navigation. It may be the case that some sensors are not within range of a navigator broadcast. We loosely propose that this scenario can be handled by pre-defined sensor subsets during an initial step by a trusted party. This has been captured in Figure \ref{fig:sensor_subsets}.
-    \item[Consistent navigator broadcast] Further, we make the assumption that broadcast information from the navigator is recieved equal by all sensors. This means the navigator may not send different information to individual sensors during a single timestep.
+    A problem caused by this requirement is apparent in the context of aircraft navigation. It may be the case that some sensors are not within the range of a navigator broadcast. We loosely propose that this scenario can be handled by pre-defined sensor subsets during an initial step by a trusted party. This has been captured in Figure \ref{fig:sensor_subsets}.
+    \item[Consistent navigator broadcast] Further, we make the assumption that broadcast information from the navigator is received equal by all sensors. This means the navigator may not send different information to individual sensors during a single timestep.
     
     In the context of wireless communication, the wide-spread use of cheap non-directional antennas make this assumption reasonable.
     \item[Honest-but-curious sensors] We adopt the honest-but-curious attacker model for all involved sensors, meaning they are assumed to follow the localisation procedure correctly but may store or use any gained sensitive information. 
@@ -879,27 +879,38 @@ In practice, $N$ is typically very large ($N>2^{1024}$) and this condition can b
 % 
 
 \subsection{Extended Information Filter}
-Given process and measurement models \eqref{eqn:process_model} and \eqref{eqn:measurement_model}, the Extended Information Filter (EIF) is a reformulation of the Extended Kalman Filter (EKF), such that the update equations are simplified to sums of measurement information from each sensor. This requires the conversion of state estimate $\mean{x}_k$ and estimate covariance $\mat{P}_k$ to the information vector and matrix forms
+The Extended Information Filter (EIF) \cite{maybeckStochasticModelsEstimation1982} is a reformulation of the Extended Kalman Filter (EKF), such that the update equations are simplified to sums of measurement information from each sensor. This requires the conversion of state estimate $\mean{x}_k$ and estimate covariance $\mat{P}_k$ to the information vector and matrix
 \begin{equation}
-    \mean{y}_k = \mat{P}_k^{-1}\mean{x}_k
+    \mean{y}_k = \mat{P}_k^{-1}\mean{x}_k \quad\textrm{and}\quad \mat{Y}_k = \mat{P}_k^{-1}\,,
+\end{equation}
+respectively. In this form, the update equations for $n$ measurements at time $k$, given process and measurement models \eqref{eqn:process_model} and \eqref{eqn:measurement_model}, are given by
+\begin{equation}
+    \mean{y}_k = \mean{y}_{k-1} + \sum^n_{i=1}\mat{H}^\top_{k,i} \mat{R}^{-1}_i (z_{k,i} - h_i(\mean{x}_k) + \mat{H}_{k,i}\mean{x}_k) \label{eqn:eif_info_vec_update}
 \end{equation}
 and
 \begin{equation}
-    \mat{Y}_k = \mat{P}_k^{-1}\,.
-\end{equation}
-In this form, the update equations for $n$ measurements at time $k$ are given by
-\begin{equation}
-    \mat{Y}_k = \mat{Y}_{k-1} + \sum^n_{i=1}\mat{H}^\top_{k,i} \mat{R}^{-1}_i \mat{H}_{k,i}
-\end{equation}
-and
-\begin{equation}
-    \mean{y}_k = \mean{y}_{k-1} + \sum^n_{i=1}\mat{H}^\top_{k,i} \mat{R}^{-1}_i (z_{k,i} - h_i(\mean{x}_k) + \mat{H}_{k,i}\mean{x}_k)\,,
+    \mat{Y}_k = \mat{Y}_{k-1} + \sum^n_{i=1}\mat{H}^\top_{k,i} \mat{R}^{-1}_i \mat{H}_{k,i}\,, \label{eqn:eif_info_mat_update}
 \end{equation}
 with Jacobian
 \begin{equation}
-    \mat{H}_{k,i} = \left.\frac{\partial h_i}{\partial \vec{x}}\right|_{\mean{x}_k}
+    \mat{H}_{k,i} = \left.\frac{\partial h_i}{\partial \vec{x}}\right|_{\mean{x}_k} \label{eqn:measurement_jacobian}
 \end{equation}
-for each sensor $1 \leq i \leq n$. Computing the filter's prediction step can be either computed in the information filter form, or by first converting the information vector and matrix back to the state estimate and covariance, and using the normal EKF prediction equations.
+for sensors $1 \leq i \leq n$. The filter's prediction step can be computed by converting information vector $\mean{y}_k$ and matrix $\mat{Y}_k$ back to state estimate and covariance 
+\begin{equation}
+    \mean{x}_k = \mat{Y}_k^{-1}\mean{y}_k \quad\textrm{and}\quad \mat{P}_k = \mat{Y}_k^{-1}\,,
+\end{equation}
+before using the normal EKF prediction equations
+\begin{equation}
+    \mean{x}_k = \vec{f}(\mean{x}_{k-1})
+\end{equation}
+and
+\begin{equation}
+    \mat{P}_k = \mat{F}_k\mat{P}_{k-1}\mat{F}_k^\top\,,
+\end{equation}
+with Jacobian
+\begin{equation}
+    \mat{F}_{k} = \left.\frac{\partial \vec{f}}{\partial \vec{x}}\right|_{\mean{x}_k}\,.
+\end{equation}
 
 % 
 % 8888888b.          d8b               888                       
@@ -916,11 +927,21 @@ for each sensor $1 \leq i \leq n$. Computing the filter's prediction step can be
 % 
 
 \section{Private Localisation with Privacy-Preserving Sensors} \label{sec:private_localisation}
+Given our definitions for the aggregation scheme in Section \ref{sec:our_scheme} and preliminaries in Section \ref{sec:loc_prelim}, we can now construct a localisation method meeting our problem formulation in Section \ref{sec:problem_statement}. We consider a navigator in the presence of $n$ range sensors, running a local filter with update steps computed by equations \eqref{eqn:eif_info_vec_update} and \eqref{eqn:eif_info_mat_update}. Received information from each sensor $i$ consists of the measurement vector
+\begin{equation}
+    \vec{i}_i = \mat{H}^\top_{k,i} \mat{R}^{-1}_i (z_{k,i} - h_i(\mean{x}_k) + \mat{H}_{k,i}\mean{x}_k)
+\end{equation}
+and the measurement matrix
+\begin{equation}
+    \mat{I}_i = \mat{H}^\top_{k,i} \mat{R}^{-1}_i \mat{H}_{k,i}\,,
+\end{equation}
+at each time step $k$. All sensitive sensor information is captured exclusively in the filter by the Products $\vec{i}_i$ and $\mat{I}_i$, namely their measurements $z_{k,i}$, measurement variances $\mat{R}_i$ and locations, captured in measurement functions $h_i$ and Jacobians $\mat{H}_{k,i}$. Encryption of $\vec{i}_i$ and $\mat{I}_i$ at the sensors would, however, disclose the location information of $\mean{x}_k$, required for computing Jacobians $\mat{H}_{k,i}$ in \eqref{eqn:measurement_jacobian}.
+
+--
+
 % Explain it in as an overview. How is the aggregation scheme used, what does this require from the measurement model, why can this be a problem for normal distance sensors?
 
 % Explain how leakage of the final aggregation sum to the navigator means leakage of the average sensor location and measurement to the navigator. This is the reason for the acceptance of this leakage, as we pointed out in the problem statement section.
-
-Using the EIF and distance sensors, we see that the required computation of measurement vector and matrices is reduced to computing $H^\top R^{-1}(z - h(x) + Hx)$ and $H^\top R^{-1}H$, for one-dimensional $R$ and jacobian $H$, at each sensor. As this requires current state information $x$, relevant attributes need to be sent to the sensors. 
 
 We wish to encrypt current state information and use the encryption scheme defined to compute measurement information $H^\top R^{-1}(z - h(x) + Hx)$ and $H^\top R^{-1}H$ as a linear combination of said state information, and encrypt it for aggregation. This then allows the navigator to learn only the sums $\sum^n_{i=1}H^\top R^{-1}_i(z_i - h(x) + Hx)$ and $\sum^n_{i=1}H^\top R_i^{-1}H$, which is sufficient to update its position.
 
