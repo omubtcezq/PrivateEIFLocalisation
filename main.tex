@@ -243,11 +243,11 @@ with noise $\rv{v}_k \sim \mathcal{N}(0,r_i)$, while the measurement function $h
 is defined as
 \begin{equation}
     \begin{split}
-        h_i(\rvec{x}_k) &= \left\|
+        h_i(\rvec{x}_k) &= \left\lVert
         \begin{bmatrix}
             \rv{x}_k & \rv{y}_k
         \end{bmatrix}^\top
-        - \vec{s}_{i}\right\| \\
+        - \vec{s}_{i}\right\rVert \\
         &= \sqrt{(\rv{x}_k-s_{x,i})^2 + (\rv{y}_k-s_{y,i})^2}\,.
     \end{split}
 \end{equation}
@@ -936,7 +936,28 @@ and the measurement matrix
 \end{equation}
 at each time step $k$. In this form, all sensitive sensor information is exclusively found in $\rvec{i}_{k,i}$ and $\mat{I}_{k,i}$. Namely, their measurements $\rv{z}_{k,i}$, measurement variances $r_i$ and locations $\vec{s}_i$; captured in measurement functions $h_i$ and Jacobians $\mat{H}_{k,i}$. 
 
-Normal privacy-preserving aggregation encryption of $\rvec{i}_{k,i}$ and $\mat{I}_{k,i}$ at the sensors would require the navigator to disclose some location information in $\rvec{x}_k$, for the computing of Jacobians $\mat{H}_{k,i}$. Instead, we want to formulate $\rvec{i}_{k,i}$ and $\mat{I}_{k,i}$ such that the sensors can use an LCAO secure encryption scheme, with location information in $\rvec{x}_k$ as weights from the navigator. As was shown in Section \ref{sec:our_scheme}, this guarantees that sensors cannot learn navigator location information $\rvec{x}_k$, and the navigator cannot learn individual sensor values $\rvec{i}_{k,i}$ and $\mat{I}_{k,i}$. From \eqref{eqn:measurement_vec} and \eqref{eqn:measurement_mat} we see that such a reformulation sets requirements on the possible measurement functions $h_i$. As matrix multiplication and scalar multiplication both preserve linearity, it is sufficient for $h_i$ and $\mat{H}_{k,i}$ to be linear combinations of information private to the navigator, for $\rvec{i}_{k,i}$ and $\mat{I}_{k,i}$ to be as well. Next, we will show how this can be achieved for the specific case of two-dimensional range-only localisation.
+Normal privacy-preserving aggregation encryption of $\rvec{i}_{k,i}$ and $\mat{I}_{k,i}$ at the sensors would require the navigator to disclose some location information in $\rvec{x}_k$, for the computing of Jacobians $\mat{H}_{k,i}$. Instead, we want to formulate $\rvec{i}_{k,i}$ and $\mat{I}_{k,i}$ such that the sensors can use an LCAO secure encryption scheme, with location information in $\rvec{x}_k$ as weights from the navigator. As was shown in Section \ref{sec:our_scheme}, this guarantees that sensors cannot learn navigator location information $\rvec{x}_k$, and the navigator cannot learn individual sensor values $\rvec{i}_{k,i}$ and $\mat{I}_{k,i}$. From \eqref{eqn:measurement_vec} and \eqref{eqn:measurement_mat} we see that such a reformulation sets requirements on the possible measurement functions $h_i$. 
+
+% 
+% ##     ##   ### ##     ## ###      ########  ########  #######   ######  
+% ##     ##  ##    ##   ##    ##     ##     ## ##       ##     ## ##    ## 
+% ##     ## ##      ## ##      ##    ##     ## ##       ##     ## ##       
+% ######### ##       ###       ##    ########  ######   ##     ##  ######  
+% ##     ## ##      ## ##      ##    ##   ##   ##       ##  ## ##       ## 
+% ##     ##  ##    ##   ##    ##     ##    ##  ##       ##    ##  ##    ## 
+% ##     ##   ### ##     ## ###      ##     ## ########  ##### ##  ######  
+% 
+
+\subsection{Requirements for the Measurement Model}
+From the definition of matrix multiplication, we know that matrices whose elements are linear combinations of weights can be multiplied to produce elements of new linear combinations, with weights dependant only on those from the original matrices. For example, consider dimension $N\times N$ matrices $\mat{A}$ and $\mat{B}$, where element $(i,j)$ in matrix $\mat{A}$ is of the form $\sum_{l=0}^M w_{l,i,j}a_{l,i,j}$ and similarly for matrix $\mat{B}$, form $\sum_{l=0}^M v_{l,i,j}b_{l,i,j}$. If we consider $w_{l,i,j}$ and $v_{l,i,j}$ as the weight terms, we can write element $(i,j)$ of a product matrix $\mat{A}\mat{B}$, with weights dependant only on these, as
+\begin{equation}
+    \begin{split}
+        \sum_{l=0}^N&\left(\left(\sum_{m=0}^M w_{m,i,j}a_{m,i,l}\right)\left(\sum_{m=0}^Mv_{m,i,j}b_{m,l,j}\right)\right) \\
+        &=\sum_{l=0}^N\left(\sum_{m=0}^M\sum_{n=0}^M w_{m,i,l}a_{m,i,l}v_{n,l,j}b_{n,l,j}\right) \\
+        &=\sum_{l=0}^N\sum_{m=0}^M\sum_{n=0}^M (w_{m,i,l}v_{n,l,j})a_{m,i,l}b_{n,l,j}\,.
+    \end{split} \label{eqn:matrix_mult_weights}
+\end{equation}
+Similarly, scalar multiplication also holds this property. It is therefore sufficient for $h_i$ and $\mat{H}_{k,i}$ to be linear combinations of information private to the navigator, for $\rvec{i}_{k,i}$ and $\mat{I}_{k,i}$ to be as well. Next, we will show how this can be achieved for the specific case of two-dimensional range-only localisation.
 
 % 
 %  #######  ########   ######     ##     ##  #######  ########  ######## ##       
@@ -949,7 +970,7 @@ Normal privacy-preserving aggregation encryption of $\rvec{i}_{k,i}$ and $\mat{I
 % 
 
 \subsection{Localisation Measurement Model} \label{subsec:observation_model}
-Recalling the state definition \eqref{eqn:state_def} and two-dimensional measurement model \eqref{eqn:measurement_model}, we see that $h_i$ cannot be rearranged to a linear combination of elements private to the navigator. In addition, the Jacobian of $h_i$,
+Recalling the state definition \eqref{eqn:state_def} and two-dimensional measurement model \eqref{eqn:measurement_model}, we can see that $h_i$ \textit{cannot} be rearranged to a linear combination of elements private to the navigator. In addition, the Jacobian of $h_i$,
 \begin{equation}
     \mat{H}_{k,i} = 
     \begin{bmatrix}
@@ -957,17 +978,17 @@ Recalling the state definition \eqref{eqn:state_def} and two-dimensional measure
         \frac{\rv{y}_k - s_y}{\sqrt{(\rv{x}_k - s_x)^2 + (\rv{y}_k - s_y)^2}} 
     \end{bmatrix}\,,
 \end{equation}
-cannot be either. Instead, we consider the adjusted measurement functions
+cannot be either. Instead, we consider the modified measurement functions
 \begin{equation}
-    h'_i(\rvec{x}_k) = h_i(\rvec{x}_k)^2\,. \label{eqn:adjusted_measurement_funcs}
+    h'_i(\rvec{x}_k) = h_i(\rvec{x}_k)^2\,. \label{eqn:modified_measurement_func}
 \end{equation}
-Measurement functions in this form allow rearrangement of the corresponding adjusted measurement vector $\rvec{i}'_{k,i}$ and measurement matrix $\mat{I}'_{k,i}$ into linear combinations of navigator information.The modified measurement functions $h'_i$ can be written as
+A measurement function in this form allows rearrangement to a linear combination of navigator information, and thus of the corresponding modified measurement vector $\rvec{i}'_{k,i}$ and measurement matrix $\mat{I}'_{k,i}$ as well.The modified measurement functions $h'_i$ can be written as
 \begin{equation}
     \begin{split}
-        h'_i(\rvec{x}_k) &= \left\|
+        h'_i(\rvec{x}_k) &= \left\lVert
         \begin{bmatrix}
             \rv{x}_k & \rv{y}_k
-        \end{bmatrix}^\top - \vec{s}_i\right\|^2 \\
+        \end{bmatrix}^\top - \vec{s}_i\right\rVert^2 \\
         &= (\rv{x}_k - s_x)^2 + (\rv{y}_k - s_y)^2 \\
         &= \rv{x}_k^2 + \rv{y}_k^2 -2s_x\rv{x}_k -2s_y\rv{y}_k +s_x^2 +s_y^2
     \end{split}\,,
@@ -982,40 +1003,43 @@ and the corresponding Jacobians $\mat{H}'_{k,i}$ as
 \end{equation}
 The above have been rearranged as linear combinations of the weights $\rv{x}_k^2$, $\rv{y}_k^2$, $\rv{x}_k$ and $\rv{y}_k$, which capture all the required information that is private to the navigator. 
 
-As stated previously, computing $\rvec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ will preserve this ability, albeit increasing the number of weights to include combinations of their products. $\rvec{i}'_{k,i}$ can now be written as
+To show how $\rvec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ can be formulated in a similar manner using \eqref{eqn:matrix_mult_weights}, we denote the modified measurements as $\rv{z}'_{k,i}$, and modified measurement variances as $\mean{r}_{k,i}$. The derivation of these from the normal measurements and variances $\rv{z}_{k,i}$ and $r_i$ will be derived in Section \ref{subsec:range_measurement_mod}. The resulting linear combinations are given by
 \begin{equation}
     \begin{split}
         \rvec{i}'_{k,i} &= \mat{H}_{k,i}^{\prime\top} \mean{r}_{k,i}^{-1}(\rv{z}'_{k,i} - h'_i(\rvec{x}_k) + \mat{H}'_{k,i}\rvec{x}_k) \\
-        &= \\
-        &\hspace{-1em}
+        &= 
         \begin{bmatrix}
             \begin{split}
                 &(2\mean{r}_{k,i}^{-1})\rv{x}_k^3 + (2\mean{r}_{k,i}^{-1})\rv{x}_k\rv{y}_k^2 + (-\mean{r}_{k,i}^{-1}s_x)\rv{x}_k^2 \\
-                &\quad+ (-2\mean{r}_{k,i}^{-1}s_x)\rv{y}_k^2 + (2\mean{r}_{k,i}^{-1}\rv{z}'_{k,i})\rv{x}_k + (-2\mean{r}_{k,i}^{-1}s_x^2)\rv{x}_k \\
-                &\quad+ (-2\mean{r}_{k,i}^{-1}s_y^2)\rv{x}_k + (2\mean{r}_{k,i}^{-1}s_x^3) + (2\mean{r}_{k,i}^{-1}s_xs_y^2) \\
+                &\quad+ (-2\mean{r}_{k,i}^{-1}s_x)\rv{y}_k^2 + (2\mean{r}_{k,i}^{-1}\rv{z}'_{k,i})\rv{x}_k \\
+                &\quad+ (-2\mean{r}_{k,i}^{-1}s_x^2)\rv{x}_k + (-2\mean{r}_{k,i}^{-1}s_y^2)\rv{x}_k \\
+                &\quad+ (2\mean{r}_{k,i}^{-1}s_x^3) + (2\mean{r}_{k,i}^{-1}s_xs_y^2) \\
                 &\quad+ (-2\mean{r}_{k,i}^{-1}s_x \rv{z}'_{k,i})
             \end{split}
             \vspace{5pt}\\
             \begin{split}
                 &(2\mean{r}_{k,i}^{-1})\rv{y}_k^3 + (2\mean{r}_{k,i}^{-1})\rv{x}_k^2\rv{y}_k + (-2\mean{r}_{k,i}^{-1}s_y)\rv{x}_k^2 \\
-                &\quad+ (-2\mean{r}_{k,i}^{-1}s_y)\rv{y}_k^2 + (2\mean{r}_{k,i}^{-1}\rv{z}'_{k,i})\rv{y}_k + (-2\mean{r}_{k,i}^{-1}s_x^2)\rv{y}_k \\
-                &\quad+ (-2\mean{r}_{k,i}^{-1}s_y^2)\rv{y}_k + (2\mean{r}_{k,i}^{-1}s_ys_x^2) + (2\mean{r}_{k,i}^{-1}s_y^3) \\
+                &\quad+ (-2\mean{r}_{k,i}^{-1}s_y)\rv{y}_k^2 + (2\mean{r}_{k,i}^{-1}\rv{z}'_{k,i})\rv{y}_k \\
+                &\quad+ (-2\mean{r}_{k,i}^{-1}s_x^2)\rv{y}_k + (-2\mean{r}_{k,i}^{-1}s_y^2)\rv{y}_k \\
+                &\quad+ (2\mean{r}_{k,i}^{-1}s_ys_x^2) + (2\mean{r}_{k,i}^{-1}s_y^3) \\
                 &\quad+ (-2\mean{r}_{k,i}^{-1}s_y\rv{z}'_{k,i})
             \end{split}
         \end{bmatrix}
-    \end{split}
+    \end{split} \label{eqn:hrz_linear_comb}
 \end{equation}
-
-
+and
 \begin{equation}
-    \mat{H}_{k,i}^{\prime\top} \mean{r}_{k,i}^{-1}\mat{H}'_{k,i} = 
-    \begin{bmatrix}
-        \alpha_{11} & \alpha_{12} \\
-        \alpha_{21} & \alpha_{22}
-    \end{bmatrix}\,,
+    \begin{split}
+        \mat{I}'_{k,i} &= \mat{H}_{k,i}^{\prime\top} \mean{r}_{k,i}^{-1}\mat{H}'_{k,i} \\
+        &=
+        \begin{bmatrix}
+            \alpha_{11} & \alpha_{12} \\
+            \alpha_{21} & \alpha_{22}
+        \end{bmatrix}\,,
+    \end{split} \label{eqn:hrh_linear_comb}
 \end{equation}
 with
-\begin{align}
+\begin{align*}
     \alpha_{11} &= (4\mean{r}_{k,i}^{-1})\rv{x}_k^2 + (-8\mean{r}_{k,i}^{-1}s_x)\rv{x}_k + (4\mean{r}_{k,i}^{-1}s_x^2) \\
     \begin{split}
         \alpha_{12} &= (4\mean{r}_{k,i}^{-1})\rv{x}_k\rv{y}_k + (-4\mean{r}_{k,i}^{-1}s_y)\rv{x}_k + (-4\mean{r}_{k,i}^{-1}s_x)\rv{y}_k \\
@@ -1023,68 +1047,17 @@ with
     \end{split}\\
     \alpha_{21} &= \alpha_{12} \\
     \alpha_{22} &= (4\mean{r}_{k,i}^{-1})\rv{y}_k^2 + (-8\mean{r}_{k,i}^{-1}s_y)\rv{y}_k + (4\mean{r}_{k,i}^{-1}s_y^2)\,.
-\end{align}
+\end{align*}
+The above rearrangements result in $\rvec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ as linear comabinations of the weights $\rv{x}_k^3$, $\rv{y}_k^3$, $\rv{x}_k^2\rv{y}_k$, $\rv{x}_k\rv{y}_k^2$, $\rv{x}_k^2$, $\rv{y}_k^2$, $\rv{x}_k$ and $\rv{y}_k$, which again capture all the required information private to the navigator.
 
-
-
-
-Modification of measurements $z_{k,i}$ to suit the adjusted measurement functions will not preserve the Gaussian nature of the true measurement noise, and will additionally require estimation of the sensor measurement variance $r_i$. We will denote the modified measurement from sensor $i$ at time $k$ as $\rv{z}'_{k,i}$, and the estimated, now time-dependant, sensor variance as $\mean{r}_{k,i}$. The computations of these values will be discussed in Section \ref{subsec:range_measurement_mod}.
-
---
-
-
-% Show here the weighted integrals that give mean and variance of the new noise. If wanting to show more working, do this in the appendix section, but probably not needed.
-
-% Point out here that the further away the sensor is when it makes its distance measurement (the larger the measurement) the more Gaussian the noise and the better the filter. Give flight navigation as an applicable example with typically high distances.
-
-% Additionally increased range accuracy may be possible when sensors know the process model of the navigator, allowing them to run their own filter (more accurate than only measurements but not as accurate as the navigator's estimate from multiple sensors) and use their filtered estimated distance as the scaling factor when computing the modified measurement variance.
-
-
-% The above function and jacobian elements are linear combinations of functions $x$, $x^2$, $y$, $xy$ and $y^2$. From the previous section, we know we can now define $H^{\prime\top} R^{\prime -1}(z' - h(x) + Hx)$ and $H^{\prime\top} R^{\prime -1}H'$ in terms of more state vector dependant functions, in this case, $x$, $x^2$, $x^3$, $y$, $xy$, $x^2y$, $y^2$, $xy^2$ and $y^3$.
-% \begin{equation*}
-%     \begin{split}
-%         H&^{\prime\top} R^{\prime -1}(z' - h(x) + Hx) = \\
-%         &\begin{bmatrix}
-%             \begin{split}
-%                 &(2R^{\prime -1}z')x + (-2R^{\prime -1}s_xz) + (-2R^{\prime -1}s_x^2)x \\
-%                 &\quad+ (2R^{\prime -1}s_x^3) + (-2R^{\prime -1}s_y^2)x + (2R^{\prime -1}s_xs_y^2) \\
-%                 &\quad+ (2R^{\prime -1})x^3 + (-R^{\prime -1}s_x)x^2 + (2R^{\prime -1})xy^2 \\
-%                 &\quad+ (-2R^{\prime -1}s_x)y^2
-%             \end{split}
-%             \vspace{5pt}\\
-%             \begin{split}
-%                 &(2R^{\prime -1}z)y + (-2R^{\prime -1}s_yz) + (-2R^{\prime -1}s_x^2)y \\
-%                 &\quad+ (2R^{\prime -1}s_ys_x^2) + (-2R^{\prime -1}s_y^2)y + (2R^{\prime -1}s_y^3) \\
-%                 &\quad+ (2R^{\prime -1})x^2y + (-2R^{\prime -1}s_y)x^2 + (2R^{\prime -1})y^3 \\
-%                 &\quad+ (-2R^{\prime -1}s_y)y^2
-%             \end{split}
-%         \end{bmatrix}
-%     \end{split}
-% \end{equation*}
-% and
-% \begin{equation*}
-%     H^{\prime\top} R^{\prime -1}H' = 
-%     \begin{bmatrix}
-%         \alpha_{11} & \alpha_{12} \\
-%         \alpha_{21} & \alpha_{22}
-%     \end{bmatrix}\,,
-% \end{equation*}
-% with
-% \begin{align*}
-%     \alpha_{11} &= (4R^{\prime -1})x^2 + (-8R^{\prime -1}s_x)x + (4R^{\prime -1}s_x^2) \\
-%     \begin{split}
-%         \alpha_{12} &= (4R^{\prime -1})xy + (-4R^{\prime -1}s_y)x + (-4R^{\prime -1}s_x)y \\
-%         &\qquad+ (4R^{\prime -1}s_xs_y)
-%     \end{split}\\
-%     \alpha_{21} &= \alpha_{12} \\
-%     \alpha_{22} &= (4R^{\prime -1})y^2 + (-8R^{\prime -1}s_y)y + (4R^{\prime -1}s_y^2)\,.
-% \end{align*}
-
-The above formulation allows the application of our encryption scheme to the private aggregation of the measurement matrix and vector above. The scheme's encrypted weights $x$, $x^2$, $x^3$, $y$, $xy$, $x^2y$, $y^2$, $xy^2$ and $y^3$ are computed at each time step by the navigator, and each element of the measurement matrix and vector above is computed as a linear combination and prepared for aggregation by the sensors. 
-
-Lastly, since we aggregate multiple linear combinations at each time step $k$ (each element in the result matrix and vector comes from a separate aggregation), we require unique hash values for each aggregation. This is handled by setting time variable $t$ as concatenation $k \| i \| j$ for each element $x_{i,j}$. Aggregation of each element is now performed under a different encryption scheme ``time'' step, when computing \eqref{eqn:our_scheme_lin_comb}.
-
-The solution above has been derived for the two-dimensional localisation case but it is easy to see that a similar solution would work in three-dimensional space. The cost of increasing localisation dimension however, is the increased number of state vector element functions required for broadcast by the navigator, and length of linear combination computed by sensors.
+The final step required for the application of our LCAO-secure encryption scheme to the linear combinations \eqref{eqn:hrz_linear_comb} and \eqref{eqn:hrh_linear_comb} is the handling of the scheme's instance-stamp variable $t$, in \eqref{eqn:our_scheme_lin_comb}. As six linear-combination aggregations occur at each time step $k$ (four element in $\mat{I}'_{k,i}$ and two in $\rvec{i}'_{k,i}$), it is required for the security of the scheme that $t$ be unique for each aggregation at each time. This is handled by setting $t$ to the concatenation 
+\begin{equation}
+    t=k\mathbin\|i\mathbin\|j\mathbin\|b
+\end{equation}
+for aggregation in row $i$ and column $j$, with $b=0$ for aggregations in $\rvec{i}'_{k,i}$ and $b=1$ otherwise.
+\begin{rem}
+    The solutions \eqref{eqn:hrz_linear_comb} and \eqref{eqn:hrh_linear_comb} have been derived specifically for two-dimensional localisation, but can be similarly computed for the three-dimensional case. It is worth noting however, the additional cost required for increasing localisation dimension. The number of weights is increased in the rearranged functions $h'_i$, and therefore combinatorially increased in $\rvec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ by \eqref{eqn:matrix_mult_weights}. This in turn results in a combinatorial increase in required weights, and therefore communication, with respect to the number of state parameters required for computing functions $h_i$.
+\end{rem}
 
 % 
 %  ######   #######  ##     ##    ###    ########  ######## ########     ######## 
@@ -1097,6 +1070,14 @@ The solution above has been derived for the two-dimensional localisation case bu
 % 
 
 \subsection{Range Measurement Modification} \label{subsec:range_measurement_mod}
+In Section \ref{subsec:observation_model}, we assumed the existance of modified sensor measurements $\rv{z}'_{k,i}$ and measurement variances $\mean{r}_{k,i}$ such that we used a measurement model of the same form as \eqref{eqn:measurement_model} given the modified measurement function in \eqref{eqn:modified_measurement_func}.
+
+
+
+--
+
+% Modification of measurements $z_{k,i}$ to suit the modified measurement functions will not preserve the Gaussian nature of the true measurement noise, and will additionally require estimation of the sensor measurement variance $r_i$. We will denote the modified measurement from sensor $i$ at time $k$ as $\rv{z}'_{k,i}$, and the estimated, now time-dependant, sensor variance as $\mean{r}_{k,i}$. The computations of these values will be discussed in Section \ref{subsec:range_measurement_mod}.
+
 The conversion of measurement function $h'(x) = h(x)^2$ is in practice complicated by measurement noise manipulation. As we only know $z = h(x) + n$, where $n~\mathcal{N}(0,\sigma)$, we can estimate the new measurement as $z^2$. This results in the new measurement
 \begin{equation*}
     \begin{split}
@@ -1105,7 +1086,7 @@ The conversion of measurement function $h'(x) = h(x)^2$ is in practice complicat
         &= h'(x) + 2nh(x) + n^2
     \end{split}\,,
 \end{equation*}
-where noise term $2nh(x) + n^2$ has mean $\sigma^2$ and standard deviation $2(2h(x)^2\sigma^2 + \sigma^4)$. We account for the non-zero mean by offsetting the squared measurement and taking this as the adjusted measurement model
+where noise term $2nh(x) + n^2$ has mean $\sigma^2$ and standard deviation $2(2h(x)^2\sigma^2 + \sigma^4)$. We account for the non-zero mean by offsetting the squared measurement and taking this as the modified measurement model
 \begin{equation*}
     \begin{split}
         z' &= h'(x) + 2nh(x) + n^2 - \sigma^2 \\
