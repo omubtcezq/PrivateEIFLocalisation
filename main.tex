@@ -184,7 +184,7 @@ In Section \ref{sec:problem_statement} we introduce the localisation problem and
 % 
 
 \subsection{Notation}
-Notation. Reminder to include symbols for: rounding, concatenation, ``divides'', vector norm, vector indexing (also note starts at 0)
+Notation. Reminder to include symbols for: rounding, concatenation, ``divides'', vector norm, expected value and variance
 
 
 % 
@@ -231,9 +231,9 @@ A known process model is followed, which at time $k$ is given by
 \end{equation}
 with zero-mean Gaussian process noise $w_k \sim \mathcal{N}(\vec{0},\mat{Q})$. The measurement model is dependant on sensor $i$ and given by
 \begin{equation}
-    \rv{z}_k = h_i(\rvec{x}_k)+\rv{v}_k\,, \label{eqn:measurement_model}
+    \rv{z}_{k,i} = h_i(\rvec{x}_k)+\rv{v}_{k,i}\,, \label{eqn:measurement_model}
 \end{equation}
-with noise $\rv{v}_k \sim \mathcal{N}(0,r_i)$, while the measurement function $h_i$, for sensor $i$ at location
+with noise $\rv{v}_{k,i} \sim \mathcal{N}(0,r_i)$, while the measurement function $h_i$, for sensor $i$ at location
 \begin{equation}
     \vec{s}_i = 
     \begin{bmatrix}
@@ -982,7 +982,7 @@ cannot be either. Instead, we consider the modified measurement functions
 \begin{equation}
     h'_i(\rvec{x}_k) = h_i(\rvec{x}_k)^2\,. \label{eqn:modified_measurement_func}
 \end{equation}
-A measurement function in this form allows rearrangement to a linear combination of navigator information, and thus of the corresponding modified measurement vector $\rvec{i}'_{k,i}$ and measurement matrix $\mat{I}'_{k,i}$ as well.The modified measurement functions $h'_i$ can be written as
+A measurement function in this form allows rearrangement to a linear combination of navigator information, and thus of the corresponding modified measurement vector $\rvec{i}'_{k,i}$ and measurement matrix $\mat{I}'_{k,i}$ as well. The modified measurement functions $h'_i$ can be written as
 \begin{equation}
     \begin{split}
         h'_i(\rvec{x}_k) &= \left\lVert
@@ -1003,26 +1003,32 @@ and the corresponding Jacobians $\mat{H}'_{k,i}$ as
 \end{equation}
 The above have been rearranged as linear combinations of the weights $\rv{x}_k^2$, $\rv{y}_k^2$, $\rv{x}_k$ and $\rv{y}_k$, which capture all the required information that is private to the navigator. 
 
-To show how $\rvec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ can be formulated in a similar manner using \eqref{eqn:matrix_mult_weights}, we denote the modified measurements as $\rv{z}'_{k,i}$, and modified measurement variances as $\mean{r}_{k,i}$. The derivation of these from the normal measurements and variances $\rv{z}_{k,i}$ and $r_i$ will be derived in Section \ref{subsec:range_measurement_mod}. The resulting linear combinations are given by
+To show how $\rvec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ can be formulated in a similar manner using \eqref{eqn:matrix_mult_weights}, we require the existance of a modified measurement model of the form
+\begin{equation}
+    \rv{z}'_{k,i} = h'_i(\rvec{x}_k)+\rv{v}'_{k,i}\,, \label{eqn:modified_measurement_model}
+\end{equation}
+where $\rv{z}'_{k,i}$ is the modified measurement, and noise $\rv{v}'_{k,i}$ is white and Gaussian. The approximation of $\rv{z}'_{k,i}$ and $\rv{r}_{k,i}$ from original measurements and variances $\rv{z}_{k,i}$ and $r_i$ will be shown in Section \ref{subsec:range_measurement_mod}. 
+
+With the existance of \eqref{eqn:modified_measurement_model}, measurement vector and measurement matrix linear combinations can be given by
 \begin{equation}
     \begin{split}
-        \rvec{i}'_{k,i} &= \mat{H}_{k,i}^{\prime\top} \mean{r}_{k,i}^{-1}(\rv{z}'_{k,i} - h'_i(\rvec{x}_k) + \mat{H}'_{k,i}\rvec{x}_k) \\
+        \rvec{i}'_{k,i} &= \mat{H}_{k,i}^{\prime\top} \rv{r}_{k,i}^{-1}(\rv{z}'_{k,i} - h'_i(\rvec{x}_k) + \mat{H}'_{k,i}\rvec{x}_k) \\
         &= 
         \begin{bmatrix}
             \begin{split}
-                &(2\mean{r}_{k,i}^{-1})\rv{x}_k^3 + (2\mean{r}_{k,i}^{-1})\rv{x}_k\rv{y}_k^2 + (-\mean{r}_{k,i}^{-1}s_x)\rv{x}_k^2 \\
-                &\quad+ (-2\mean{r}_{k,i}^{-1}s_x)\rv{y}_k^2 + (2\mean{r}_{k,i}^{-1}\rv{z}'_{k,i})\rv{x}_k \\
-                &\quad+ (-2\mean{r}_{k,i}^{-1}s_x^2)\rv{x}_k + (-2\mean{r}_{k,i}^{-1}s_y^2)\rv{x}_k \\
-                &\quad+ (2\mean{r}_{k,i}^{-1}s_x^3) + (2\mean{r}_{k,i}^{-1}s_xs_y^2) \\
-                &\quad+ (-2\mean{r}_{k,i}^{-1}s_x \rv{z}'_{k,i})
+                &(2\rv{r}_{k,i}^{-1})\rv{x}_k^3 + (2\rv{r}_{k,i}^{-1})\rv{x}_k\rv{y}_k^2 + (-\rv{r}_{k,i}^{-1}s_x)\rv{x}_k^2 \\
+                &\quad+ (-2\rv{r}_{k,i}^{-1}s_x)\rv{y}_k^2 + (2\rv{r}_{k,i}^{-1}\rv{z}'_{k,i})\rv{x}_k \\
+                &\quad+ (-2\rv{r}_{k,i}^{-1}s_x^2)\rv{x}_k + (-2\rv{r}_{k,i}^{-1}s_y^2)\rv{x}_k \\
+                &\quad+ (2\rv{r}_{k,i}^{-1}s_x^3) + (2\rv{r}_{k,i}^{-1}s_xs_y^2) \\
+                &\quad+ (-2\rv{r}_{k,i}^{-1}s_x \rv{z}'_{k,i})
             \end{split}
             \vspace{5pt}\\
             \begin{split}
-                &(2\mean{r}_{k,i}^{-1})\rv{y}_k^3 + (2\mean{r}_{k,i}^{-1})\rv{x}_k^2\rv{y}_k + (-2\mean{r}_{k,i}^{-1}s_y)\rv{x}_k^2 \\
-                &\quad+ (-2\mean{r}_{k,i}^{-1}s_y)\rv{y}_k^2 + (2\mean{r}_{k,i}^{-1}\rv{z}'_{k,i})\rv{y}_k \\
-                &\quad+ (-2\mean{r}_{k,i}^{-1}s_x^2)\rv{y}_k + (-2\mean{r}_{k,i}^{-1}s_y^2)\rv{y}_k \\
-                &\quad+ (2\mean{r}_{k,i}^{-1}s_ys_x^2) + (2\mean{r}_{k,i}^{-1}s_y^3) \\
-                &\quad+ (-2\mean{r}_{k,i}^{-1}s_y\rv{z}'_{k,i})
+                &(2\rv{r}_{k,i}^{-1})\rv{y}_k^3 + (2\rv{r}_{k,i}^{-1})\rv{x}_k^2\rv{y}_k + (-2\rv{r}_{k,i}^{-1}s_y)\rv{x}_k^2 \\
+                &\quad+ (-2\rv{r}_{k,i}^{-1}s_y)\rv{y}_k^2 + (2\rv{r}_{k,i}^{-1}\rv{z}'_{k,i})\rv{y}_k \\
+                &\quad+ (-2\rv{r}_{k,i}^{-1}s_x^2)\rv{y}_k + (-2\rv{r}_{k,i}^{-1}s_y^2)\rv{y}_k \\
+                &\quad+ (2\rv{r}_{k,i}^{-1}s_ys_x^2) + (2\rv{r}_{k,i}^{-1}s_y^3) \\
+                &\quad+ (-2\rv{r}_{k,i}^{-1}s_y\rv{z}'_{k,i})
             \end{split}
         \end{bmatrix}
     \end{split} \label{eqn:hrz_linear_comb}
@@ -1030,7 +1036,7 @@ To show how $\rvec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ can be formulated in a simila
 and
 \begin{equation}
     \begin{split}
-        \mat{I}'_{k,i} &= \mat{H}_{k,i}^{\prime\top} \mean{r}_{k,i}^{-1}\mat{H}'_{k,i} \\
+        \mat{I}'_{k,i} &= \mat{H}_{k,i}^{\prime\top} \rv{r}_{k,i}^{-1}\mat{H}'_{k,i} \\
         &=
         \begin{bmatrix}
             \alpha_{11} & \alpha_{12} \\
@@ -1040,13 +1046,13 @@ and
 \end{equation}
 with
 \begin{align*}
-    \alpha_{11} &= (4\mean{r}_{k,i}^{-1})\rv{x}_k^2 + (-8\mean{r}_{k,i}^{-1}s_x)\rv{x}_k + (4\mean{r}_{k,i}^{-1}s_x^2) \\
+    \alpha_{11} &= (4\rv{r}_{k,i}^{-1})\rv{x}_k^2 + (-8\rv{r}_{k,i}^{-1}s_x)\rv{x}_k + (4\rv{r}_{k,i}^{-1}s_x^2) \\
     \begin{split}
-        \alpha_{12} &= (4\mean{r}_{k,i}^{-1})\rv{x}_k\rv{y}_k + (-4\mean{r}_{k,i}^{-1}s_y)\rv{x}_k + (-4\mean{r}_{k,i}^{-1}s_x)\rv{y}_k \\
-        &\qquad+ (4\mean{r}_{k,i}^{-1}s_xs_y)
+        \alpha_{12} &= (4\rv{r}_{k,i}^{-1})\rv{x}_k\rv{y}_k + (-4\rv{r}_{k,i}^{-1}s_y)\rv{x}_k + (-4\rv{r}_{k,i}^{-1}s_x)\rv{y}_k \\
+        &\qquad+ (4\rv{r}_{k,i}^{-1}s_xs_y)
     \end{split}\\
     \alpha_{21} &= \alpha_{12} \\
-    \alpha_{22} &= (4\mean{r}_{k,i}^{-1})\rv{y}_k^2 + (-8\mean{r}_{k,i}^{-1}s_y)\rv{y}_k + (4\mean{r}_{k,i}^{-1}s_y^2)\,.
+    \alpha_{22} &= (4\rv{r}_{k,i}^{-1})\rv{y}_k^2 + (-8\rv{r}_{k,i}^{-1}s_y)\rv{y}_k + (4\rv{r}_{k,i}^{-1}s_y^2)\,.
 \end{align*}
 The above rearrangements result in $\rvec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ as linear comabinations of the weights $\rv{x}_k^3$, $\rv{y}_k^3$, $\rv{x}_k^2\rv{y}_k$, $\rv{x}_k\rv{y}_k^2$, $\rv{x}_k^2$, $\rv{y}_k^2$, $\rv{x}_k$ and $\rv{y}_k$, which again capture all the required information private to the navigator.
 
@@ -1056,7 +1062,7 @@ The final step required for the application of our LCAO-secure encryption scheme
 \end{equation}
 for aggregation in row $i$ and column $j$, with $b=0$ for aggregations in $\rvec{i}'_{k,i}$ and $b=1$ otherwise.
 \begin{rem}
-    The solutions \eqref{eqn:hrz_linear_comb} and \eqref{eqn:hrh_linear_comb} have been derived specifically for two-dimensional localisation, but can be similarly computed for the three-dimensional case. It is worth noting however, the additional cost required for increasing localisation dimension. The number of weights is increased in the rearranged functions $h'_i$, and therefore combinatorially increased in $\rvec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ by \eqref{eqn:matrix_mult_weights}. This in turn results in a combinatorial increase in required weights, and therefore communication, with respect to the number of state parameters required for computing functions $h_i$.
+    The solutions \eqref{eqn:hrz_linear_comb} and \eqref{eqn:hrh_linear_comb} have been derived for two-dimensional localisation, but can be similarly extended to the three-dimensional case. We note however, the additional cost with increasing dimension. The number of weights is increased in the rearranged functions $h'_i$, and therefore combinatorially increased in $\rvec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ by \eqref{eqn:matrix_mult_weights}. This results in a combinatorial increase in weights, and therefore communication, with respect to the number of state parameters required for computing functions $h_i$.
 \end{rem}
 
 % 
@@ -1070,30 +1076,55 @@ for aggregation in row $i$ and column $j$, with $b=0$ for aggregations in $\rvec
 % 
 
 \subsection{Range Measurement Modification} \label{subsec:range_measurement_mod}
-In Section \ref{subsec:observation_model}, we assumed the existance of modified sensor measurements $\rv{z}'_{k,i}$ and measurement variances $\mean{r}_{k,i}$ such that we used a measurement model of the same form as \eqref{eqn:measurement_model} given the modified measurement function in \eqref{eqn:modified_measurement_func}.
-
-
-
---
-
-% Modification of measurements $z_{k,i}$ to suit the modified measurement functions will not preserve the Gaussian nature of the true measurement noise, and will additionally require estimation of the sensor measurement variance $r_i$. We will denote the modified measurement from sensor $i$ at time $k$ as $\rv{z}'_{k,i}$, and the estimated, now time-dependant, sensor variance as $\mean{r}_{k,i}$. The computations of these values will be discussed in Section \ref{subsec:range_measurement_mod}.
-
-The conversion of measurement function $h'(x) = h(x)^2$ is in practice complicated by measurement noise manipulation. As we only know $z = h(x) + n$, where $n~\mathcal{N}(0,\sigma)$, we can estimate the new measurement as $z^2$. This results in the new measurement
-\begin{equation*}
+In Section \ref{subsec:observation_model}, we assumed the existance of modified sensor measurements $\rv{z}'_{k,i}$ with Gaussian noise and variances $\rv{r}_{k,i}$ in the modified measurement model \eqref{eqn:modified_measurement_model}. In practice, conversion of range measurements $\rv{z}_{k,i}$ to $\rv{z}'_{k,i}$ is complicated by the noise term $\rv{v}_{k,i} \sim \mathcal{N}(0, r_i)$ in \eqref{eqn:measurement_model}. Squaring the range measurement produces
+\begin{equation}
     \begin{split}
-        z^2 &= (h(x) + n)^2 \\
-        &= h(x)^2 + 2nh(x) + n^2 \\
-        &= h'(x) + 2nh(x) + n^2
-    \end{split}\,,
-\end{equation*}
-where noise term $2nh(x) + n^2$ has mean $\sigma^2$ and standard deviation $2(2h(x)^2\sigma^2 + \sigma^4)$. We account for the non-zero mean by offsetting the squared measurement and taking this as the modified measurement model
-\begin{equation*}
+        \rv{z}_{k,i}^2 &= (h_i(\rvec{x}_k) + \rv{v}_{k,i})^2 \\
+        &= h_i(\rvec{x}_k)^2 + 2h_i(\rvec{x}_k)\rv{v}_{k,i} + \rv{v}_{k,i}^2 \\
+        &= h'_i(\rvec{x}_k) + 2h_i(\rvec{x}_k)\rv{v}_{k,i} + \rv{v}_{k,i}^2\,,
+    \end{split}
+\end{equation}
+with new noise term, $2h_i(\rvec{x}_k)\rv{v}_{k,i} + \rv{v}_{k,i}^2$, now dependant on the measurement function $h_i$ and no longer white or Gaussian. We can compute the mean of the new noise term (a function of white Gaussian term $\rv{v}_{k,i}$) as
+\begin{equation}
+    \E{2h_i(\rvec{x}_k)\rv{v}_{k,i} + \rv{v}_{k,i}^2} = r_i\, \label{eqn:modified_noise_mean}
+\end{equation}
+and define modified measurements as
+\begin{equation} \label{eqn:modified_measurement}
     \begin{split}
-        z' &= h'(x) + 2nh(x) + n^2 - \sigma^2 \\
-        &= h'(x) + n'
-    \end{split}\,,
-\end{equation*}
-with variance of $n'$ approximated as $2(2z^2\sigma^2 + \sigma^4)$, by using the original measurement $z$ as an unbiased estimate for $h(x)$.
+        \rv{z}'_{k,i} &= \rv{z}_{k,i}^2 - r_i \\
+        &= h_i(\rvec{x}_k)^2 + 2h_i(\rvec{x}_k)\rv{v}_{k,i} + \rv{v}_{k,i}^2 - r_i \\
+        &= h'_i(\rvec{x}_k) + \rv{v}'_{k,i}\,,
+    \end{split}
+\end{equation}
+with now zero-mean noise $\rv{v}'_{k,i} = 2h_i(\rvec{x}_k)\rv{v}_{k,i} + \rv{v}_{k,i}^2 - r_i$. The noise in this case (again a function of white Gaussian term $\rv{v}_{k,i}$) has variance 
+\begin{equation}
+    \Var{\rv{v}'_{k,i}} = 4h_i(\rvec{x}_k)^2r_i + 2r_i^2
+\end{equation}
+and is dependant on $h_i(\rvec{x}_k)$. We also wish to approximate this noise using values available to the sensor, $\rv{z}_{k,i}$ and $r_i$, while providing a conservative estimate of the true variance so as not to affect the convergence of the EIF. While replacing $h_i(\rvec{x}_k)$ with $\rv{z}_{k,i}$ only provides a conservative estimate in the case
+\begin{equation}
+    \begin{split}
+        \rv{z}_{k,i} &> h_i(\rvec{x}_k) \\
+        \rv{z}_{k,i} - h_i(\rvec{x}_k) &> 0 \\
+        \rv{v}_{k,i} &> 0\,,
+    \end{split}
+\end{equation}
+which cannot be guaranteed, we can instead provide a conservative estimate with $95\%$ confidence, by shifting measurement $\rv{z}_{k,i}$ by two standard deviations $\sqrt{r_i}$. Thus, the modified measurement variance for sensor $i$ at time $k$ is conservatively approximated by
+\begin{equation}
+    \rv{r}_{k, i} = 4(\rv{z}_{k,i} + 2\sqrt{r_i})^2r_i + 2r_i^2\,. \label{eqn:modified_meaasurement_variance_estimate}
+\end{equation}
+
+In addition, we note that the distribution of noise in \eqref{eqn:modified_measurement} approaches a Gaussian when true ranges are sufficiently larger than measurement variance, as
+\begin{equation}
+    \begin{split}
+        &r_i << h_i(\rvec{x}_k) \\
+        \implies &2h_i(\rvec{x}_k)\rv{v}_{k,i} + \rv{v}_{k,i}^2 - r_i \approx 2h_i(\rvec{x}_k)\rv{v}_{k,i} \\
+        \implies &\rv{v}'_{k,i} \approx 2h_i(\rvec{x}_k)\rv{v}_{k,i}\,,
+    \end{split} \label{eqn:modified_noise_approaches_gaussian}
+\end{equation}
+and conclude with the following assumption.
+\begin{assum}
+    Given property \eqref{eqn:modified_noise_approaches_gaussian}, and our $95\%$ confindence in the conservativness of variance estimates \eqref{eqn:modified_meaasurement_variance_estimate}, we assume that range measurements $\rv{z}_i$ are in general large enough to produce sufficiently Gaussian modified measurement noise $\rv{v}'_{k,i}$ and its variance estimated sufficiently conservative to be used in the EIF and measurement model \eqref{eqn:modified_measurement_model}.
+\end{assum}
 
 % 
 %    ###    ##        ######    #######  ########  #### ######## ##     ## ##     ## 
