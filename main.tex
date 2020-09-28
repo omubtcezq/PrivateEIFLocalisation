@@ -62,6 +62,9 @@
 % Tikz settings
 \usetikzlibrary{math}
 
+% Algorithm settings
+\algnewcommand{\LineComment}[1]{\State \(\triangleright\) #1}
+
 \begin{document}
 
 \begin{frontmatter}
@@ -908,7 +911,7 @@ and
 \end{equation}
 with Jacobian
 \begin{equation}
-    \mat{F}_{k} = \left.\frac{\partial \vec{f}}{\partial \vec{x}}\right|_{\rvec{x}_k}\,.
+    \mat{F}_{k} = \left.\frac{\partial \vec{f}}{\partial \vec{x}}\right|_{\rvec{x}_{k-1}}\,. \label{eqn:jacobian_f}
 \end{equation}
 
 % 
@@ -1009,7 +1012,7 @@ To show how $\rvec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ can be formulated in a simila
 \end{equation}
 where $\rv{z}'_{k,i}$ is the modified measurement, and noise $\rv{v}'_{k,i}$ is white and Gaussian. The approximation of $\rv{z}'_{k,i}$ and $\rv{r}_{k,i}$ from original measurements and variances $\rv{z}_{k,i}$ and $r_i$ will be shown in Section \ref{subsec:range_measurement_mod}. 
 
-With the existance of \eqref{eqn:modified_measurement_model}, measurement vector and measurement matrix linear combinations can be given by
+With the existence of \eqref{eqn:modified_measurement_model}, measurement vector and measurement matrix linear combinations can be given by
 \begin{equation}
     \begin{split}
         \rvec{i}'_{k,i} &= \mat{H}_{k,i}^{\prime\top} \rv{r}_{k,i}^{-1}(\rv{z}'_{k,i} - h'_i(\rvec{x}_k) + \mat{H}'_{k,i}\rvec{x}_k) \\
@@ -1144,18 +1147,49 @@ Give the algorithm as pseudocode (including encoding and encryption, possible as
 
 
 
-% \begin{algorithm}
-%     \caption{Paillier Key Generation}\label{paillier_key_gen}
-%     \begin{algorithmic}[1]
-%         \Procedure{PaillierKeyGen}{$security\_param$}
-%         \State $p,q \gets$ \Call{GeneratePrimes}{$security\_param$}
-%         \State $\lambda \gets$ \Call{lcm}{p,q}
-%         \State $pk \gets (n, n+1)$
-%         \State $sk \gets \lambda$
-%         \State \Return $(pk, sk)$
-%         \EndProcedure
-%     \end{algorithmic}
-% \end{algorithm}
+\begin{algorithm}
+    \caption{Navigator Prediction Step}\label{alg:nav_prediction}
+    \begin{algorithmic}[1]
+        \Procedure{Prediction}{$\rvec{x}_{k-1}$, $\mat{P}_{k-1}$, $\vec{f}$, $\mat{Q}$, $N$, $f$}
+        \State Compute $\mat{F}_k$ by \eqref{eqn:jacobian_f}
+        \State $\rvec{x}_{k} \gets \vec{f}(\rvec{x}_{k-1})$
+        \State $\mat{P}_{k} \gets \mat{F}_k\mat{P}_{k-1}\mat{F}_k^\top + \mat{Q}$
+        \For{$\rv{\omega}$ in $\langle\rv{x}_k^3,\rv{y}_k^3,\rv{x}_k^2\rv{y}_k,\rv{x}_k\rv{y}_k^2,\rv{x}_k^2,\rv{y}_k^2,\rv{x}_k,\rv{y}_k\rangle$} 
+            \State Compute $\rv{\omega}' = \mathsf{E}_{N,f,0}(\rv{\omega})$ by \eqref{eqn:encode}
+            \State $r \gets$ \Call{RandInt}{$1,N$}
+            \State $\mathcal{E}_{pk}(\rv{\omega}') \gets (N+1)^{\rv{\omega}'}r^N \pmod{N^2}$
+            \State Broadcast $\mathcal{E}_{pk}(\rv{\omega}')$ to sensors
+        \EndFor
+        \State \Return $\rvec{x}_{k}, \mat{P}_{k}$
+        \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+    \caption{Sensor Measurement at Sensor $i$}\label{alg:measurement_info}
+    \begin{algorithmic}[1]
+        \Procedure{Measurement}{$i$, $s_x$, $s_y$, $r_i$, $N$, $H$, $f$}
+        \State Measure $\rv{z}_{k,i}$
+        \While{Navigator broadcasting}
+        \State Recieve $\mathcal{E}_{pk}((\rv{x}^3_k)') = \mathcal{E}_{pk}(\mathsf{E}_{N,f,0}(\rv{x}^3_k))$
+        \State Recieve remaining weights in the above form
+        \EndWhile
+        \For{$i = 1$ to $2$} 
+            \State $\beta_i \gets $
+            \State Send $\beta_i$ to navigator
+        \EndFor
+        \For{$i = 1$ to $2$}
+            \For{$j = 1$ to $2$} 
+                \State Compute $\omega' = \mathsf{E}_{N,f,0}(\omega)$ by \eqref{eqn:encode}
+                \State $r \gets$ \Call{RandIntInRange}{1,N}
+                \State $\mathcal{E}_{pk}(\omega') \gets (N+1)^{\omega'}r^N \pmod{N^2}$
+                \State Send $\mathcal{E}_{pk}(\omega')$ to sensors
+            \EndFor
+        \EndFor
+        \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+
 
 % 
 % ##       ########    ###    ##    ##    ###     ######   ######## 
