@@ -187,7 +187,7 @@ In Section \ref{sec:problem_statement} we introduce the localisation problem and
 % 
 
 \subsection{Notation}
-Notation. Reminder to include symbols for: rounding, concatenation, ``divides'', vector norm, expected value and variance
+Notation. Reminder to include symbols for: rounding, concatenation, ``divides'', vector norm, expected value and variance, ordered list
 
 
 % 
@@ -1144,21 +1144,22 @@ and conclude with the following assumption.
 Piece together the whole algorithm here.
 Give the algorithm as pseudocode (including encoding and encryption, possible as separate procedures)
 
-
-
+% assume f known to all, and public/private keys already distributed
+% Note the abbreviation for encoding E (no N and f)
+% Note the different m using in Encoding when computing alphas and betas
 
 \begin{algorithm}
     \caption{Navigator Prediction Step}\label{alg:nav_prediction}
     \begin{algorithmic}[1]
-        \Procedure{Prediction}{$\rvec{x}_{k-1}$, $\mat{P}_{k-1}$, $\vec{f}$, $\mat{Q}$, $N$, $f$}
+        \Procedure{Prediction}{$\rvec{x}_{k-1}$, $\mat{P}_{k-1}$, $\vec{f}$, $\mat{Q}$, $N$}
         \State Compute $\mat{F}_k$ by \eqref{eqn:jacobian_f}
         \State $\rvec{x}_{k} \gets \vec{f}(\rvec{x}_{k-1})$
         \State $\mat{P}_{k} \gets \mat{F}_k\mat{P}_{k-1}\mat{F}_k^\top + \mat{Q}$
         \For{$\rv{\omega}$ in $\langle\rv{x}_k^3,\rv{y}_k^3,\rv{x}_k^2\rv{y}_k,\rv{x}_k\rv{y}_k^2,\rv{x}_k^2,\rv{y}_k^2,\rv{x}_k,\rv{y}_k\rangle$} 
-            \State Compute $\rv{\omega}' = \mathsf{E}_{N,f,0}(\rv{\omega})$ by \eqref{eqn:encode}
+            \State Compute $\mathsf{E}_{0}(\rv{\omega})$ by \eqref{eqn:encode}
             \State $r \gets$ \Call{RandInt}{$1,N$}
-            \State $\mathcal{E}_{pk}(\rv{\omega}') \gets (N+1)^{\rv{\omega}'}r^N \pmod{N^2}$
-            \State Broadcast $\mathcal{E}_{pk}(\rv{\omega}')$ to sensors
+            \State $\mathcal{E}_{pk}(\mathsf{E}_{0}(\rv{\omega})) \gets (N+1)^{\mathsf{E}_{0}(\rv{\omega})}r^N \pmod{N^2}$
+            \State Broadcast $\mathcal{E}_{pk}(\mathsf{E}_{0}(\rv{\omega}))$ to sensors
         \EndFor
         \State \Return $\rvec{x}_{k}, \mat{P}_{k}$
         \EndProcedure
@@ -1166,26 +1167,62 @@ Give the algorithm as pseudocode (including encoding and encryption, possible as
 \end{algorithm}
 
 \begin{algorithm}
-    \caption{Sensor Measurement at Sensor $i$}\label{alg:measurement_info}
+    \caption{Measurement at Sensor $i$}\label{alg:measurement_info}
     \begin{algorithmic}[1]
-        \Procedure{Measurement}{$i$, $s_x$, $s_y$, $r_i$, $N$, $H$, $f$}
+        \Procedure{Measurement}{$i$, $s_x$, $s_y$, $r_i$, $N$, $H$}
         \State Measure $\rv{z}_{k,i}$
+        \State Compute $\rv{z}_{k,i}'$ by \eqref{eqn:modified_measurement}
+        \State Compute $\rv{r}_{k, i}$ by \eqref{eqn:modified_meaasurement_variance_estimate}
         \While{Navigator broadcasting}
-        \State Recieve $\mathcal{E}_{pk}((\rv{x}^3_k)') = \mathcal{E}_{pk}(\mathsf{E}_{N,f,0}(\rv{x}^3_k))$
-        \State Recieve remaining weights in the above form
+        \State Recieve $\mathcal{E}_{pk}(\mathsf{E}_{0}(\rv{x}^3_k))$
+        \State Recieve remaining weights in the form above
         \EndWhile
-        \For{$i = 1$ to $2$} 
-            \State $\beta_i \gets $
-            \State Send $\beta_i$ to navigator
+        \State Let $\beta_{ij}$ represent element $(i,j)$ of $\rvec{i}'_{k,i}$ in \eqref{eqn:hrz_linear_comb}
+        \State $\beta_{11} \!\gets\! \mathcal{E}_{pk}(\mathsf{E}_{0}(\rv{x}^3_k))^{\mathsf{E}_{0}(2\rv{r}_{k, i}^{-1})}
+        \mathcal{E}_{pk}(\mathsf{E}_{0}(\rv{x}_k\rv{y}^2_k))^{\mathsf{E}_{0}(2\rv{r}_{k, i}^{-1})}$\par
+        \ $\mathcal{E}_{pk}(\mathsf{E}_{0}(\rv{x}^2_k))^{\mathsf{E}_{0}(-\rv{r}_{k, i}^{-1}s_x)}
+        \mathcal{E}_{pk}(\mathsf{E}_{0}(\rv{y}^2_k))^{\mathsf{E}_{0}(-2\rv{r}_{k, i}^{-1}s_x)}$\par
+        \ $\mathcal{E}_{pk}(\mathsf{E}_{0}(\rv{x}_k))^{\mathsf{E}_{0}(2\rv{r}_{k, i}^{-1}\rv{z}_{k,i}')}
+        \mathcal{E}_{pk}(\mathsf{E}_{0}(\rv{x}_k))^{\mathsf{E}_{0}(-2\rv{r}_{k, i}^{-1}s_x^2)}$\par
+        \ $\mathcal{E}_{pk}(\mathsf{E}_{0}(\rv{x}_k))^{\mathsf{E}_{0}(-2\rv{r}_{k, i}^{-1}s_y^2)}
+        (N+1)^{\mathsf{E}_{1}(2\rv{r}_{k, i}^{-1}s_x^3)}$\par
+        \ $(N+1)^{\mathsf{E}_{1}(2\rv{r}_{k, i}^{-1}s_xs_y^2)}
+        (N+1)^{\mathsf{E}_{1}(-2\rv{r}_{k, i}^{-1}s_x\rv{z}_{k,i}')}$\par
+        \ $H(k\mathbin\|1\mathbin\|1\mathbin\|0)\pmod{N^2}$
+        \State Compute $\beta_{21}$ by \eqref{eqn:hrz_linear_comb} in the form above
+        \For{$i \gets 1$ to $2$}
+            \State Send $\beta_{i1}$ to the navigator
         \EndFor
-        \For{$i = 1$ to $2$}
-            \For{$j = 1$ to $2$} 
-                \State Compute $\omega' = \mathsf{E}_{N,f,0}(\omega)$ by \eqref{eqn:encode}
-                \State $r \gets$ \Call{RandIntInRange}{1,N}
-                \State $\mathcal{E}_{pk}(\omega') \gets (N+1)^{\omega'}r^N \pmod{N^2}$
-                \State Send $\mathcal{E}_{pk}(\omega')$ to sensors
+        \State Let $\alpha_{ij}$ represent element $(i,j)$ of $\mat{I}'_{k,i}$ in \eqref{eqn:hrh_linear_comb}
+        \State $\alpha_{11} \gets \mathcal{E}_{pk}(\mathsf{E}_{0}(\rv{x}^2_k))^{\mathsf{E}_{0}(4\rv{r}_{k, i}^{-1})}$\par
+        \ $\mathcal{E}_{pk}(\mathsf{E}_{0}(\rv{x}_k))^{\mathsf{E}_{0}(-8\rv{r}_{k, i}^{-1}s_x)}
+        (N+1)^{\mathsf{E}_{1}(4\rv{r}_{k, i}^{-1}s_x^2)}$\par
+        \ $H(k\mathbin\|1\mathbin\|1\mathbin\|1)\pmod{N^2}$
+        \State Compute remaining $\alpha_{ij}$ by \eqref{eqn:hrh_linear_comb} in the form above
+        \For{$i \gets 1$ to $2$}
+            \For{$j \gets 1$ to $2$} 
+                \State Send $\alpha_{ij}$ to the navigator
             \EndFor
         \EndFor
+        \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+    \caption{Navigator Update Step}\label{alg:nav_update}
+    \begin{algorithmic}[1]
+        \Procedure{Update}{$\rvec{x}_{k}$, $\mat{P}_{k}$, $N$, $\lambda$}
+        
+        \State Compute $\mat{F}_k$ by \eqref{eqn:jacobian_f}
+        \State $\rvec{x}_{k} \gets \vec{f}(\rvec{x}_{k-1})$
+        \State $\mat{P}_{k} \gets \mat{F}_k\mat{P}_{k-1}\mat{F}_k^\top + \mat{Q}$
+        \For{$\rv{\omega}$ in $\langle\rv{x}_k^3,\rv{y}_k^3,\rv{x}_k^2\rv{y}_k,\rv{x}_k\rv{y}_k^2,\rv{x}_k^2,\rv{y}_k^2,\rv{x}_k,\rv{y}_k\rangle$} 
+            \State Compute $\mathsf{E}_{0}(\rv{\omega})$ by \eqref{eqn:encode}
+            \State $r \gets$ \Call{RandInt}{$1,N$}
+            \State $\mathcal{E}_{pk}(\mathsf{E}_{0}(\rv{\omega})) \gets (N+1)^{\mathsf{E}_{0}(\rv{\omega})}r^N \pmod{N^2}$
+            \State Broadcast $\mathcal{E}_{pk}(\mathsf{E}_{0}(\rv{\omega}))$ to sensors
+        \EndFor
+        \State \Return $\rvec{x}_{k}, \mat{P}_{k}$
         \EndProcedure
     \end{algorithmic}
 \end{algorithm}
