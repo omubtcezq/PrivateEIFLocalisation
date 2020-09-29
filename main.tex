@@ -1057,7 +1057,7 @@ with
     \alpha_{21} &= \alpha_{12} \\
     \alpha_{22} &= (4\rv{r}_{k,i}^{-1})\rv{y}_k^2 + (-8\rv{r}_{k,i}^{-1}s_{y,i})\rv{y}_k + (4\rv{r}_{k,i}^{-1}s_{y,i}^2)\,.
 \end{align*}
-The above rearrangements result in $\rvec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ as linear comabinations of the weights $\rv{x}_k^3$, $\rv{y}_k^3$, $\rv{x}_k^2\rv{y}_k$, $\rv{x}_k\rv{y}_k^2$, $\rv{x}_k^2$, $\rv{y}_k^2$, $\rv{x}_k$ and $\rv{y}_k$, which again capture all the required information private to the navigator.
+The above rearrangements result in $\rvec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ as linear comabinations of the weights $\rv{x}_k^3$, $\rv{y}_k^3$, $\rv{x}_k^2\rv{y}_k$, $\rv{x}_k\rv{y}_k^2$, $\rv{x}_k^2$, $\rv{y}_k^2$, $\rv{x}_k\rv{y}_k$, $\rv{x}_k$ and $\rv{y}_k$, which again capture all the required information private to the navigator.
 
 The final step required for the application of our LCAO-secure encryption scheme to the linear combinations \eqref{eqn:hrz_linear_comb} and \eqref{eqn:hrh_linear_comb} is the handling of the scheme's instance-stamp variable $t$, in \eqref{eqn:our_scheme_lin_comb}. As six linear-combination aggregations occur at each time step $k$ (four element in $\mat{I}'_{k,i}$ and two in $\rvec{i}'_{k,i}$), it is required for the security of the scheme that $t$ be unique for each aggregation at each time. This is handled by setting $t$ to the concatenation 
 \begin{equation}
@@ -1157,7 +1157,7 @@ Give the algorithm as pseudocode (including encoding and encryption, possible as
         \State $\rvec{x}_{k} \gets \vec{f}(\rvec{x}_{k-1})$
         \State $\mat{P}_{k} \gets \mat{F}_k\mat{P}_{k-1}\mat{F}_k^\top + \mat{Q}$
 
-        \For{$\rv{\omega}$ in $\langle\rv{x}_k^3,\rv{y}_k^3,\rv{x}_k^2\rv{y}_k,\rv{x}_k\rv{y}_k^2,\rv{x}_k^2,\rv{y}_k^2,\rv{x}_k,\rv{y}_k\rangle$} 
+        \For{$\rv{\omega}$ in $\langle\rv{x}_k^3,\rv{y}_k^3,\rv{x}_k^2\rv{y}_k,\rv{x}_k\rv{y}_k^2,\rv{x}_k^2,\rv{y}_k^2,\rv{x}_k\rv{y}_k,\rv{x}_k,\rv{y}_k\rangle$} 
             \State Compute $\mathsf{E}_{0}(\rv{\omega})$ by \eqref{eqn:encode}
             \State Compute $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{\omega}))$ by \eqref{eqn:our_scheme_encrypt}
             \State Broadcast $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{\omega}))$ to sensors
