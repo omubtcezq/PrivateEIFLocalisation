@@ -1,68 +1,211 @@
 %& C:\Users\tn5093\AppData\Roaming\TikzEdt\TikzEdt\023~1.0\TEMP_H~1
 \begin{document}
-\begin{tikzpicture}[font=\footnotesize]
-
-\draw  (0,0) rectangle (8,9);
-
-\fill  [blue!40] (3.25, 7.5) rectangle (4.75, 6);
-\node at (4,8.2) {\small 1. Prediction};
-
-% Navigator
-    \begin{scope}[shift={(4,7.1725)},xscale=0.22,yscale=0.3]
-        % Plane
-        \draw[fill]  plot[smooth, tension=.6] coordinates {
+\tikzset{
+   plane/.pic = {
+    \draw[fill]  plot[smooth, tension=0.6] coordinates {
         (-0.65,-0.9) 
         (-0.6,-0.85) 
         (-0.4,-0.75) 
         (-0.25,-0.65) 
         (-0.15,-0.5) 
         (-0.12,-0.3) 
-        (-0.10,-0.1) 
-        (0.0,0.0) 
-        (0.10,-0.1) 
+        (-0.1,-0.1) 
+        (0,0) 
+        (0.1,-0.1) 
         (0.12,-0.3) 
         (0.15,-0.5) 
         (0.25,-0.65) 
         (0.4,-0.75) 
         (0.6,-0.85) 
         (0.65,-0.9)
-        } -- plot[smooth, tension=.6] coordinates {
+        } -- plot[smooth, tension=0.6] coordinates {
         (0.65,-0.9) 
         (0.15,-0.91)
         (0.35,-1.1) 
         (0.37,-1.15)
-        } -- plot[smooth, tension=.6] coordinates {
+        } -- plot[smooth, tension=0.6] coordinates {
         (0.37,-1.15)
-        (0.0,-1.12) 
+        (0,-1.12) 
         (-0.37,-1.15) 
-        } -- plot[smooth, tension=.6] coordinates {
+        } -- plot[smooth, tension=0.6] coordinates {
         (-0.37,-1.15)
         (-0.35,-1.1) 
         (-0.15,-0.91) 
         (-0.65,-0.9) 
         } -- cycle;
-    \end{scope}
+   }
+}
+\newcommand{\rvec}[1]{\ensuremath{{\boldsymbol{\underline{#1}}}}}
+\newcommand{\rv}[1]{\ensuremath{{\boldsymbol{#1}}}}
+\newcommand{\mat}[1]{{\ensuremath{{\mathbf{#1}}}}}
+
+\begin{tikzpicture}[font=\footnotesize]
+
+
+    % Prediction
+    \draw  (0,1.75) rectangle (8,8);
+    \node at (4,7.5) {\small 1. Prediction};
+
+    % Navigator
+    \fill  [blue!40] (3.25,7) rectangle (4.75,5.5);
+    \pic[xscale=0.22,yscale=0.3] at (4,6.6725) {plane};
+    \node at (4,5.875) {$\rvec{x}_k$, $\mat{P}_k$};
     
-    \node at (4,6.5) {$x_k$, $P_k$};
+    % Sensors
+    \fill  (1.5,3) [red!40] ellipse (0.5 and 0.5);
+    \node at (1.5,2.25) {Sensor $1$};
+    \fill  (6.5,3) [red!40] ellipse (0.5 and 0.5);
+    \node at (6.5,2.25) {Sensor $n$};
+        
+    \fill [black] (3.5,3) circle (0.05);
+    \fill [black] (4,3) circle (0.05);
+    \fill [black] (4.5,3) circle (0.05);
+        
+    % Arrows
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(3.75,5.25) (1.75,3.5)};
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(4.25,5.25) (6.25,3.5)};
     
-    \fill  (1.5,2) [red!40] ellipse (0.5 and 0.5);
-    \node at (1.5,1) {Sensor $1$};
-    \fill  (6.5,2) [red!40] ellipse (0.5 and 0.5);
-    \node at (6.5,1) {Sensor $n$};
-    
-    \fill [black] (3.5,2) circle (0.05);
-    \fill [black] (4,2) circle (0.05);
-    \fill [black] (4.5,2) circle (0.05);
+    \fill [lightgray]  (0.25,4.75) rectangle (7.75,3.75);
+    \node at (4,4.25) {$\langle\mathcal{E}_{pk_0}(\rv{\omega}): \rv{\omega} \in \{\rv{x}^3_k, \rv{y}^3_k, \rv{x}^2_k\rv{y}_k, \dots , \rv{x}_k\rv{y}_k, \rv{x}_k, \rv{y}_k\}\rangle$};
     
     
+    % Measurement
+    \draw  (0,-4.75) rectangle (8,1.5);
+    \node at (4,1) {\small 2. Measurement};
+    
+    % Navigator
+    \fill  (4,0) [blue!40] ellipse (0.5 and 0.5);
+    \pic[xscale=0.22,yscale=0.3] at (4,0.1725) {plane};
+        
+    % Sensors
+    \fill  [red!40] (7.5,-3.75)  rectangle (5.5,-2.75);
+    \node at (1.5,-4.25) {Sensor $1$};
+    \fill  [red!40] (2.5,-3.75)  rectangle (0.5,-2.75);
+    \node at (6.5,-4.25) {Sensor $n$};
+    
+    \node at (1.5,-3.25) {$\rv{z}'_{k,1}$, $\rv{r}_{k,1}$};
+    \node at (6.5,-3.25) {$\rv{z}'_{k,n}$, $\rv{r}_{k,n}$};
+    
+    \fill [black] (3.5,-3.25) circle (0.05);
+    \fill [black] (4,-3.25) circle (0.05);
+    \fill [black] (4.5,-3.25) circle (0.05);
+    
+    % Arrows
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(1.75,-2.5) (3.75,-0.75)};
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(6.25,-2.5) (4.25,-0.75)};
+    
+    \fill [lightgray]  (0.25,-1.25) rectangle (3.75,-2.25);
+    \node at (2,-1.75) {$\mathcal{E}_{pk_0}(\rvec{i}'_{k,1})$, $\mathcal{E}_{pk_0}(\mat{I}'_{k,1})$};
+    \fill [lightgray]  (4.25,-1.25) rectangle (7.75,-2.25);
+    \node at (6,-1.75) {$\mathcal{E}_{pk_0}(\rvec{i}'_{k,n})$, $\mathcal{E}_{pk_0}(\mat{I}'_{k,n})$};
+    
+    
+    % Update
+    \draw  (0,-10.25) rectangle (8,-5);
+    \node at (4,-5.5) {\small 3. Update};
+    
+    % Navigator
+    \fill  [blue!40] (2.25,-6) rectangle (5.75,-8);
+    \pic[xscale=0.22,yscale=0.3] at (4,-6.3275) {plane};
+    \node at (4,-7.125) {$\sum_{i=1}^n \rvec{i}'_{k,i}$, $\sum_{i=1}^n\mat{I}'_{k,i}$};
+    \node at (4,-7.625) {$\rvec{x}_k$, $\mat{P}_k$};
+    
+    % Sensors
+    \fill  (6.5,-9) [red!40] ellipse (0.5 and 0.5);
+    \node at (1.5,-9.75) {Sensor $1$};
+    \fill  (1.5,-9) [red!40] ellipse (0.5 and 0.5);
+    \node at (6.5,-9.75) {Sensor $n$};
+    
+    \fill [black] (3.5,-9) circle (0.05);
+    \fill [black] (4,-9) circle (0.05);
+    \fill [black] (4.5,-9) circle (0.05);
+    
+    
+
+\usetikzlibrary{calc}
+\pgftransformreset
+\node[inner sep=0pt,outer sep=0pt,minimum size=0pt,line width=0pt,text width=0pt,text height=0pt] at (current bounding box) {};
+%add border to avoid cropping by pdflibnet
+\foreach \border in {0.1}
+  \useasboundingbox (current bounding box.south west)+(-\border,-\border) rectangle (current bounding box.north east)+(\border,\border);
+\newwrite\metadatafile
+\immediate\openout\metadatafile=\jobname_BB.txt
+\path
+  let
+    \p1=(current bounding box.south west),
+    \p2=(current bounding box.north east)
+  in
+  node[inner sep=0pt,outer sep=0pt,minimum size=0pt,line width=0pt,text width=0pt,text height=0pt,draw=white] at (current bounding box) {
+\immediate\write\metadatafile{\p1,\p2}
+};
+\immediate\closeout\metadatafile
+\end{tikzpicture}
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
+
+
+
+
+
+
+
+
+
+\end{document}
+ocument}
+outer sep=0pt,minimum size=0pt,line width=0pt,text width=0pt,text height=0pt,draw=white] at (current bounding box) {
+\immediate\write\metadatafile{\p1,\p2}
+};
+\immediate\closeout\metadatafile
+\end{tikzpicture}
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
+ate\closeout\metadatafile
+\end{tikzpicture}
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
+
+nt}
+
+
+mooth, tension=.7] coordinates {(1.75,-9.5) (3.75,-7.75)};
+	\draw [-latex] plot[smooth, tension=.7] coordinates {(6.25,-9.5) (4.25,-7.75)};
 	
-	\draw [-latex] plot[smooth, tension=.7] coordinates {(3.75,5.75) (1.75,2.75)};
-	\draw [-latex] plot[smooth, tension=.7] coordinates {(4.25,5.75) (6.25,2.75)};
-	\draw [-latex] plot[smooth, tension=.7] coordinates {(4,5.75) (4,2.75)};
+	\fill [lightgray]  (0.25,-8.25) rectangle (3.75,-9.25);
+	\node at (2,-8.75) {$\mathcal{E}_{pk_0}(i'_{k,1})$, $\mathcal{E}_{pk_0}(I'_{k,1})$};
 	
-	
-	\fill [lightgray]  (0.25,5) rectangle (7.75,4);
-	\node at (4,4.5) {$\langle\mathcal{E}_{pk_0}(\omega): \omega \in \{x^3_k, y^3_k, x^2_ky_k, x_ky^2_k, x^2_k, y^2_k, x_ky_k, x_k, y_k\}\rangle$};
+	\fill [lightgray]  (4.25,-8.25) rectangle (7.75,-9.25);
+	\node at (6,-8.75) {$\mathcal{E}_{pk_0}(i'_{k,n})$, $\mathcal{E}_{pk_0}(I'_{k,n})$};
 	
 
 	
@@ -88,3 +231,10 @@
 \end{tikzpicture}
 
 \end{document}
+}
+
+\end{document}
+nd{tikzpicture}
+
+\end{document}
+}
