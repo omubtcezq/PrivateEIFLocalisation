@@ -591,7 +591,7 @@ For achieving the goal of private localisation defined in Section \ref{sec:probl
     \draw [gray] (0,14) rectangle (10,5.5);
 \end{tikzpicture}
 \vspace{\baselineskip}
-\caption{Required linear-combination aggregation steps at time $t$}
+\caption{Required linear-combination aggregation steps at time $t$.}
 \label{fig:agg_steps}
 \end{figure}
 
@@ -831,7 +831,7 @@ The localisation filter we introduce requires real-valued inputs and functions, 
 % ######## ##    ##  ######   #######  ########  #### ##    ##  ######   
 % 
 
-\subsection{Integer Encoding for Real Numbers}
+\subsection{Integer Encoding for Real Numbers} \label{subsec:encoding}
 In the encryption scheme introduced, weights and values are restricted to integers and all operations are computed $\pmod{N}$, thus bounding meaningful inputs to $\{x : x \in \mathbb{Z}_N\}$. For this reason, a quantisation and integer mapping method for real numbers is required for their encryption and homomorphic processing. We quantise with a generalised Q number format \cite{oberstarFixedPointRepresentationFractional2007} due to implementation simplicity and applicability.
 
 We define a subset of rational numbers in terms of a range $r \in \mathbb{N}$ and fractional precision $f \in \mathbb{N}$. This contrasts with the common definition given in terms of total bits $a$ and fractional bits $b$ \cite{oberstarFixedPointRepresentationFractional2007,schulzedarupEncryptedCooperativeControl2019,farokhiSecurePrivateControl2017}, but allows for a direct mapping to integer ranges which are not powers of two. Rational subset $\mathbb{Q}_{r,f}$ is given by
@@ -858,7 +858,7 @@ This encoding scheme provides the following homomorphic operations,
     \begin{split}
         \mathsf{E}_{N,f,m}(a_1) + \mathsf{E}_{N,f,m}(a_2)& \pmod{N} =\\
         &\mathsf{E}_{N,f,m}(a_1+a_2)
-    \end{split}
+    \end{split}\label{eqn:encoding_homomorphic_add}
 \end{equation}
 and
 \begin{equation}
@@ -1144,123 +1144,129 @@ and conclude with the following assumption.
 % ##     ## ########  ######    #######  ##     ## ####    ##    ##     ## ##     ## 
 % 
 
-\subsection{Algorithm}
-% Maybe name the scheme? That would be in the heading here
-Piece together the whole algorithm here.
-Give the algorithm as pseudocode (including encoding and encryption, possible as separate procedures)
+\subsection{Algorithm} \label{subsec:algorithm}
+In this section, we piece together our LCAO secure encryption scheme in Section \ref{sec:our_scheme} with the modified measurement model in Sections \ref{subsec:observation_model} and \ref{subsec:range_measurement_mod} and define our privacy-preserving localisation algorithm.
 
-% assume f known to all, and public/private keys already distributed
-% Note the abbreviation for encoding E (no N and f)
-% Note the different m using in Encoding when computing alphas and betas
+The privacy-preserving localisation filter can be described by the following steps.
+\begin{description}
+    \item[Setup] The $\mathsf{Setup}$ algorithm from Section \ref{sec:our_scheme} is executed by a trusted third party, $N$ and $H$ are made known to the navigator and all sensors, and the navigator and sensor secret keys, $sk_0=\lambda$ and $sk_i$, $1 \leq i \leq n$, are distributed accordingly. Additionally, we assume that fractional precision $f$ from Section \ref{subsec:encoding} is also a public parameter and made known to the navigator and sensors. We will thus simplify the encoding notation $\mathsf{E}_{N,f,m}(\cdot)$ to $\mathsf{E}_{m}(\cdot)$.
 
-\begin{algorithm}
-    \caption{Navigator Prediction Step}\label{alg:nav_prediction}
+    \item[Prediction] The navigator computes the typical EKF prediction equations before encrypting state variables and broadcasting to sensors. This is given by Algorithm \ref{alg:nav_prediction}.
+
+    \item[Measurement] Sensors modify their measurements before homomorphically computing measurement vectors and matrices $\rvec{i}'_{k,1}$ and $\mat{I}'_{k,1}$, encrypting them for aggregation, and sending them back to the navigator. Care must be taken when encoding during homomorphic operations to ensure fractional factor $m$ satisfies \eqref{eqn:encoding_homomorphic_add}. This has been described by Algorithm \ref{alg:measurement_info}.
+
+    \item[Update] The navigator aggregates measurement vectors and matrices before decrypting them. The typical EIF update equations can then be computed. This is shown in Algorithm \ref{alg:nav_update}.
+\end{description}
+
+\begin{algorithm}[htbp]
+    \caption{Navigator Prediction}\label{alg:nav_prediction}
     \begin{algorithmic}[1]
         \Procedure{Prediction}{$\rvec{x}_{k-1}$, $\mat{P}_{k-1}$, $\vec{f}$, $\mat{Q}$, $N$}
-
+    
         \State Compute $\mat{F}_k$ by \eqref{eqn:jacobian_f}
         \State $\rvec{x}_{k} \gets \vec{f}(\rvec{x}_{k-1})$
         \State $\mat{P}_{k} \gets \mat{F}_k\mat{P}_{k-1}\mat{F}_k^\top + \mat{Q}$
-
+    
         \For{$\rv{\omega}$ in $\langle\rv{x}_k^3,\rv{y}_k^3,\rv{x}_k^2\rv{y}_k,\rv{x}_k\rv{y}_k^2,\rv{x}_k^2,\rv{y}_k^2,\rv{x}_k\rv{y}_k,\rv{x}_k,\rv{y}_k\rangle$} 
             \State Compute $\mathsf{E}_{0}(\rv{\omega})$ by \eqref{eqn:encode}
             \State Compute $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{\omega}))$ by \eqref{eqn:our_scheme_encrypt}
             \State Broadcast $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{\omega}))$ to sensors
         \EndFor
-
+    
         \State \Return $\rvec{x}_{k}, \mat{P}_{k}$
         \EndProcedure
     \end{algorithmic}
+    \end{algorithm}
+
+\begin{algorithm}[htbp]
+\caption{Measurement at Sensor $i$}\label{alg:measurement_info}
+\begin{algorithmic}[1]
+    \Procedure{Measurement}{$i$, $s_{x,i}$, $s_{y,i}$, $r_i$, $N$, $H$}
+
+    \State Measure $\rv{z}_{k,i}$
+    \State Compute $\rv{z}_{k,i}'$ by \eqref{eqn:modified_measurement}
+    \State Compute $\rv{r}_{k, i}$ by \eqref{eqn:modified_meaasurement_variance_estimate}
+
+    \While{Navigator broadcasting}
+    \State Recieve $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}^3_k))$
+    \State Recieve remaining weights in the form above
+    \EndWhile
+
+    \State Let $\beta_{vw}^{(i)}$ represent an encryption of element $(v,w)$ in $\rvec{i}'_{k,i}$ from \eqref{eqn:hrz_linear_comb}
+    \State $\beta_{11}^{(i)} \gets \mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}^3_k))^{\mathsf{E}_{0}(2\rv{r}_{k, i}^{-1})}$\par
+    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}_k\rv{y}^2_k))^{\mathsf{E}_{0}(2\rv{r}_{k, i}^{-1})}
+    \mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}^2_k))^{\mathsf{E}_{0}(-\rv{r}_{k, i}^{-1}s_{x,i})}$\par
+    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{y}^2_k))^{\mathsf{E}_{0}(-2\rv{r}_{k, i}^{-1}s_{x,i})}
+    \mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}_k))^{\mathsf{E}_{0}(2\rv{r}_{k, i}^{-1}\rv{z}_{k,i}')}$\par
+    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}_k))^{\mathsf{E}_{0}(-2\rv{r}_{k, i}^{-1}s_{x,i}^2)}
+    \mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}_k))^{\mathsf{E}_{0}(-2\rv{r}_{k, i}^{-1}s_{y,i}^2)}$\par
+    \ $(N+1)^{\mathsf{E}_{1}(2\rv{r}_{k, i}^{-1}s_{x,i}^3)}
+    (N+1)^{\mathsf{E}_{1}(2\rv{r}_{k, i}^{-1}s_{x,i}s_{y,i}^2)}$\par
+    \ $(N+1)^{\mathsf{E}_{1}(-2\rv{r}_{k, i}^{-1}s_{x,i}\rv{z}_{k,i}')}
+    H(k\mathbin\|1\mathbin\|1\mathbin\|0)\pmod{N^2}$
+    \State Compute $\beta_{21}^{(i)}$ using \eqref{eqn:hrz_linear_comb} and \eqref{eqn:our_scheme_lin_comb} in the form above
+    \For{$v \gets 1$ to $2$}
+        \State Send $\beta_{v1}$ to the navigator
+    \EndFor
+
+    \State Let $\alpha_{vw}^{(i)}$ represent an encryption of element $(v,w)$ in $\mat{I}'_{k,i}$ from \eqref{eqn:hrh_linear_comb}
+    \State $\alpha_{11}^{(i)} \gets \mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}^2_k))^{\mathsf{E}_{0}(4\rv{r}_{k, i}^{-1})}$\par
+    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}_k))^{\mathsf{E}_{0}(-8\rv{r}_{k, i}^{-1}s_{x,i})}
+    (N+1)^{\mathsf{E}_{1}(4\rv{r}_{k, i}^{-1}s_{x,i}^2)}$\par
+    \ $H(k\mathbin\|1\mathbin\|1\mathbin\|1)\pmod{N^2}$
+    \State Compute remaining $\alpha_{vw}^{(i)}$ using \eqref{eqn:hrh_linear_comb} and \eqref{eqn:our_scheme_lin_comb} in the form above
+    \For{$v \gets 1$ to $2$}
+        \For{$w \gets 1$ to $2$} 
+            \State Send $\alpha_{vw}^{(i)}$ to the navigator
+        \EndFor
+    \EndFor
+    \EndProcedure
+\end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}
-    \caption{Measurement at Sensor $i$}\label{alg:measurement_info}
-    \begin{algorithmic}[1]
-        \Procedure{Measurement}{$i$, $s_{x,i}$, $s_{y,i}$, $r_i$, $N$, $H$}
+\begin{algorithm}[htbp]
+\caption{Navigator Update}\label{alg:nav_update}
+\begin{algorithmic}[1]
+    \Procedure{Update}{$\rvec{x}_{k}$, $\mat{P}_{k}$, $N$, $\lambda$}
+    
+    \For{$v \gets 1$ to $2$}
+        \State Receive $\beta_{v1}^{(i)}$ from each sensor $1\leq i \leq n$
+    \EndFor
 
-        \State Measure $\rv{z}_{k,i}$
-        \State Compute $\rv{z}_{k,i}'$ by \eqref{eqn:modified_measurement}
-        \State Compute $\rv{r}_{k, i}$ by \eqref{eqn:modified_meaasurement_variance_estimate}
-
-        \While{Navigator broadcasting}
-        \State Recieve $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}^3_k))$
-        \State Recieve remaining weights in the form above
-        \EndWhile
-
-        \State Let $\beta_{vw}^{(i)}$ represent an encryption of element $(v,w)$ in $\rvec{i}'_{k,i}$ from \eqref{eqn:hrz_linear_comb}
-        \State $\beta_{11}^{(i)} \gets \mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}^3_k))^{\mathsf{E}_{0}(2\rv{r}_{k, i}^{-1})}$\par
-        \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}_k\rv{y}^2_k))^{\mathsf{E}_{0}(2\rv{r}_{k, i}^{-1})}
-        \mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}^2_k))^{\mathsf{E}_{0}(-\rv{r}_{k, i}^{-1}s_{x,i})}$\par
-        \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{y}^2_k))^{\mathsf{E}_{0}(-2\rv{r}_{k, i}^{-1}s_{x,i})}
-        \mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}_k))^{\mathsf{E}_{0}(2\rv{r}_{k, i}^{-1}\rv{z}_{k,i}')}$\par
-        \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}_k))^{\mathsf{E}_{0}(-2\rv{r}_{k, i}^{-1}s_{x,i}^2)}
-        \mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}_k))^{\mathsf{E}_{0}(-2\rv{r}_{k, i}^{-1}s_{y,i}^2)}$\par
-        \ $(N+1)^{\mathsf{E}_{1}(2\rv{r}_{k, i}^{-1}s_{x,i}^3)}
-        (N+1)^{\mathsf{E}_{1}(2\rv{r}_{k, i}^{-1}s_{x,i}s_{y,i}^2)}$\par
-        \ $(N+1)^{\mathsf{E}_{1}(-2\rv{r}_{k, i}^{-1}s_{x,i}\rv{z}_{k,i}')}
-        H(k\mathbin\|1\mathbin\|1\mathbin\|0)\pmod{N^2}$
-        \State Compute $\beta_{21}^{(i)}$ using \eqref{eqn:hrz_linear_comb} and \eqref{eqn:our_scheme_lin_comb} in the form above
-        \For{$v \gets 1$ to $2$}
-            \State Send $\beta_{v1}$ to the navigator
+    \For{$v \gets 1$ to $2$}
+        \For{$w \gets 1$ to $2$}
+        \State Receive $\alpha_{vw}^{(i)}$ from each sensor $1\leq i \leq n$
         \EndFor
+    \EndFor
 
-        \State Let $\alpha_{vw}^{(i)}$ represent an encryption of element $(v,w)$ in $\mat{I}'_{k,i}$ from \eqref{eqn:hrh_linear_comb}
-        \State $\alpha_{11}^{(i)} \gets \mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}^2_k))^{\mathsf{E}_{0}(4\rv{r}_{k, i}^{-1})}$\par
-        \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}_k))^{\mathsf{E}_{0}(-8\rv{r}_{k, i}^{-1}s_{x,i})}
-        (N+1)^{\mathsf{E}_{1}(4\rv{r}_{k, i}^{-1}s_{x,i}^2)}$\par
-        \ $H(k\mathbin\|1\mathbin\|1\mathbin\|1)\pmod{N^2}$
-        \State Compute remaining $\alpha_{vw}^{(i)}$ using \eqref{eqn:hrh_linear_comb} and \eqref{eqn:our_scheme_lin_comb} in the form above
-        \For{$v \gets 1$ to $2$}
-            \For{$w \gets 1$ to $2$} 
-                \State Send $\alpha_{vw}^{(i)}$ to the navigator
-            \EndFor
+    \State Let $\beta_{vw}$ represent an encryption of element $(v,w)$ in $\sum_{i=1}^n\rvec{i}'_{k,i}$
+    \For{$v \gets 1$ to $2$}
+        \State $\beta_{v1} \gets \prod_{i=1}^n\beta_{v1}^{(i)}$
+        \State Compute $\mathcal{D}_{sk_0}(\beta_{v1})$ with $\lambda$ by \eqref{eqn:our_scheme_decrypt}
+        \State Compute $\mathsf{E}^{-1}_{1}(\mathcal{D}_{sk_0}(\beta_{v1}))$ by \eqref{eqn:decode}
+    \EndFor
+    \State Construct $\sum_{i=1}^n\rvec{i}'_{k,i}$ from decoded decryptions above
+
+    \State Let $\alpha_{vw}$ represent an encryption of element $(v,w)$ in $\sum_{i=1}^n\mat{I}'_{k,i}$
+    \For{$v \gets 1$ to $2$}
+        \For{$w \gets 1$ to $2$}
+            \State $\alpha_{vw} \gets \prod_{i=1}^n\alpha_{vw}^{(i)}$
+            \State Compute $\mathcal{D}_{sk_0}(\alpha_{vw})$ with $\lambda$ by \eqref{eqn:our_scheme_decrypt}
+            \State Compute $\mathsf{E}^{-1}_{1}(\mathcal{D}_{sk_0}(\alpha_{vw}))$ by \eqref{eqn:decode}
         \EndFor
-        \EndProcedure
-    \end{algorithmic}
+    \EndFor
+    \State Construct $\sum_{i=1}^n\mat{I}'_{k,i}$ from decoded decryptions above
+
+    \State $\rvec{y}_k \gets \mat{P}_{k}^{-1}\rvec{x}_{k} + \sum_{i=1}^n\rvec{i}'_{k,i}$
+    \State $\mat{Y}_k \gets \mat{P}_{k}^{-1} + \sum_{i=1}^n\mat{I}'_{k,i}$
+    \State $\rvec{x}_{k} \gets \mat{Y}_k^{-1}\rvec{y}_k$
+    \State $\mat{P}_{k} \gets \mat{Y}_k^{-1}$
+    \State \Return $\rvec{x}_{k}, \mat{P}_{k}$
+    \EndProcedure
+\end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}
-    \caption{Navigator Update Step}\label{alg:nav_update}
-    \begin{algorithmic}[1]
-        \Procedure{Update}{$\rvec{x}_{k}$, $\mat{P}_{k}$, $N$, $\lambda$}
-        
-        \For{$v \gets 1$ to $2$}
-            \State Receive $\beta_{v1}^{(i)}$ from each sensor $1\leq i \leq n$
-        \EndFor
-
-        \For{$v \gets 1$ to $2$}
-            \For{$w \gets 1$ to $2$}
-            \State Receive $\alpha_{vw}^{(i)}$ from each sensor $1\leq i \leq n$
-            \EndFor
-        \EndFor
-
-        \State Let $\beta_{vw}$ represent an encryption of element $(v,w)$ in $\sum_{i=1}^n\rvec{i}'_{k,i}$
-        \For{$v \gets 1$ to $2$}
-            \State $\beta_{v1} \gets \prod_{i=1}^n\beta_{v1}^{(i)}$
-            \State Compute $\mathcal{D}_{sk_0}(\beta_{v1})$ with $\lambda$ by \eqref{eqn:our_scheme_decrypt}
-            \State Compute $\mathsf{E}^{-1}_{1}(\mathcal{D}_{sk_0}(\beta_{v1}))$ by \eqref{eqn:decode}
-        \EndFor
-        \State Construct $\sum_{i=1}^n\rvec{i}'_{k,i}$ from decoded decryptions above
-
-        \State Let $\alpha_{vw}$ represent an encryption of element $(v,w)$ in $\sum_{i=1}^n\mat{I}'_{k,i}$
-        \For{$v \gets 1$ to $2$}
-            \For{$w \gets 1$ to $2$}
-                \State $\alpha_{vw} \gets \prod_{i=1}^n\alpha_{vw}^{(i)}$
-                \State Compute $\mathcal{D}_{sk_0}(\alpha_{vw})$ with $\lambda$ by \eqref{eqn:our_scheme_decrypt}
-                \State Compute $\mathsf{E}^{-1}_{1}(\mathcal{D}_{sk_0}(\alpha_{vw}))$ by \eqref{eqn:decode}
-            \EndFor
-        \EndFor
-        \State Construct $\sum_{i=1}^n\mat{I}'_{k,i}$ from decoded decryptions above
-
-        \State $\rvec{y}_k \gets \mat{P}_{k}^{-1}\rvec{x}_{k} + \sum_{i=1}^n\rvec{i}'_{k,i}$
-        \State $\mat{Y}_k \gets \mat{P}_{k}^{-1} + \sum_{i=1}^n\mat{I}'_{k,i}$
-        \State $\rvec{x}_{k} \gets \mat{Y}_k^{-1}\rvec{y}_k$
-        \State $\mat{P}_{k} \gets \mat{Y}_k^{-1}$
-        \State \Return $\rvec{x}_{k}, \mat{P}_{k}$
-        \EndProcedure
-    \end{algorithmic}
-\end{algorithm}
-
+Algorithms \ref{alg:nav_prediction}, \ref{alg:measurement_info} and \ref{alg:nav_update} have been summarised graphically in Figure \ref{fig:alg_steps}, where encryptions and encodings of vectors and matrices have been denoted with $\mathcal{E}_{pk_0,sk_i}(\cdot)$ and $\mathsf{E}_m(\cdot)$ for brevity, and represent element-wise operations with the same parameters.
 
 \begin{figure}[htbp]
 \centering
@@ -1289,8 +1295,8 @@ Give the algorithm as pseudocode (including encoding and encryption, possible as
     \draw [-latex] plot[smooth, tension=.7] coordinates {(3.75,5.25) (1.75,3.5)};
     \draw [-latex] plot[smooth, tension=.7] coordinates {(4.25,5.25) (6.25,3.5)};
     
-    \fill [lightgray]  (0.25,4.75) rectangle (7.75,3.75);
-    \node at (4,4.25) {$\langle\mathcal{E}_{pk_0}(\rv{\omega}): \rv{\omega} \in \{\rv{x}^3_k, \rv{y}^3_k, \rv{x}^2_k\rv{y}_k, \dots , \rv{x}_k\rv{y}_k, \rv{x}_k, \rv{y}_k\}\rangle$};
+    \fill [lightgray]  (0.25,5) rectangle (7.75,4);
+    \node at (4,4.5) {$\langle\mathcal{E}_{pk_0}(\mathsf{E}_0(\rv{\omega})): \rv{\omega} \in \{\rv{x}^3_k, \rv{y}^3_k, \rv{x}^2_k\rv{y}_k, \dots , \rv{x}_k, \rv{y}_k\}\rangle$};
     
     
     % Measurement
@@ -1318,11 +1324,10 @@ Give the algorithm as pseudocode (including encoding and encryption, possible as
     \draw [-latex] plot[smooth, tension=.7] coordinates {(1.75,-2.5) (3.75,-0.75)};
     \draw [-latex] plot[smooth, tension=.7] coordinates {(6.25,-2.5) (4.25,-0.75)};
     
-    \fill [lightgray]  (0.25,-1.25) rectangle (3.75,-2.25);
-    \node at (2,-1.75) {$\mathcal{E}_{pk_0}(\rvec{i}'_{k,1})$, $\mathcal{E}_{pk_0}(\mat{I}'_{k,1})$};
-    \fill [lightgray]  (4.25,-1.25) rectangle (7.75,-2.25);
-    \node at (6,-1.75) {$\mathcal{E}_{pk_0}(\rvec{i}'_{k,n})$, $\mathcal{E}_{pk_0}(\mat{I}'_{k,n})$};
-    
+    \fill [lightgray]  (0.5,-1.25) rectangle (3.5,-2.25);
+    \node[align=center] at (2,-1.75) {$\mathcal{E}_{pk_0,sk_1}(\mathsf{E}_1(\rvec{i}'_{k,1}))$,\\$\mathcal{E}_{pk_0,sk_1}(\mathsf{E}_1(\mat{I}'_{k,1}))$};
+    \fill [lightgray]  (4.5,-1.25) rectangle (7.5,-2.25);
+    \node[align=center] at (6,-1.75) {$\mathcal{E}_{pk_0,sk_n}(\mathsf{E}_1(\rvec{i}'_{k,n}))$,\\$\mathcal{E}_{pk_0,sk_n}(\mathsf{E}_1(\mat{I}'_{k,n}))$};
     
     % Update
     \draw  (0,-10.25) rectangle (8,-5);
@@ -1346,10 +1351,9 @@ Give the algorithm as pseudocode (including encoding and encryption, possible as
         
 \end{tikzpicture}
 \vspace{\baselineskip}
-\caption{Alg summary}
-\label{fig:agg_steps}
+\caption{The summary of steps involved in our proposed privacy-preserving EIF.}
+\label{fig:alg_steps}
 \end{figure}
-
 
 % 
 % ##       ########    ###    ##    ##    ###     ######   ######## 
