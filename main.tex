@@ -1366,7 +1366,7 @@ Algorithms \ref{alg:nav_prediction}, \ref{alg:measurement_info} and \ref{alg:nav
 % 
 
 \subsection{Leakage} \label{subsec:leakage}
-With the algorithm defined, we can analyse the localisation leakage when the strictly defined LCAO leakage is taken into account. We recall the assumptions on participant capabilities made in Section \ref{subsec:capabilities}. Consistent broadcasting is in line with the LCAO definition and required to guarantee the scheme's leakage. Honest-but-curious sensors are not required for scheme security, but avoid malicious sensors gaining prior knowledge about remaining sensor measurements, which may be achieved by detecting changes in real measurements after reporting false measurements to the navigator. As stated in Section \ref{subsec:capabilities}, misbehaving sensors are a known problem which complicate homomorphic operations and active malicious sensors are beyond the scope of this work.
+With the algorithm defined, we can analyse the localisation leakage when the strictly defined LCAO leakage is taken into account. We recall the assumptions on participant capabilities made in Section \ref{subsec:capabilities}. Consistent broadcasting is in line with the LCAO definition and required to guarantee the scheme's leakage. Honest-but-curious sensors are not required for scheme security, but avoid malicious sensors gaining prior knowledge about remaining sensor measurements, which may be achieved by detecting changes in real measurements after reporting false measurements to the navigator. As stated in Section \ref{subsec:capabilities}, misbehaving sensors are a known problem which complicates homomorphic operations and active malicious sensors are not considered in the scope of this work.
 
 The aggregation operation of our encryption scheme leaks the sums of sensor measurement vectors and matrices $\sum_{i=1}^n\rvec{i}'_{k,i}$ and $\sum_{i=1}^n\mat{I}'_{k,i}$. However, as stated in Remark \ref{rem:lcao_leakage}, weights chosen by a corrupted navigator mean that individual sums of coefficients can be leaked as well. That is, sums of coefficients in \eqref{eqn:hrz_linear_comb} and \eqref{eqn:hrh_linear_comb} (\textit{i.e.} $\sum_{i=1}^n2\rv{r}^{-1}_{k,i}$, $\sum_{i=1}^n-\rv{r}^{-1}_{k,i}s_{x,i}$, $\sum_{i=1}^n-2\rv{r}^{-1}_{k,i}s_{x,i}$, $\sum_{i=1}^n2\rv{r}^{-1}_{k,i}\rv{z}'_{k,i}$, \dots) are leaked to a corrupted navigator.
 
@@ -1394,17 +1394,47 @@ Therefore, we conclude that the navigator can \textit{at most} learn the sums of
 % 
 
 \section{Results} \label{sec:results}
-Time results can be captured in one graph. Y-axis is time, X-axis is the number of sensors, each line (different colour) will show how the runtime changes as sensors are increased for different Paillier bit-sizes (at least 3: 512, 1024, 2048). Every data point should be the average over some X number of simulations.
+To demonstrate our proposed approach, we have implemented the algorithm in Section \ref{subsec:algorithm} and simulated the measurement and navigation of an object following a linear, time-invariant, process model in two-dimensional space. 
 
-Accuracy plots will describe error due to encoding and the average distance of the sensors to the navigator. All plots will use the same ground truth and initial state and covariance estimates (this way average error at each timestep from multiple runs makes sense):
+Code was written in the C programming language, using the MPI library \cite{OpenMPI2020} to run simultaneous processes for each sensor and navigator. The OpenSSL library's \cite{OpenSSL2020} mask generation function MGF1 and hash function SHA256 were used to implement the required encryption scheme hash function $H$, while the Libpaillier library \cite{Libpaillier2010} was used for the implementation of the Paillier encryption scheme. Additionally, GNU libraries GSL \cite{GSLGNUScientific2019} and GMP \cite{GMPGNUMultiple2020} were used for algebraic operations and the handling of multiple-precision integers, respectively. Simulation execution was performed on a 3.00GHz Intel i7-9700 CPU, and run on the Windows Subsystem for Linux (WSL), where no real-time kernel was ensured but sufficiently consistent runtimes were observed for the purposes of our simulation.
 
-Plot 1 will plot the RMSE of the average of X runs at each encoding size. A fixed layout of 4 mediumly spaced sensor will be used, and a fixed Paillier bit size.
 
-Plot 2 will plot the RMSE as the average distance of sensors changes. Fixed encoding and Paillier bit size. Vary between 4 layouts where 4 sensors are either very close to the centre (and ground truth, and progressively further out)
+\begin{figure}[htbp]
+    \begin{center}
+       \includegraphics{images/timing.pdf}
+    \end{center}
+    \caption{Timing}
+    \label{fig:sim_timing}
+ \end{figure}
 
-Plot 3 will accompany plot 3 and display the 4 layouts (arrow for ground truth and points for the sensors).
+ \begin{figure}[htbp]
+    \begin{center}
+       \includegraphics{images/layout_errors.pdf}
+    \end{center}
+    \caption{Layout errors}
+    \label{fig:sim_layout_errors}
+ \end{figure}
 
-Discuss the meaning of the small changes in accuracy, and runtimes when using the same encryption size, that is, point out it is a generally robust method.
+ \begin{figure}[htbp]
+    \begin{center}
+       \includegraphics{images/layouts.pdf}
+    \end{center}
+    \caption{Layouts}
+    \label{fig:sim_layouts}
+ \end{figure}
+
+
+% Time results can be captured in one graph. Y-axis is time, X-axis is the number of sensors, each line (different colour) will show how the runtime changes as sensors are increased for different Paillier bit-sizes (at least 3: 512, 1024, 2048). Every data point should be the average over some X number of simulations.
+
+% Accuracy plots will describe error due to encoding and the average distance of the sensors to the navigator. All plots will use the same ground truth and initial state and covariance estimates (this way average error at each timestep from multiple runs makes sense):
+
+% Plot 1 will plot the RMSE of the average of X runs at each encoding size. A fixed layout of 4 mediumly spaced sensor will be used, and a fixed Paillier bit size.
+
+% Plot 2 will plot the RMSE as the average distance of sensors changes. Fixed encoding and Paillier bit size. Vary between 4 layouts where 4 sensors are either very close to the centre (and ground truth, and progressively further out)
+
+% Plot 3 will accompany plot 3 and display the 4 layouts (arrow for ground truth and points for the sensors).
+
+% Discuss the meaning of the small changes in accuracy, and runtimes when using the same encryption size, that is, point out it is a generally robust method.
 
 % 
 %  .d8888b.                             
