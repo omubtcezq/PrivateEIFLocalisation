@@ -304,7 +304,7 @@ We motivate these goals with an example. When considering aircraft navigation in
 %  ######  ##     ## ##        ##     ## ########  #### ######## ####    ##    #### ########  ######  
 % 
 
-\subsection{Participant Capabilities} 
+\subsection{Participant Capabilities} \label{subsec:capabilities}
 Before we can define concrete security requirements and a filtering protocol, we require some assumptions on the capabilities of the navigator and sensors in our problem scenario.
 \begin{description}
     \item[Global navigator broadcast] Due to sensor location privacy and model non-linearity, bi-directional communication between navigator and sensors is required. We make the assumption that broadcast information from the navigator is received by \textit{all} sensors involved in the protocol.
@@ -601,7 +601,7 @@ To perform the protocol from Figure \ref{fig:agg_steps} in a secure manner, we m
     \item[Private Linear Combination Aggregation] No colluding subset \textit{excluding} the aggregator gains additional information about the remaining sensor values to be weighted $x^{(t)}_{i,j},\,0\leq j\leq m$, where sensor $i$ is not colluding, given only encryptions of their linear combinations $y_i$ from the current and previous timesteps. Any colluding subset \textit{including} the aggregator learns only the sum of all linear combinations weighted by weights of their choice, $\sum^n_{i=n}\sum^m_{j=1}x^{(t)}_{i,j}\omega^{(t)}_j$.
 \end{description}
 
-\begin{rem}
+\begin{rem} \label{rem:lcao_leakage}
     The notion of a leakage function including parameters from the aggregator requires extra care to be taken when giving its definition. Since an attacker may compromise the aggregator, they have control over the choice of these parameters, and therefore over the leakage function. We note that in the leakage function above, $\sum^n_{i=n}\sum^m_{j=1}x^{(t)}_{i,j}\omega^{(t)}_j$, an individual sum weighted by the same weight may be learned by the colluding subset, \textit{e.g.} $\sum^m_{j=1}x^{(t)}_{1,j}$ given weights $(1,0,\dots,0)$, but that individual sensor values $x^{(t)}_{i,j}$ remain private due to the requirement that all sensors receive the same weights.
 \end{rem}
 
@@ -1366,14 +1366,18 @@ Algorithms \ref{alg:nav_prediction}, \ref{alg:measurement_info} and \ref{alg:nav
 % 
 
 \subsection{Leakage} \label{subsec:leakage}
-We recall the assumptions made in the problem formulation and our encryption scheme, and the allowed leakage of the encryption scheme. Sensors are honest but curious, meaning sensor values cannot be modified from what is measured, and the protocol is followed exactly, and that the navigator sends the same state information to all sensors at each time step. This is justified to an extent with wireless broadcasting being received by all sensors in a typical localisation setting.
+With the algorithm defined, we can analyse the localisation leakage when the strictly defined LCAO leakage is taken into account. We recall the assumptions on participant capabilities made in Section \ref{subsec:capabilities}. Consistent broadcasting is in line with the LCAO definition and required to guarantee the scheme's leakage. Honest-but-curious sensors are not required for scheme security, but avoid malicious sensors gaining prior knowledge about remaining sensor measurements, which may be achieved by detecting changes in real measurements after reporting false measurements to the navigator. As stated in Section \ref{subsec:capabilities}, misbehaving sensors are a known problem which complicate homomorphic operations and active malicious sensors are beyond the scope of this work.
 
-From the above restrictions, sensors learn only their measurements $x_i$, and the navigator learns only the sums $\sum^n_{i=1}H^\top R^{-1}_i(z_i - h(x) + Hx)$ and $\sum^n_{i=1}H^\top R_i^{-1}H$.
+The aggregation operation of our encryption scheme leaks the sums of sensor measurement vectors and matrices $\sum_{i=1}^n\rvec{i}'_{k,i}$ and $\sum_{i=1}^n\mat{I}'_{k,i}$. However, as stated in Remark \ref{rem:lcao_leakage}, weights chosen by a corrupted navigator mean that individual sums of coefficients can be leaked as well. That is, sums of coefficients in \eqref{eqn:hrz_linear_comb} and \eqref{eqn:hrh_linear_comb} (\textit{i.e.} $\sum_{i=1}^n2\rv{r}^{-1}_{k,i}$, $\sum_{i=1}^n-\rv{r}^{-1}_{k,i}s_{x,i}$, $\sum_{i=1}^n-2\rv{r}^{-1}_{k,i}s_{x,i}$, $\sum_{i=1}^n2\rv{r}^{-1}_{k,i}\rv{z}'_{k,i}$, \dots) are leaked to a corrupted navigator.
 
-For malicious subsets not including the navigator, it is clear that they learn nothing more about the navigator location than what they can deduce given only their own measurements.
-
-The navigator, which may maliciously choose weights at every time step, is always restricted to learning at most the sum $\sum^n_{i=1} a_i$ for some values $a_i$ derived from sensor $i$'s location and measurement. It is therefore intuitive to say that at most the navigator can learn the average of values kept private, that is, the navigator can at most learn the average position and location of sensors. The same can be said for any corrupted subset of honest but curious sensors and malicious navigator.
-
+From the leaked coefficient sums, we see that all information private to the sensors, namely their measurements $\rv{z}'_{k,i}$ and locations $\vec{s}_i$, are present only in sums
+\begin{equation}
+    \sum_{i=1}^n\rv{z}'_{k,i}\,,\ \sum_{i=1}^ns_{x,i}\ \textrm{and}\ \sum_{i=1}^ns_{y,i}\,.\label{eqn:localisation_leakage}
+\end{equation}
+Therefore, we conclude that the navigator can \textit{at most} learn the sums of sensor private data, which in practice corresponds to the average sensor measurements and locations.
+\begin{rem}
+    In the context of our localisation scheme, leakage of the incorporated LCAO secure encryption scheme corresponds to the leakage of average sensor measurements and locations, given by the sums in \eqref{eqn:localisation_leakage}.
+\end{rem}
 
 % 
 % 8888888b.                            888 888             
