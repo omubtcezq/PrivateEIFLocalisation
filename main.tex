@@ -1166,7 +1166,7 @@ In addition, we note that the distribution of noise in \eqref{eqn:modified_measu
     \end{split} \label{eqn:modified_noise_approaches_gaussian}
 \end{equation}
 and conclude with the following assumption.
-\begin{assum}
+\begin{assum} \label{assum:measurement_size}
     Given property \eqref{eqn:modified_noise_approaches_gaussian}, and our $95\%$ confindence in the conservativness of variance estimates \eqref{eqn:modified_meaasurement_variance_estimate}, we assume that range measurements $\rv{z}_i$ are in general large enough to produce sufficiently Gaussian modified measurement noise $\rv{v}'_{k,i}$ and its variance estimated sufficiently conservative to be used in the EIF and measurement model \eqref{eqn:modified_measurement_model}.
 \end{assum}
 
@@ -1429,50 +1429,38 @@ Therefore, we conclude that the navigator can \textit{at most} learn the sums of
 %                                                          
 % 
 
-\section{Results} \label{sec:results}
+\section{Simulation and Results} \label{sec:sim_and_results}
 To demonstrate our proposed approach, we have implemented the algorithm in Section \ref{subsec:algorithm} and simulated the measurement and navigation of an object following a linear, time-invariant, process model in two-dimensional space. 
 
-Code was written in the C programming language, using the MPI library \cite{OpenMPI2020} to support simultaneous computations by sensors and navigator via different processes. The OpenSSL library's \cite{OpenSSL2020} mask generation function MGF1 and hash function SHA256 were used to implement the required hash function $H$, while the Libpaillier library \cite{Libpaillier2010} was used for the implementation of the Paillier encryption scheme. Additionally, GNU libraries GSL \cite{GSLGNUScientific2019} and GMP \cite{GMPGNUMultiple2020} were used for algebraic operations and the handling of multiple-precision integers, respectively. Simulation execution was performed on a 3.00GHz Intel i7-9700 CPU, and run on the Windows Subsystem for Linux (WSL), where no real-time kernel was ensured but sufficiently consistent runtimes were observed for the purposes of our simulation.
+Code was written in the C programming language, using the MPI library \cite{OpenMPI2020} to support simultaneous computations by sensors and navigator as different processes. The OpenSSL library's \cite{OpenSSL2020} mask generation function MGF1 and hash function SHA256 were used to implement the required hash function $H$, while the Libpaillier library \cite{Libpaillier2010} was used for the implementation of the Paillier encryption scheme. Additionally, GNU libraries GSL \cite{GSLGNUScientific2019} and GMP \cite{GMPGNUMultiple2020} were used for algebraic operations and the handling of multiple-precision integers, respectively. Simulation execution was performed on a 3.00GHz Intel i7-9700 CPU, and run on the Windows Subsystem for Linux (WSL), where no real-time kernel was ensured but sufficiently consistent runtimes were observed for the purposes of our simulation.
 
-Figure \ref{fig:sim_timing} shows
-
+Recalling Assumption \ref{assum:measurement_size}, modified measurement noise resembles a Gaussian distribution when measurements are sufficiently large. We considered $4$ layouts with varying sensor distances when running our simulations to observe differences in estimation error when measurements are of different sizes. The considered layouts have been plotted and named in Figure \ref{fig:sim_layouts}.
 \begin{figure}[htbp]
-    \begin{center}
-       \includegraphics{images/timing.pdf}
-    \end{center}
-    \caption{Timing}
-    \label{fig:sim_timing}
- \end{figure}
+\begin{center}
+    \includegraphics{images/layouts.pdf}
+\end{center}
+\caption{Layouts Normal Big}
+\label{fig:sim_layouts}
+\end{figure}
+To evaluate the accuracy of our method, we have run $100$ simulations, all with $50$ filter iterations, for each of the sensors layouts with unmodified sensor measurment variances $r_i=5$ metres. Due to the large encoding modulus $N$, no notable advantage is gained when choosing a low fractional precision factor $f$, thus, $f=2^{32}$ was chosen to ensure minimal loss of precision when compared to the floating-point computations in the unencrypted EIF. The plotted average RMSE of our proposed method as well as that of the unencrypted EIF filter can be seen in Figure \ref{fig:sim_layout_errors}.
+\begin{figure}[htbp]
+\begin{center}
+    \includegraphics{images/layout_errors.pdf}
+\end{center}
+\caption{Layout errors}
+\label{fig:sim_layout_errors}
+\end{figure}
+From the results it can be seen that sensor distance has little effect on the performance of the filter and that the measurement modification in Section \ref{subsec:range_measurement_mod} has almost no effect on the performance when comparied to a normal EIF filter. The robustness of the privacy-preserving method is likely due to the rationality of Assumption \ref{assum:measurement_size}, the relative size of measurements to the sensor variances in our simulations, and the sufficiently large fractional precision.
 
- \begin{figure}[htbp]
-    \begin{center}
-       \includegraphics{images/layout_errors.pdf}
-    \end{center}
-    \caption{Layout errors}
-    \label{fig:sim_layout_errors}
- \end{figure}
-
- \begin{figure}[htbp]
-    \begin{center}
-       \includegraphics{images/layouts.pdf}
-    \end{center}
-    \caption{Layouts Normal Big}
-    \label{fig:sim_layouts}
- \end{figure}
-
-
-
-% Time results can be captured in one graph. Y-axis is time, X-axis is the number of sensors, each line (different colour) will show how the runtime changes as sensors are increased for different Paillier bit-sizes (at least 3: 512, 1024, 2048). Every data point should be the average over some X number of simulations.
-
-% Accuracy plots will describe error due to encoding and the average distance of the sensors to the navigator. All plots will use the same ground truth and initial state and covariance estimates (this way average error at each timestep from multiple runs makes sense):
-
-% Plot 1 will plot the RMSE of the average of X runs at each encoding size. A fixed layout of 4 mediumly spaced sensor will be used, and a fixed Paillier bit size.
-
-% Plot 2 will plot the RMSE as the average distance of sensors changes. Fixed encoding and Paillier bit size. Vary between 4 layouts where 4 sensors are either very close to the centre (and ground truth, and progressively further out)
-
-% Plot 3 will accompany plot 3 and display the 4 layouts (arrow for ground truth and points for the sensors).
-
-% Discuss the meaning of the small changes in accuracy, and runtimes when using the same encryption size, that is, point out it is a generally robust method.
+In addition to accuracy, computational requirements are an important factor in the adoption of novel cryptographic methods. Figure \ref{fig:sim_timing} shows the average simulation runtimes when encryption key bit lengths (\textit{i.e.} bit lengths of $N$) and the number of sensors are varied. Every plotted time is again the average of $100$ simulations, each running for $50$ filter iterations. 
+\begin{figure}[htbp]
+\begin{center}
+    \includegraphics{images/timing.pdf}
+\end{center}
+\caption{Timing}
+\label{fig:sim_timing}
+\end{figure}
+As sensor and navigator computations run in parallel, increases in runtime from additional sensors are primarily due to the longer aggregation operation at the navigator. The predominant computational cost is dependant on the encryption scheme key size, which must be chosen such that sufficient security is provided by the scheme. The current recommendation for a secure implementation of the Paillier encryption scheme is to use $1024$ bit-long keys.
 
 % 
 %  .d8888b.                             
