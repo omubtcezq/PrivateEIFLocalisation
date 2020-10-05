@@ -1477,67 +1477,7 @@ As sensor and navigator computations run in parallel, increases in runtime from 
 % 
 
 \section{Conclusion} \label{sec:conclusion}
-Possible future work to consider: Hardware implementations, measurement handling which preservers Gaussian noise, or non-Gaussian noise methods, ways of sending less information form the navigator to the sensors at each time step, active sensor attacker model, different state encryptions received at sensors or a way to confirm they are the same.
-
-%---Rest is template---
-
-
-% \section{Introduction}
-% Video, patres conscripti, in me omnium vestrum ora atque oculos esse 
-% conversos, video vos non solunn de vestro ac rei publicae, verum 
-% etiam, si id depulsum sit, de meo periculo esse sollicitos. Est mihi 
-% iucunda in malis et grata in dolore vestra erga me voluntas, sed eam, 
-% per deos inmortales, deponite atque obliti salutis meae de vobis ac 
-% de vestris liberis cogitate. Mihi si haec condicio consulatus data 
-% est, ut omnis acerbitates, onunis dolores cruciatusque perferrem, 
-% feram non solum fortiter, verum etiam lubenter, dum modo meis 
-% laboribus vobis populoque Romano dignitas salusque pariatur.
-
-% \begin{figure}
-% \begin{center}
-% \includegraphics[height=4cm]{jcaesar.eps}    % The printed column  
-% \caption{Gaius Julius Caesar, 100--44 B.C.}  % width is 8.4 cm.
-% \label{fig1}                                 % Size the figures 
-% \end{center}                                 % accordingly.
-% \end{figure}
-
-% % OR
-
-% %\begin{figure}
-% %\begin{center}
-% %\epsfig{file=jcaesar,width=7cm}
-% %\caption{Gaius Julius Caesar, 100--44 B.C.}
-% %\label{fig1}
-% %\end{center}
-% %\end{figure}
-
-
-% \subsection{A subsection}
-% Marcus Tullius Cicero, 106--43 B.C. was a Roman statesman, orator, 
-% and philosopher.  A major figure in the last years of the Republic, 
-% he is best known for his orations against Catiline\footnote{
-% This footnote should be very brief.}
-% and for his mastery of Latin prose \cite{Heritage:92}. He was a 
-% contemporary of Julius Caesar (Fig.~\ref{fig1}).
-
-% \section{The argument}
-% Some words might be appropriate describing equation~(\ref{e1}), if 
-% we had but time and space enough.
-% \begin{equation} \label{e1}
-% {{\partial F}\over {\partial t}} =
-% D{{\partial^2 F}\over {\partial x^2}}.
-% \end{equation}
-% See \cite{Abl:56}, \cite{AbTaRu:54}, \cite{Keo:58} and 
-% \cite{Pow:85}.
-% This equation goes far beyond the celebrated theorem ascribed to the great
-% Pythagoras by his followers.
-% \begin{thm}
-% The square of the length of the hypotenuse of a right triangle equals the sum of the squares 
-% of the lengths of the other two sides.
-% \end{thm}
-% \section{Epilogue}
-% A word or two to conclude, and this even includes some inline 
-% maths:  $R(x,t)\sim t^{-\beta}g(x/t^\alpha)\exp(-|x|/t^\alpha)$.
+To develop a model-based localisation algorithm which preserves navigator and sensor privacy, we first defined the novel notion of an LCAO secure encryption scheme and gave a provably secure implementation based on the Joye-Libert aggregation scheme. This scheme was then used in our proposed private EIF, where sensors compute measurement information homomorphically such that it can be privately used by a navigator. Our privacy-preserving estimation method may find uses in a variety of untrusted distributed localisation environments including airspaces and autonomous vehicle networks as well as those where alternative measurement models satisfying our defined linearlity requirements can be applied. Possible future work in this topic includes the expanding of the LCAO security notion to \textit{ensure} that the same weights are broadcast to all sensors, the relaxing of the Gaussian modified noise assumption and the exploring of implications behind an active sensor attacker model.
 
 % Place acknowledgements
 % here.
@@ -1552,36 +1492,6 @@ Partially supported by zim
 % Elsevier at the time of printing.
 \bibliographystyle{plain}
 \bibliography{BibTeX/PrivateEIFLocalisation}
-
-%\begin{thebibliography}{99}     % Otherwise use the  
-                                 % thebibliography environment.
-                                 % Insert the full references here.
-                                 % See a recent issue of Automatica 
-                                 % for the style.
-%  \bibitem[Heritage, 1992]{Heritage:92}
-%     (1992) {\it The American Heritage. 
-%     Dictionary of the American Language.}
-%     Houghton Mifflin Company.
-%  \bibitem[Able, 1956]{Abl:56}
-%     B.~C.~Able (1956). Nucleic acid content of macroscope. 
-%     {\it Nature 2}, 7--9. 
-%  \bibitem[Able {\em et al.}, 1954]{AbTaRu:54}   
-%     B.~C. Able, R.~A. Tagg, and M.~Rush (1954).
-%     Enzyme-catalyzed cellular transanimations.
-%     In A.~F.~Round, editor, 
-%     {\it Advances in Enzymology Vol. 2} (125--247). 
-%     New York, Academic Press.
-%  \bibitem[R.~Keohane, 1958]{Keo:58}
-%     R.~Keohane (1958).
-%     {\it Power and Interdependence: 
-%     World Politics in Transition.}
-%     Boston, Little, Brown \& Co.
-%  \bibitem[Powers, 1985]{Pow:85}
-%     T.~Powers (1985).
-%     Is there a way out?
-%     {\it Harpers, June 1985}, 35--47.
-
-%\end{thebibliography}
 
 % Each appendix must have a short title.
 % Sections and subsections are supported
