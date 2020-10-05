@@ -1442,7 +1442,7 @@ Recalling Assumption \ref{assum:measurement_size}, modified measurement noise re
 \caption{Layouts Normal Big}
 \label{fig:sim_layouts}
 \end{figure}
-To evaluate the accuracy of our method, we have run $100$ simulations, all with $50$ filter iterations, for each of the sensors layouts with unmodified sensor measurment variances $r_i=5$ metres. Due to the large encoding modulus $N$, no notable advantage is gained when choosing a low fractional precision factor $f$, thus, $f=2^{32}$ was chosen to ensure minimal loss of precision when compared to the floating-point computations in the unencrypted EIF. The plotted average RMSE of our proposed method as well as that of the unencrypted EIF filter can be seen in Figure \ref{fig:sim_layout_errors}.
+To evaluate the accuracy of our method, we have run $100$ simulations, all with $50$ filter iterations, for each of the sensors layouts with unmodified sensor measurement variances $r_i=5$ metres. Due to the large encoding modulus $N$, no notable advantage is gained when choosing a low fractional precision factor $f$, thus, $f=2^{32}$ was chosen to ensure minimal loss of precision when compared to the floating-point computations in the unencrypted EIF. The plotted average RMSE of our proposed method as well as that of the unencrypted EIF filter can be seen in Figure \ref{fig:sim_layout_errors}.
 \begin{figure}[htbp]
 \begin{center}
     \includegraphics{images/layout_errors.pdf}
@@ -1450,7 +1450,7 @@ To evaluate the accuracy of our method, we have run $100$ simulations, all with 
 \caption{Layout errors}
 \label{fig:sim_layout_errors}
 \end{figure}
-From the results it can be seen that sensor distance has little effect on the performance of the filter and that the measurement modification in Section \ref{subsec:range_measurement_mod} has almost no effect on the performance when comparied to a normal EIF filter. The robustness of the privacy-preserving method is likely due to the rationality of Assumption \ref{assum:measurement_size}, the relative size of measurements to the sensor variances in our simulations, and the sufficiently large fractional precision.
+From the results, it can be seen that sensor distance has little effect on the performance of the filter and that the measurement modification in Section \ref{subsec:range_measurement_mod} has almost no effect on the performance when compared to a normal EIF filter. The robustness of the privacy-preserving method is likely due to the rationality of Assumption \ref{assum:measurement_size}, the relative size of measurements to the sensor variances in our simulations, and the sufficiently large fractional precision.
 
 In addition to accuracy, computational requirements are an important factor in the adoption of novel cryptographic methods. Figure \ref{fig:sim_timing} shows the average simulation runtimes when encryption key bit lengths (\textit{i.e.} bit lengths of $N$) and the number of sensors are varied. Every plotted time is again the average of $100$ simulations, each running for $50$ filter iterations. 
 \begin{figure}[htbp]
@@ -1477,7 +1477,7 @@ As sensor and navigator computations run in parallel, increases in runtime from 
 % 
 
 \section{Conclusion} \label{sec:conclusion}
-To develop a model-based localisation algorithm which preserves navigator and sensor privacy, we first defined the novel notion of an LCAO secure encryption scheme and gave a provably secure implementation based on the Joye-Libert aggregation scheme. This scheme was then used in our proposed private EIF, where sensors compute measurement information homomorphically such that it can be privately used by a navigator. Our privacy-preserving estimation method may find uses in a variety of untrusted distributed localisation environments including airspaces and autonomous vehicle networks as well as those where alternative measurement models satisfying our defined linearlity requirements can be applied. Possible future work in this topic includes the expanding of the LCAO security notion to \textit{ensure} that the same weights are broadcast to all sensors, the relaxing of the Gaussian modified noise assumption and the exploring of implications behind an active sensor attacker model.
+To develop a model-based localisation algorithm which preserves navigator and sensor privacy, we first defined the novel notion of an LCAO secure encryption scheme and gave a provably secure implementation based on the Joye-Libert aggregation scheme. This scheme was then used in our proposed private EIF, where sensors compute measurement information homomorphically such that it can be privately used by a navigator. Our privacy-preserving estimation method may find uses in a variety of untrusted distributed localisation environments including airspaces and autonomous vehicle networks as well as those where alternative measurement models satisfying our defined linearity requirements can be applied. Possible future work in this topic includes the expanding of the LCAO security notion to \textit{ensure} that the same weights are broadcast to all sensors, the relaxing of the Gaussian modified noise assumption and the exploring of implications behind an active sensor attacker model.
 
 % Place acknowledgements
 % here.
