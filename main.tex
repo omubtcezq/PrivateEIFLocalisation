@@ -1460,7 +1460,7 @@ In addition to accuracy, computational requirements are an important factor in t
 \caption{Timing}
 \label{fig:sim_timing}
 \end{figure}
-As sensor and navigator computations run in parallel, increases in runtime from additional sensors are primarily due to the longer aggregation operation at the navigator. The predominant computational cost is dependant on the encryption scheme key size, which must be chosen such that sufficient security is provided by the scheme. The current recommendation for a secure implementation of the Paillier encryption scheme is to use $1024$ bit-long keys.
+As sensor and navigator computations run in parallel, increases in runtime from additional sensors are primarily due to the longer aggregation operation at the navigator. The predominant computational cost is dependant on the encryption scheme key size, which must be chosen such that sufficient security is provided by the scheme. The current recommendation for a secure implementation relying on prime factorisation (difficulty of factorising $N$) is to use $2048$ bit-long keys \cite{barkerRecommendationPairwiseKey2019}.
 
 % 
 %  .d8888b.                             
