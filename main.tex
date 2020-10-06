@@ -157,25 +157,52 @@ Distributed state estimation and localisation methods have become increasingly p
 % 
 
 \section{Introduction}
+Localisation methods in distributed sensor environments have long been an active topic of research []. Ongoing advancements in portable computing power and sensor capabilities have led to various forms of distributed sensor localisation methods being actively researched [], of which range-based localisation methods have found a particularly large application. Signal strength measurements, radar measurements, GPS and multilateration are among the use-cases where distance measurements or estimates are used to produce location estimates of an involved party. Typically, localisation in this setting is computed by first gathering sensor details such as measurement noise, geographical location and observations centrally, before calculating a location estimate based on this information and making it available to the interested parties []. 
+
+Such centrally computed algorithms, therefore, require sharing sensor or navigator information to other parties involved in the algorithm.
 
 
---
 
-Introduce localisation, filtering and the need for privacy. 
+with the advancements in cloud and ubiquitous computing, possible use-cases 
 
-Examples of environments where privacy is relevant and concrete examples where lack of privacy could have large costs
+such as airspace localisation in the presence of private sensors or autonomous vehicle estimation without disclosing underlying hardware or methods, 
 
-Methods for introducing security and privacy include differential privacy methods and encryption methods. 
+have made the requirements of information security and user privacy more apparent than before [14,15]
 
-Differential privacy involves using statistical noise as security to make individual users' information cannot be deduced. Often requires a trusted aggregator, although secure aggregation methods exist. always requires noising result such that the outcome is not exact (a problem in localisation).
+For example, consider aircraft localisation in the presence of privately operated radar stations, where measurements and locations of stations may wish to be kept private from vehicles
 
-Encryption schemes involve formal indistinguishability proofs typically over bits or integers. They rely on computationally hard problems involving security parameters of a sufficiently large size; therefore the additional computational requirements of using encryption schemes should be pointed out and what this means in a real-time distributed sensor system. Continuing, explain public-key cryptography applicability to distributed systems; difference to symmetric schemes. Homomorphic encryption power and use case. Why FHE isn't used often, why additive partially homomorphic encryption is.
 
-Advancements in function providing encryption schemes such as homomorphic encryption have also led to several other types of schemes which have found uses in signal processing. Private aggregation schemes allow the secure computation of the sum of encrypted values originating from different parties, leaking only the final result. When considering such multi-party encryption protocols, formal security definitions must now also incorporate the added dangers of colluding malicious parties, and lead to new notions of security. For example Aggregator Obliviousness (AO) is typically proven for private aggregation schemes, while alternatives such as Private Weighted Secure Aggregator Obliviousness (pWSAO) exist for other specific use-cases.
 
-Another example of function providing encryption, and a generalisation of private aggregation, is called functional encryption (FE) and its distributed extension, multi-client functional encryption (MCFE), which allow the unencrypted result of an arbitrary function to be computed from encrypted inputs. General FE and MCFE are known to be quite computationally expensive (from meeting with ITI and student Johannes - need ref.) but alternatives providing only a subset of possibly computable function exist; for example, inner product encryption.
+The requirement of sensing sensor or navigator information within a network 
+Centrally computing localisation algorithms typically require information that could be considered sensitive to either sensors (or those to whom they belong) or navigators be sent to 
 
-Several of the aforementioned encryption schemes have found uses in secure localisation, estimation, and control.
+
+
+Methods which have been used to handle these requirements, often by solving the problem of secure data aggregation can be grouped into two broad catagories. 
+
+Differential privacy and Indistinguishable encryption.
+
+These new requirements for distributed signal processing have led to new definitions of security and methods which satisfy them, such as formalised encryption schemes [], differential privacy [] and homomorphic encryption []
+
+Differential privacy [] involves using statistical noise as security to make individual users' information cannot be deduced. Often requires a trusted aggregator, although secure aggregation methods exist. always requires noising result such that the outcome is not exact (a problem in localisation).
+
+% --
+
+% Introduce localisation, filtering and the need for privacy. 
+
+% Examples of environments where privacy is relevant and concrete examples where lack of privacy could have large costs
+
+% Methods for introducing security and privacy include differential privacy methods and encryption methods. 
+
+% Differential privacy involves using statistical noise as security to make individual users' information cannot be deduced. Often requires a trusted aggregator, although secure aggregation methods exist. always requires noising result such that the outcome is not exact (a problem in localisation).
+
+% Encryption schemes involve formal indistinguishability proofs typically over bits or integers. They rely on computationally hard problems involving security parameters of a sufficiently large size; therefore the additional computational requirements of using encryption schemes should be pointed out and what this means in a real-time distributed sensor system. Continuing, explain public-key cryptography applicability to distributed systems; difference to symmetric schemes. Homomorphic encryption power and use case. Why FHE isn't used often, why additive partially homomorphic encryption is.
+
+% Advancements in function providing encryption schemes such as homomorphic encryption have also led to several other types of schemes which have found uses in signal processing. Private aggregation schemes allow the secure computation of the sum of encrypted values originating from different parties, leaking only the final result. When considering such multi-party encryption protocols, formal security definitions must now also incorporate the added dangers of colluding malicious parties, and lead to new notions of security. For example Aggregator Obliviousness (AO) is typically proven for private aggregation schemes, while alternatives such as Private Weighted Secure Aggregator Obliviousness (pWSAO) exist for other specific use-cases.
+
+% Another example of function providing encryption, and a generalisation of private aggregation, is called functional encryption (FE) and its distributed extension, multi-client functional encryption (MCFE), which allow the unencrypted result of an arbitrary function to be computed from encrypted inputs. General FE and MCFE are known to be quite computationally expensive (from meeting with ITI and student Johannes - need ref.) but alternatives providing only a subset of possibly computable function exist; for example, inner product encryption.
+
+% Several of the aforementioned encryption schemes have found uses in secure localisation, estimation, and control.
 
 % 
 % ##       #### ######## 
@@ -199,18 +226,8 @@ In addition to applying suitable encryption schemes to signal processing tasks, 
 
 Briefly describe navigator scenario and our contributions
 
---
-
 %Section Summary
-% \ref{sec:problem_statement}
-% \ref{sec:crypto_prelim}
-% \ref{sec:lcao_definition}
-% \ref{sec:our_scheme}
-% \ref{sec:loc_prelim}
-% \ref{sec:private_localisation}
-% \ref{sec:results}
-% \ref{sec:conclusion}
-In Section \ref{sec:problem_statement} we introduce the localisation problem and the restrictions on involved parties. Section \ref{sec:crypto_prelim} summarises cryptographic preliminaries and Sections \ref{sec:lcao_definition} and \ref{sec:our_scheme} introduce a novel security notion of linear-combination aggregation obliviousness and an encryption scheme which satisfies it. Section \ref{sec:loc_prelim} summarises localisation preliminaries, before we introduce our private localisation method in Section \ref{sec:private_localisation}, using the introduced encryption scheme. In Section \ref{sec:results} we give and analyse simulation results, before concluding our work in Section \ref{sec:conclusion}.
+In Section \ref{sec:problem_statement} we introduce the localisation problem and the restrictions on involved parties. Section \ref{sec:crypto_prelim} summarises cryptographic preliminaries and Sections \ref{sec:lcao_definition} and \ref{sec:our_scheme} introduce a novel security notion of linear-combination aggregation obliviousness and an encryption scheme which satisfies it. Section \ref{sec:loc_prelim} summarises localisation preliminaries, before we introduce our private localisation method in Section \ref{sec:private_localisation}, using the introduced encryption scheme. In Section \ref{sec:sim_and_results} we give and analyse simulation results, before concluding our work in Section \ref{sec:conclusion}.
 
 % 
 % ##    ##  #######  ########    ###    ######## ####  #######  ##    ## 
@@ -241,20 +258,6 @@ Notation. Reminder to include symbols for: rounding, concatenation, ``divides'',
 % 
 
 \section{Problem Statement} \label{sec:problem_statement}
-% Restate the scenario but more formally. Give a concrete example - plane and signal towers.
-
-% Exact security guarantees we aim for, as well as the definitions for these guarantees (pWSAO and indistinguishability but in context of localisation as well). Note that learning only the sum in aggregation (as is normal in AO) would, in this case, tell the navigator the average location and measurements of all sensors, which is fine as it does not disclose any exact sensor.
-
-% Passive attacks only from sensors to learn navigator position (Otherwise one could do some kind of attack that would send a fake measurement and note the change in its own measurements - possible this would give away the average of other sensors' measurements but unclear). Any largely incorrect inputs from sensors may also be detectable by comparison to alternative navigator onboard sensors (GPS etc.). Justify by saying sensors need to behave for localisation to work in the first place.
-
-% Active attacks from navigator to find sensor location allowed, but assume that weights sent to all sensors are the same. In a wireless setting, all sensors would receive all broadcast weights anyway. While special hardware, which may support directional broadcasting or receiving, could be used to locate sensors individually this is beyond the scope of what is considered in our problem.
-
-% Point out that learning the aggregation of sensor outputs, which contains measurement and location information also means that the average location and measurement of the sensors may be leaked, and is accepted as a part of the leakage as it is inferrable from the aggregation scheme and any functioning model-based localisation where measurements are not known
-
-% Rough computational capabilities expected by parties
-
-% Fixed sensor subsets of which only whole subsets can be used at once. Maybe a picture of what this might look like in a high level distributed localisation diagram. Should consider that this sub-grouping would also mean the leakage of the average sensor/measurement of each subset not all sensors at once. This should be considered when choosing sensor subsets and locations.
-
 The localisation scenario we consider in this work is that of model-based self-navigation using range-only sensors. We consider localisation in the two-dimensional case for simplicity but will derive methods suitable for an extension to the three-dimensional equivalent.
 
 The navigator state is defined as 
