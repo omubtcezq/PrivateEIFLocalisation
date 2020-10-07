@@ -157,34 +157,26 @@ Distributed state estimation and localisation methods have become increasingly p
 % 
 
 \section{Introduction}
-Localisation methods in distributed sensor environments have long been an active topic of research []. Ongoing advancements in portable computing power and sensor capabilities have led to various forms of distributed sensor localisation methods being actively researched [], of which range-based localisation methods have found a particularly large application. Signal strength measurements, radar measurements, GPS and multilateration are among the use-cases where distance measurements or estimates are used to produce location estimates of an involved party. Typically, localisation in this setting is computed by first gathering sensor details such as measurement noise, geographical location and observations centrally, before calculating a location estimate based on this information and making it available to the interested parties []. 
+Localisation methods in distributed sensor environments have long been an active topic of research []. Ongoing advancements in portable computing power and sensor capabilities have led to the development of various forms of localisation methods, from range-free and range-based signal strength measurements [], echo-based range estimates [] and magnetic field measurements [] to the TDOA and TOA pseudorange multilateration methods []. Range-based localisation methods, including the use of radar measurments, GPS clocks and signal strength measurmeents, have found particularly large application due to their robustness and accuracy []. These methods use distance measurements, or computed estimates, to produce location estimates and typically involve gathering sensor details such as measurement noise, geographical location and observations centrally []. Broadcasting or gathering information in this way, however, implies a trust between participants within a trusted communication network to ensure shared data may not be used for individual malicous gain. With the advancements in cloud and ubiquitous computing, changes in possible use-cases involving distributed sensors have made these requirements of information security and user privacy more apparent than before [14,15]. For example, a scenario of aircraft localisation in the presence of privately operated measurement stations may imply measurements and locations of stations should be kept private from navigating vehicles. Alternatively, autonomous vehicle state estimation may benefit from neighbouring vehicles' information while no participant wishes to share information about their hardware. In addition, the dispatching of any expensive intermediate computations to service-providing cloud operators may require ensuring the privacy of information involved in the computations. All of these scenarios, and the one we will consider, require methods for computing specific operations while ensuring the privacy of some or all of the input data.
 
-Such centrally computed algorithms, therefore, require sharing sensor or navigator information to other parties involved in the algorithm.
+Of the methods used to preserve privacy during distributed signal processing, it is common for the information exchanging portion of the algorithm to be reduced to a form of aggregation of involved parties' data. (For example, computing the mean value of sensor meausurements.) The most common methods for ensuring privacy during aggregation have been described below.
+\begin{description}
+    \item[Differential Privacy] These techniques formalise preserving the privacy of individual datum within an aggregation operation by introducing known distributions of noise to the resulting aggregation []. In the cases with no trusted aggregator, local differential privacy is achieved by introducing noise to individual inputs [norm,phe ones]. Although differential privacy has strong computational benefits due to its implementational simplicity, it provides relatively weak security guarantees for multi-party networks, with no guarantees in the presence of multiple colluding corrupted parties. In addition, noisy aggregation results hinder it use in scenarios where high precision is a desired property such as aircraft localisation.
+    \item[Aggregator Oblivious Encryption] This method of encryption formalises the privacy of \textit{all} aggregation data from honest parties []. Encryptions of aggregation data are proven to be computationally indistingishable and guarantee that only their sum can be learned by an aggregator, whether or not they are trusted. The originally proposed method [] is restiricted to a small input domain which has been expandad and computationally simplified in later works [joye-lib,student-one]. The aggregation operation in aggregator obliviousness is, however, strictly limited to the sum operation and restricts its applicabilty to simple processing tasks such as smart-meter mean calculation [].
+\end{description}
+In addition to the private aggregation of data, it may also be the case that private data needs to be modified by an external party before being returned, as with privacy-preserving cloud computing. These methods have been broadly grouped into two domains and described below
+\begin{description}
+    \item[Fully Homomorphic Encryption] These schemes allow all algebraic computations to be performed on encrypted data without the computing party learning any information about inputs, intermediate values or results []. Although theoretically ideal for many privacy-preserving tasks, current implementations are still computationally impractical for real-time or large scale tasks [].
+    \item[Partially Homomorphic Encryption] A simplification of fully homomorphic schemes, these schemes provide only a subset, typically one, of algebraic operations on encrypted data []. The reduced computational requirements and implementation simplicty have made partially homomorphic encryption schemes commonly used in privacy-preserving signal processing tasks, including private matrix multilpication [], set intersection computation [] and control input aggregation []. However, these works are relatively restricted in application due to the limited operations provided.
+\end{description}
 
-
-
-with the advancements in cloud and ubiquitous computing, possible use-cases 
-
-such as airspace localisation in the presence of private sensors or autonomous vehicle estimation without disclosing underlying hardware or methods, 
-
-have made the requirements of information security and user privacy more apparent than before [14,15]
-
-For example, consider aircraft localisation in the presence of privately operated radar stations, where measurements and locations of stations may wish to be kept private from vehicles
-
-
-
-The requirement of sensing sensor or navigator information within a network 
-Centrally computing localisation algorithms typically require information that could be considered sensitive to either sensors (or those to whom they belong) or navigators be sent to 
+% TODO Never talked about FE and it's distributed extensio MCFE. General solutions still too computationally infeasible, while very specific functions do exists - dot product
+% "several novel methods for privacy preserving computations ...
+% which have as of yet found little application in estimation and localisation tasks
 
 
+Several of the aforementioned encryption schemes have found uses in privacy-preserving localisation, estimation, and control.
 
-Methods which have been used to handle these requirements, often by solving the problem of secure data aggregation can be grouped into two broad catagories. 
-
-Differential privacy and Indistinguishable encryption.
-
-These new requirements for distributed signal processing have led to new definitions of security and methods which satisfy them, such as formalised encryption schemes [], differential privacy [] and homomorphic encryption []
-
-Differential privacy [] involves using statistical noise as security to make individual users' information cannot be deduced. Often requires a trusted aggregator, although secure aggregation methods exist. always requires noising result such that the outcome is not exact (a problem in localisation).
 
 % --
 
@@ -411,6 +403,9 @@ Before we can define concrete security requirements and a filtering protocol, we
 
 \subsection{Inherent Leakage}
 Leakage of information will be discussed in more detail in Section \ref{subsec:leakage}, however, we stress that in any estimation problem where process and measurement models are known, knowledge of sequential state estimates naturally leads to the leakage of some measurement information. For this reason, we accept that average information about sensors may be leaked at each time step and instead show that individual sensor information remains private.
+
+% TODO add overview section here - leads into crypto
+% can use the first part of the current crypto problem in here - then go straight into the scheme there
 
 % 
 %  .d8888b.                            888                 8888888b.                  888 d8b               
