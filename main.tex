@@ -135,6 +135,20 @@ meeting. Corresponding author Uwe~D.~Hanebeck. Tel. +49--721--608--43909.}
 System state estimation; Data privacy; Sensor fusion; Kalman filters.
 \end{keyword}
 
+% 
+%        d8888 888888b.    .d8888b. 88888888888 8888888b.         d8888  .d8888b. 88888888888 
+%       d88888 888  "88b  d88P  Y88b    888     888   Y88b       d88888 d88P  Y88b    888     
+%      d88P888 888  .88P  Y88b.         888     888    888      d88P888 888    888    888     
+%     d88P 888 8888888K.   "Y888b.      888     888   d88P     d88P 888 888           888     
+%    d88P  888 888  "Y88b     "Y88b.    888     8888888P"     d88P  888 888           888     
+%   d88P   888 888    888       "888    888     888 T88b     d88P   888 888    888    888     
+%  d8888888888 888   d88P Y88b  d88P    888     888  T88b   d8888888888 Y88b  d88P    888     
+% d88P     888 8888888P"   "Y8888P"     888     888   T88b d88P     888  "Y8888P"     888     
+%                                                                                             
+%                                                                                             
+%                                                                                             
+% 
+
 % Abstract of not more than 200 words.
 \begin{abstract}
 Distributed state estimation and localisation methods have become increasingly popular with the rise of ubiquitous computing, and have led naturally to an increased concern regarding data and estimation privacy. Traditional distributed sensor navigation methods involve the leakage of sensor information or navigator location during localisation protocols and fail to preserve participants’ data privacy. Existing approaches which provide such guarantees fail to address sensor and navigator privacy in some common, model-based, non-linear measurement, localisation methods and forfeit broad applicability. We define a cryptographically secure linear-combination aggregation scheme which we apply to the Extended Kalman Filter with range-sensor measurements, and show that navigator location, sensor locations and sensor measurements can remain private during navigation. The security requirements, leakage, and cryptographic proof are given for the private filter and aggregation scheme, and simulations of the filter are used to evaluate the accuracy and performance of the method. Our approach defines a novel, computationally plausible and cryptographically private, model-based localisation filter with direct application to environments where nodes may not be fully trusted and data is considered sensitive.
@@ -143,17 +157,17 @@ Distributed state estimation and localisation methods have become increasingly p
 \end{frontmatter}
 
 % 
-% 8888888          888                    
-%   888            888                    
-%   888            888                    
-%   888   88888b.  888888 888d888 .d88b.  
-%   888   888 "88b 888    888P"  d88""88b 
-%   888   888  888 888    888    888  888 
-%   888   888  888 Y88b.  888    Y88..88P 
-% 8888888 888  888  "Y888 888     "Y88P"  
-%                                         
-%                                         
-%                                         
+% 8888888 888b    888 88888888888 8888888b.   .d88888b.  
+%   888   8888b   888     888     888   Y88b d88P" "Y88b 
+%   888   88888b  888     888     888    888 888     888 
+%   888   888Y88b 888     888     888   d88P 888     888 
+%   888   888 Y88b888     888     8888888P"  888     888 
+%   888   888  Y88888     888     888 T88b   888     888 
+%   888   888   Y8888     888     888  T88b  Y88b. .d88P 
+% 8888888 888    Y888     888     888   T88b  "Y88888P"  
+%                                                        
+%                                                        
+%                                                        
 % 
 
 \section{Introduction}
@@ -162,11 +176,45 @@ Localisation methods in distributed sensor environments have long been an active
 % TODO update the below
 In Section \ref{sec:problem_statement} we introduce the localisation problem and the restrictions on involved parties. Section \ref{sec:crypto_prelim} summarises cryptographic preliminaries and Sections \ref{sec:lcao_definition} and \ref{sec:our_scheme} introduce a novel security notion of linear-combination aggregation obliviousness and an encryption scheme which satisfies it. Section \ref{sec:loc_prelim} summarises localisation preliminaries, before we introduce our private localisation method in Section \ref{sec:private_localisation}, using the introduced encryption scheme. In Section \ref{sec:sim_and_results} we give and analyse simulation results, before concluding our work in Section \ref{sec:conclusion}.
 
+% 
+% ##    ##  #######  ########    ###    ######## ####  #######  ##    ## 
+% ###   ## ##     ##    ##      ## ##      ##     ##  ##     ## ###   ## 
+% ####  ## ##     ##    ##     ##   ##     ##     ##  ##     ## ####  ## 
+% ## ## ## ##     ##    ##    ##     ##    ##     ##  ##     ## ## ## ## 
+% ##  #### ##     ##    ##    #########    ##     ##  ##     ## ##  #### 
+% ##   ### ##     ##    ##    ##     ##    ##     ##  ##     ## ##   ### 
+% ##    ##  #######     ##    ##     ##    ##    ####  #######  ##    ## 
+% 
+
 \subsection{Notation}
 Notation. Reminder to include symbols for: rounding, concatenation, ``divides'', vector norm, expected value and variance, ordered list
 
+% 
+% 888      8888888 88888888888 
+% 888        888       888     
+% 888        888       888     
+% 888        888       888     
+% 888        888       888     
+% 888        888       888     
+% 888        888       888     
+% 88888888 8888888     888     
+%                              
+%                              
+%                              
+% 
+
 \section{Literature Overview}
 In this section we will discuss methods for providing security guarantees in signal processing tasks, and some applications to localisation and estimation problems.
+
+% 
+% ######## ##    ##  ######      ######   ######  ##     ## ######## ##     ## ########  ######  
+% ##       ###   ## ##    ##    ##    ## ##    ## ##     ## ##       ###   ### ##       ##    ## 
+% ##       ####  ## ##          ##       ##       ##     ## ##       #### #### ##       ##       
+% ######   ## ## ## ##           ######  ##       ######### ######   ## ### ## ######    ######  
+% ##       ##  #### ##                ## ##       ##     ## ##       ##     ## ##             ## 
+% ##       ##   ### ##    ##    ##    ## ##    ## ##     ## ##       ##     ## ##       ##    ## 
+% ######## ##    ##  ######      ######   ######  ##     ## ######## ##     ## ########  ######  
+% 
 
 \subsection{Encryption Schemes in Signal Processing}
 Of the methods used to preserve privacy during distributed signal processing, it is common for the information exchanging portion of the algorithm to be reduced to a form of aggregation of involved parties' data []. The most common methods for ensuring privacy during aggregation have been described below.
@@ -185,6 +233,15 @@ Lastly, recent developments in encryption schemes have provided some novel metho
 \end{description}
 Of the aforementioned encryption schemes, some have found uses in privacy-preserving localisation and estimation tasks and we summarise these in the next section.
 
+% 
+% ######## ##    ##  ######     ##        #######   ######  
+% ##       ###   ## ##    ##    ##       ##     ## ##    ## 
+% ##       ####  ## ##          ##       ##     ## ##       
+% ######   ## ## ## ##          ##       ##     ## ##       
+% ##       ##  #### ##          ##       ##     ## ##       
+% ##       ##   ### ##    ##    ##       ##     ## ##    ## 
+% ######## ##    ##  ######     ########  #######   ######  
+% 
 
 \subsection{Encrypted Localisation and Estimation}
 Localisation methods exist for a variety of purposes requiring different levels of accuracy and supporting various forms of sensors []. We aim to provide an accurate localisation filter in the presence of range-only sensors. 
@@ -196,17 +253,17 @@ Model-based approaches can achieve better accuracy due to their exploitation of 
 While we primarily focus on applying encryption schemes to localisation algorithms, homomorphic encryption schemes also require suitable number encoding when used with real numbers. As is the case with localisation sensors, real number measurements need to be encoded as integers with operations consistent under scheme-provided homomorphic operations. The Google BigNum library [google bignum] provides an encoding which supports both addition and unencrypted multiplication when used with an additively homomorphic encryption scheme. It, however, leaks the exponent information of encrypted numbers. In [farohki], a simpler alternative for encoding is proposed, which leaks no information about encrypted numbers, but allows only a single unencrypted multiplication between encodings.
 
 % 
-% 8888888b.                  888      
-% 888   Y88b                 888      
-% 888    888                 888      
-% 888   d88P 888d888 .d88b.  88888b.  
-% 8888888P"  888P"  d88""88b 888 "88b 
-% 888        888    888  888 888  888 
-% 888        888    Y88..88P 888 d88P 
-% 888        888     "Y88P"  88888P"  
-%                                     
-%                                     
-%                                     
+% 8888888b.  8888888b.   .d88888b.  888888b.   888      8888888888 888b     d888 
+% 888   Y88b 888   Y88b d88P" "Y88b 888  "88b  888      888        8888b   d8888 
+% 888    888 888    888 888     888 888  .88P  888      888        88888b.d88888 
+% 888   d88P 888   d88P 888     888 8888888K.  888      8888888    888Y88888P888 
+% 8888888P"  8888888P"  888     888 888  "Y88b 888      888        888 Y888P 888 
+% 888        888 T88b   888     888 888    888 888      888        888  Y8P  888 
+% 888        888  T88b  Y88b. .d88P 888   d88P 888      888        888   "   888 
+% 888        888   T88b  "Y88888P"  8888888P"  88888888 8888888888 888       888 
+%                                                                                
+%                                                                                
+%                                                                                
 % 
 
 \section{Problem Statement} \label{sec:problem_statement}
@@ -245,9 +302,33 @@ is defined as
         &= \sqrt{(\rv{x}_k-s_{x,i})^2 + (\rv{y}_k-s_{y,i})^2}\,.
     \end{split}
 \end{equation}
-We wish to run a state estimation filter with models \eqref{eqn:process_model} and \eqref{eqn:measurement_model} such that all involved sensors $1 \leq i \leq n$ do not learn the estimated state $\rvec{x}_k$ and the navigator does not learn sensor locations $\vec{s}_i,\,1 \leq i \leq n$ or their measurements $\rv{z}_k$ at any time $k$.
+We wish to run a state estimation filter with models \eqref{eqn:process_model} and \eqref{eqn:measurement_model} such that all involved sensors $1 \leq i \leq n$ do not learn the estimated state $\rvec{x}_k$ and the navigator does not learn sensor locations $\vec{s}_i,\,1 \leq i \leq n$ or their measurements $\rv{z}_k$ at any time $k$. We motivate these goals with an example. When considering aircraft navigation in the presence of privately-owned range-measuring towers, it is reasonable to assume that the current state of an aircraft may not wish to be disclosed to unknown tower-owning parties. Similarly, tower locations may wish to be kept private from unidentified navigating aircraft. However, the additional safety to passengers, provided by accurate aircraft localisation, may be a goal of all those involved.
 
-We motivate these goals with an example. When considering aircraft navigation in the presence of privately-owned range-measuring towers, it is reasonable to assume that the current state of an aircraft may not wish to be disclosed to unknown tower-owning parties. Similarly, tower locations may wish to be kept private from unidentified navigating aircraft. However, the additional safety to passengers, provided by accurate aircraft localisation, may be a goal of all those involved.
+% 
+% ########  ########  ######   #######  ##     ## ########  
+% ##     ## ##       ##    ## ##     ## ###   ### ##     ## 
+% ##     ## ##       ##       ##     ## #### #### ##     ## 
+% ##     ## ######   ##       ##     ## ## ### ## ########  
+% ##     ## ##       ##       ##     ## ##     ## ##        
+% ##     ## ##       ##    ## ##     ## ##     ## ##        
+% ########  ########  ######   #######  ##     ## ##        
+% 
+
+\subsection{Problem Decomposition}
+The recursive nature of the problem definition above complicated the definition and proof of security requirements.
+
+We will instead decompose the communication part of the problem into a form of aggregation, which we can reason and prove more easily.
+
+Due to the non-linearity of the measurement model \eqref{eqn:measurement_model}, we will use a linearisation 
+
+This type of linearisation will depend on the current state estimate and therefore requires communication between measurement producers and state estimators, in our case communication between the sensors and navigator
+
+The basic idea of our aggregation decomposition is to formulate the computing of model linearisation with the ability to compute weighted sums of state-related information at sensors, and again summing
+
+
+
+% note also the reason for not computing sums at the navigator (will require j sums to be sent rather than n)
+% Possible as a remarkat the end? "We note that y= ... = ... and argue the benefit of this method depends on j >> n reducing communication costs
 
 % 
 %  ######     ###    ########     ###    ########  #### ##       #### ######## #### ########  ######  
@@ -364,22 +445,18 @@ Before we can define concrete security requirements and a filtering protocol, we
 \subsection{Inherent Leakage}
 Leakage of information will be discussed in more detail in Section \ref{subsec:leakage}, however, we stress that in any estimation problem where process and measurement models are known, knowledge of sequential state estimates naturally leads to the leakage of some measurement information. For this reason, we accept that average information about sensors may be leaked at each time step and instead show that individual sensor information remains private.
 
-
-% TODO add overview section here - leads into crypto
-% can use the first part of the current crypto problem in here - then go straight into the scheme there
-
 % 
-%  .d8888b.                            888                 8888888b.                  888 d8b               
-% d88P  Y88b                           888                 888   Y88b                 888 Y8P               
-% 888    888                           888                 888    888                 888                   
-% 888        888d888 888  888 88888b.  888888 .d88b.       888   d88P 888d888 .d88b.  888 888 88888b.d88b.  
-% 888        888P"   888  888 888 "88b 888   d88""88b      8888888P"  888P"  d8P  Y8b 888 888 888 "888 "88b 
-% 888    888 888     888  888 888  888 888   888  888      888        888    88888888 888 888 888  888  888 
-% Y88b  d88P 888     Y88b 888 888 d88P Y88b. Y88..88P      888        888    Y8b.     888 888 888  888  888 
-%  "Y8888P"  888      "Y88888 88888P"   "Y888 "Y88P"       888        888     "Y8888  888 888 888  888  888 
-%                         888 888                                                                           
-%                    Y8b d88P 888                                                                           
-%                     "Y88P"  888                                                                           
+% 8888888888 888b    888  .d8888b.       8888888b.  8888888b.  8888888888 888      8888888 888b     d888 
+% 888        8888b   888 d88P  Y88b      888   Y88b 888   Y88b 888        888        888   8888b   d8888 
+% 888        88888b  888 888    888      888    888 888    888 888        888        888   88888b.d88888 
+% 8888888    888Y88b 888 888             888   d88P 888   d88P 8888888    888        888   888Y88888P888 
+% 888        888 Y88b888 888             8888888P"  8888888P"  888        888        888   888 Y888P 888 
+% 888        888  Y88888 888    888      888        888 T88b   888        888        888   888  Y8P  888 
+% 888        888   Y8888 Y88b  d88P      888        888  T88b  888        888        888   888   "   888 
+% 8888888888 888    Y888  "Y8888P"       888        888   T88b 8888888888 88888888 8888888 888       888 
+%                                                                                                        
+%                                                                                                        
+%                                                                                                        
 % 
 
 \section{Cryptography Preliminaries} \label{sec:crypto_prelim}
@@ -484,17 +561,17 @@ Correctness follows from $\sum^{n}_{i=0}sk_i = 0$, and thus
 removing all noise terms.
 
 % 
-%  .d8888b.                            888                 8888888b.                  888      
-% d88P  Y88b                           888                 888   Y88b                 888      
-% 888    888                           888                 888    888                 888      
-% 888        888d888 888  888 88888b.  888888 .d88b.       888   d88P 888d888 .d88b.  88888b.  
-% 888        888P"   888  888 888 "88b 888   d88""88b      8888888P"  888P"  d88""88b 888 "88b 
-% 888    888 888     888  888 888  888 888   888  888      888        888    888  888 888  888 
-% Y88b  d88P 888     Y88b 888 888 d88P Y88b. Y88..88P      888        888    Y88..88P 888 d88P 
-%  "Y8888P"  888      "Y88888 88888P"   "Y888 "Y88P"       888        888     "Y88P"  88888P"  
-%                         888 888                                                              
-%                    Y8b d88P 888                                                              
-%                     "Y88P"  888                                                              
+% 8888888888 888b    888  .d8888b.       8888888b.  8888888b.   .d88888b.  888888b.   
+% 888        8888b   888 d88P  Y88b      888   Y88b 888   Y88b d88P" "Y88b 888  "88b  
+% 888        88888b  888 888    888      888    888 888    888 888     888 888  .88P  
+% 8888888    888Y88b 888 888             888   d88P 888   d88P 888     888 8888888K.  
+% 888        888 Y88b888 888             8888888P"  8888888P"  888     888 888  "Y88b 
+% 888        888  Y88888 888    888      888        888 T88b   888     888 888    888 
+% 888        888   Y8888 Y88b  d88P      888        888  T88b  Y88b. .d88P 888   d88P 
+% 8888888888 888    Y888  "Y8888P"       888        888   T88b  "Y88888P"  8888888P"  
+%                                                                                     
+%                                                                                     
+%                                                                                     
 % 
 
 \section{Private Linear-Combination Aggregation} \label{sec:lcao_definition}
@@ -631,20 +708,16 @@ Next, we formalise the security notion of Linear-Combination Aggregator Obliviou
 In the next section, we will give a solution to an encryption scheme meeting LCAO security, with IND-CPA secure weight encryption, and give a cryptographic proof for its security.
 
 % 
-%  .d88888b.                         .d8888b.           888                                      
-% d88P" "Y88b                       d88P  Y88b          888                                      
-% 888     888                       Y88b.               888                                      
-% 888     888 888  888 888d888       "Y888b.    .d8888b 88888b.   .d88b.  88888b.d88b.   .d88b.  
-% 888     888 888  888 888P"            "Y88b. d88P"    888 "88b d8P  Y8b 888 "888 "88b d8P  Y8b 
-% 888     888 888  888 888                "888 888      888  888 88888888 888  888  888 88888888 
-% Y88b. .d88P Y88b 888 888          Y88b  d88P Y88b.    888  888 Y8b.     888  888  888 Y8b.     
-%  "Y88888P"   "Y88888 888           "Y8888P"   "Y8888P 888  888  "Y8888  888  888  888  "Y8888  
-%                                                                                                
-%                                                                                                
-%                                                                                                
+%  #######  ##     ## ########      ######   ######  ##     ## ######## ##     ## ######## 
+% ##     ## ##     ## ##     ##    ##    ## ##    ## ##     ## ##       ###   ### ##       
+% ##     ## ##     ## ##     ##    ##       ##       ##     ## ##       #### #### ##       
+% ##     ## ##     ## ########      ######  ##       ######### ######   ## ### ## ######   
+% ##     ## ##     ## ##   ##            ## ##       ##     ## ##       ##     ## ##       
+% ##     ## ##     ## ##    ##     ##    ## ##    ## ##     ## ##       ##     ## ##       
+%  #######   #######  ##     ##     ######   ######  ##     ## ######## ##     ## ######## 
 % 
 
-\section{Our Scheme} \label{sec:our_scheme}
+\subsection{Our Scheme} \label{sec:our_scheme}
 Our scheme is based on the Paillier and Joye-Libert schemes introduced in Section \ref{sec:crypto_prelim}, and similarly bases its security on the DCRA. As with Joye-Libert's private aggregation scheme, a trusted party is required for the initial distribution of user secret keys. Below, we give definitions for the four algorithms comprising the linear-combination aggregation encryption scheme.
 
 \begin{description}
@@ -800,17 +873,17 @@ for some negligible functions $\eta_1$ and $\eta_2$. (\textit{i.e.} if we assume
 \end{pf}
 
 % 
-% 888                            8888888b.                  888 d8b               
-% 888                            888   Y88b                 888 Y8P               
-% 888                            888    888                 888                   
-% 888      .d88b.   .d8888b      888   d88P 888d888 .d88b.  888 888 88888b.d88b.  
-% 888     d88""88b d88P"         8888888P"  888P"  d8P  Y8b 888 888 888 "888 "88b 
-% 888     888  888 888           888        888    88888888 888 888 888  888  888 
-% 888     Y88..88P Y88b.         888        888    Y8b.     888 888 888  888  888 
-% 88888888 "Y88P"   "Y8888P      888        888     "Y8888  888 888 888  888  888 
-%                                                                                 
-%                                                                                 
-%                                                                                 
+% 888      .d88888b.   .d8888b.       8888888b.  8888888b.  8888888888 888      8888888 888b     d888 
+% 888     d88P" "Y88b d88P  Y88b      888   Y88b 888   Y88b 888        888        888   8888b   d8888 
+% 888     888     888 888    888      888    888 888    888 888        888        888   88888b.d88888 
+% 888     888     888 888             888   d88P 888   d88P 8888888    888        888   888Y88888P888 
+% 888     888     888 888             8888888P"  8888888P"  888        888        888   888 Y888P 888 
+% 888     888     888 888    888      888        888 T88b   888        888        888   888  Y8P  888 
+% 888     Y88b. .d88P Y88b  d88P      888        888  T88b  888        888        888   888   "   888 
+% 88888888 "Y88888P"   "Y8888P"       888        888   T88b 8888888888 88888888 8888888 888       888 
+%                                                                                                     
+%                                                                                                     
+%                                                                                                     
 % 
 
 \section{Private Localisation Preliminaries} \label{sec:loc_prelim}
@@ -915,17 +988,17 @@ with Jacobian
 \end{equation}
 
 % 
-% 8888888b.          d8b               888                       
-% 888   Y88b         Y8P               888                       
-% 888    888                           888                       
-% 888   d88P 888d888 888 888  888      888      .d88b.   .d8888b 
-% 8888888P"  888P"   888 888  888      888     d88""88b d88P"    
-% 888        888     888 Y88  88P      888     888  888 888      
-% 888        888     888  Y8bd8P       888     Y88..88P Y88b.    
-% 888        888     888   Y88P        88888888 "Y88P"   "Y8888P 
-%                                                                
-%                                                                
-%                                                                
+% 888      .d88888b.   .d8888b.  
+% 888     d88P" "Y88b d88P  Y88b 
+% 888     888     888 888    888 
+% 888     888     888 888        
+% 888     888     888 888        
+% 888     888     888 888    888 
+% 888     Y88b. .d88P Y88b  d88P 
+% 88888888 "Y88888P"   "Y8888P"  
+%                                
+%                                
+%                                
 % 
 
 \section{Private Localisation with Privacy-Preserving Sensors} \label{sec:private_localisation}
@@ -1375,17 +1448,17 @@ Therefore, we conclude that the navigator can \textit{at most} learn the sums of
 \end{rem}
 
 % 
-% 8888888b.                            888 888             
-% 888   Y88b                           888 888             
-% 888    888                           888 888             
-% 888   d88P .d88b.  .d8888b  888  888 888 888888 .d8888b  
-% 8888888P" d8P  Y8b 88K      888  888 888 888    88K      
-% 888 T88b  88888888 "Y8888b. 888  888 888 888    "Y8888b. 
-% 888  T88b Y8b.          X88 Y88b 888 888 Y88b.       X88 
-% 888   T88b "Y8888   88888P'  "Y88888 888  "Y888  88888P' 
-%                                                          
-%                                                          
-%                                                          
+% 8888888b.  8888888888 .d8888b.  888     888 888    88888888888 .d8888b.  
+% 888   Y88b 888       d88P  Y88b 888     888 888        888    d88P  Y88b 
+% 888    888 888       Y88b.      888     888 888        888    Y88b.      
+% 888   d88P 8888888    "Y888b.   888     888 888        888     "Y888b.   
+% 8888888P"  888           "Y88b. 888     888 888        888        "Y88b. 
+% 888 T88b   888             "888 888     888 888        888          "888 
+% 888  T88b  888       Y88b  d88P Y88b. .d88P 888        888    Y88b  d88P 
+% 888   T88b 8888888888 "Y8888P"   "Y88888P"  88888888   888     "Y8888P"  
+%                                                                          
+%                                                                          
+%                                                                          
 % 
 
 \section{Simulation and Results} \label{sec:sim_and_results}
@@ -1422,17 +1495,17 @@ In addition to accuracy, computational requirements are an important factor in t
 As sensor and navigator computations run in parallel, increases in runtime from additional sensors are primarily due to the longer aggregation operation at the navigator. The predominant computational cost is dependant on the encryption scheme key size, which must be chosen such that sufficient security is provided by the scheme. The current recommendation for a secure implementation relying on prime factorisation (difficulty of factorising $N$) is to use $2048$ bit-long keys \cite{barkerRecommendationPairwiseKey2019}.
 
 % 
-%  .d8888b.                             
-% d88P  Y88b                            
-% 888    888                            
-% 888         .d88b.  88888b.   .d8888b 
-% 888        d88""88b 888 "88b d88P"    
-% 888    888 888  888 888  888 888      
-% Y88b  d88P Y88..88P 888  888 Y88b.    
-%  "Y8888P"   "Y88P"  888  888  "Y8888P 
-%                                       
-%                                       
-%                                       
+%  .d8888b.   .d88888b.  888b    888  .d8888b.  
+% d88P  Y88b d88P" "Y88b 8888b   888 d88P  Y88b 
+% 888    888 888     888 88888b  888 888    888 
+% 888        888     888 888Y88b 888 888        
+% 888        888     888 888 Y88b888 888        
+% 888    888 888     888 888  Y88888 888    888 
+% Y88b  d88P Y88b. .d88P 888   Y8888 Y88b  d88P 
+%  "Y8888P"   "Y88888P"  888    Y888  "Y8888P"  
+%                                               
+%                                               
+%                                               
 % 
 
 \section{Conclusion} \label{sec:conclusion}
@@ -1457,17 +1530,17 @@ Partially supported by zim
 % in the appendices.
 \appendix
 % 
-%        d8888                                          888 d8b          
-%       d88888                                          888 Y8P          
-%      d88P888                                          888              
-%     d88P 888 88888b.  88888b.   .d88b.  88888b.   .d88888 888 888  888 
-%    d88P  888 888 "88b 888 "88b d8P  Y8b 888 "88b d88" 888 888 `Y8bd8P' 
-%   d88P   888 888  888 888  888 88888888 888  888 888  888 888   X88K   
-%  d8888888888 888 d88P 888 d88P Y8b.     888  888 Y88b 888 888 .d8""8b. 
-% d88P     888 88888P"  88888P"   "Y8888  888  888  "Y88888 888 888  888 
-%              888      888                                              
-%              888      888                                              
-%              888      888                                              
+%        d8888 8888888b.  8888888b.  8888888888 888b    888 8888888b. 8888888 Y88b   d88P 
+%       d88888 888   Y88b 888   Y88b 888        8888b   888 888  "Y88b  888    Y88b d88P  
+%      d88P888 888    888 888    888 888        88888b  888 888    888  888     Y88o88P   
+%     d88P 888 888   d88P 888   d88P 8888888    888Y88b 888 888    888  888      Y888P    
+%    d88P  888 8888888P"  8888888P"  888        888 Y88b888 888    888  888      d888b    
+%   d88P   888 888        888        888        888  Y88888 888    888  888     d88888b   
+%  d8888888888 888        888        888        888   Y8888 888  .d88P  888    d88P Y88b  
+% d88P     888 888        888        8888888888 888    Y888 8888888P" 8888888 d88P   Y88b 
+%                                                                                         
+%                                                                                         
+%                                                                                         
 % 
 
 \section{Indistinguishability under Chosen Plaintext Attack (IND-CPA)} \label{app:ind_cpa}
