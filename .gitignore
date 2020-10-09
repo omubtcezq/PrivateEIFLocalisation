@@ -8,3 +8,5 @@
 *.bbl
 *.blg
 *.synctex*
+tikz_images/*
+!tikz_images/*.tex
