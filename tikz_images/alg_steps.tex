@@ -37,88 +37,74 @@
 \newcommand{\rv}[1]{\ensuremath{{\boldsymbol{#1}}}}
 \newcommand{\mat}[1]{{\ensuremath{{\mathbf{#1}}}}}
 
-\begin{tikzpicture}[font=\footnotesize]
-
-
+\begin{tikzpicture}[font=\small]
     % Prediction
-    \draw  (0,1.75) rectangle (8,8);
-    \node at (4,7.5) {\small 1. Prediction};
+    \draw [gray] (0,2) rectangle (6.5,8);
+    \node at (3.25,7.5) {\small 1. Prediction};
 
     % Navigator
-    \fill  [blue!40] (3.25,7) rectangle (4.75,5.5);
-    \pic[xscale=0.22,yscale=0.3] at (4,6.6725) {plane};
-    \node at (4,5.875) {$\rvec{x}_k$, $\mat{P}_k$};
+    \fill  [blue!40] (2.5,7) rectangle (4,5.5);
+    \pic[xscale=0.22,yscale=0.3] at (3.25,6.6725) {plane};
+    \node at (3.25,5.875) {$\rvec{x}_k$, $\mat{P}_k$};
     
     % Sensors
-    \fill  (1.5,3) [red!40] ellipse (0.5 and 0.5);
-    \node at (1.5,2.25) {Sensor $1$};
-    \fill  (6.5,3) [red!40] ellipse (0.5 and 0.5);
-    \node at (6.5,2.25) {Sensor $n$};
+    \fill  (1.25,3) [red!40] ellipse (0.4 and 0.4);
+    \node at (1.25,2.375) {Sensor $1$};
+    \fill  (5.25,3) [red!40] ellipse (0.4 and 0.4);
+    \node at (5.25,2.375) {Sensor $n$};
         
-    \fill [black] (3.5,3) circle (0.05);
-    \fill [black] (4,3) circle (0.05);
-    \fill [black] (4.5,3) circle (0.05);
+    \fill [black] (2.75,3) circle (0.05);
+    \fill [black] (3.25,3) circle (0.05);
+    \fill [black] (3.75,3) circle (0.05);
         
     % Arrows
-    \draw [-latex] plot[smooth, tension=.7] coordinates {(3.75,5.25) (1.75,3.5)};
-    \draw [-latex] plot[smooth, tension=.7] coordinates {(4.25,5.25) (6.25,3.5)};
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(3,5.25) (1.5,3.5)};
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(3.5,5.25) (5,3.5)};
     
-    \fill [lightgray]  (0.25,5) rectangle (7.75,4);
-    \node at (4,4.5) {$\langle\mathcal{E}_{pk_0}(\mathsf{E}_0(\rv{\omega})): \rv{\omega} \in \{\rv{x}^3_k, \rv{y}^3_k, \rv{x}^2_k\rv{y}_k, \dots , \rv{x}_k, \rv{y}_k\}\rangle$};
+    \fill [lightgray]  (0.25,5) rectangle (6.25,4);
+    \node at (3.25,4.5) {$\langle\mathcal{E}_{pk_0}(\mathsf{E}_0(\rv{\omega})) \!:\! \rv{\omega} \!\in\! \{\rv{x}^3_k, \rv{y}^3_k, \rv{x}^2_k\rv{y}_k, \dots , \rv{y}_k\}\rangle$};
     
     
     % Measurement
-    \draw  (0,-4.75) rectangle (8,1.5);
-    \node at (4,1) {\small 2. Measurement};
+    \draw [gray] (0,-4.25) rectangle (6.5,1.75);
+    \node at (3.25,1.25) {\small 2. Measurement};
     
     % Navigator
-    \fill  (4,0) [blue!40] ellipse (0.5 and 0.5);
-    \pic[xscale=0.22,yscale=0.3] at (4,0.1725) {plane};
+    \fill  (3.25,0.25) [blue!40] ellipse (0.4 and 0.4);
+    \pic[xscale=0.22,yscale=0.3] at (3.25,0.4225) {plane};
         
     % Sensors
-    \fill  [red!40] (7.5,-3.75)  rectangle (5.5,-2.75);
-    \node at (1.5,-4.25) {Sensor $1$};
-    \fill  [red!40] (2.5,-3.75)  rectangle (0.5,-2.75);
-    \node at (6.5,-4.25) {Sensor $n$};
+    \fill  [red!40] (6.25,-3.625)  rectangle (4.25,-2.625);
+    \node at (1.25,-3.875) {Sensor $1$};
+    \fill  [red!40] (2.25,-3.625)  rectangle (0.25,-2.625);
+    \node at (5.25,-3.875) {Sensor $n$};
     
-    \node at (1.5,-3.25) {$\rv{z}'_{k,1}$, $\rv{r}_{k,1}$};
-    \node at (6.5,-3.25) {$\rv{z}'_{k,n}$, $\rv{r}_{k,n}$};
+    \node at (1.25,-3.125) {$\rv{z}'_{k,1}$, $\rv{r}_{k,1}$};
+    \node at (5.25,-3.125) {$\rv{z}'_{k,n}$, $\rv{r}_{k,n}$};
     
-    \fill [black] (3.5,-3.25) circle (0.05);
-    \fill [black] (4,-3.25) circle (0.05);
-    \fill [black] (4.5,-3.25) circle (0.05);
+    \fill [black] (2.75,-3.125) circle (0.05);
+    \fill [black] (3.25,-3.125) circle (0.05);
+    \fill [black] (3.75,-3.125) circle (0.05);
     
     % Arrows
-    \draw [-latex] plot[smooth, tension=.7] coordinates {(1.75,-2.5) (3.75,-0.75)};
-    \draw [-latex] plot[smooth, tension=.7] coordinates {(6.25,-2.5) (4.25,-0.75)};
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(1.25,-2.5) (3,-0.25)};
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(5.25,-2.5) (3.5,-0.25)};
     
-    \fill [lightgray]  (0.5,-1.25) rectangle (3.5,-2.25);
-    \node[align=center] at (2,-1.75) {$\mathcal{E}_{pk_0,sk_1}(\mathsf{E}_1(\rvec{i}'_{k,1}))$,\\$\mathcal{E}_{pk_0,sk_1}(\mathsf{E}_1(\mat{I}'_{k,1}))$};
-    \fill [lightgray]  (4.5,-1.25) rectangle (7.5,-2.25);
-    \node[align=center] at (6,-1.75) {$\mathcal{E}_{pk_0,sk_n}(\mathsf{E}_1(\rvec{i}'_{k,n}))$,\\$\mathcal{E}_{pk_0,sk_n}(\mathsf{E}_1(\mat{I}'_{k,n}))$};
+    \fill [lightgray]  (0.375,-0.875) rectangle (3.125,-1.875);
+    \node[align=center] at (1.75,-1.375) {$\mathcal{E}_{pk_0,sk_1}(\mathsf{E}_1(\rvec{i}'_{k,1}))$,\\$\mathcal{E}_{pk_0,sk_1}(\mathsf{E}_1(\mat{I}'_{k,1}))$};
+    \fill [lightgray]  (3.375,-0.875) rectangle (6.125,-1.875);
+    \node[align=center] at (4.75,-1.375) {$\mathcal{E}_{pk_0,sk_n}(\mathsf{E}_1(\rvec{i}'_{k,n}))$,\\$\mathcal{E}_{pk_0,sk_n}(\mathsf{E}_1(\mat{I}'_{k,n}))$};
     
     
     % Update
-    \draw  (0,-10.25) rectangle (8,-5);
-    \node at (4,-5.5) {\small 3. Update};
+    \draw [gray] (0,-8.5) rectangle (6.5,-4.5);
+    \node at (3.25,-5) {\small 3. Update};
     
     % Navigator
-    \fill  [blue!40] (2.25,-6) rectangle (5.75,-8);
-    \pic[xscale=0.22,yscale=0.3] at (4,-6.3275) {plane};
-    \node at (4,-7.125) {$\sum_{i=1}^n \rvec{i}'_{k,i}$, $\sum_{i=1}^n\mat{I}'_{k,i}$};
-    \node at (4,-7.625) {$\rvec{x}_k$, $\mat{P}_k$};
-    
-    % Sensors
-    \fill  (6.5,-9) [red!40] ellipse (0.5 and 0.5);
-    \node at (1.5,-9.75) {Sensor $1$};
-    \fill  (1.5,-9) [red!40] ellipse (0.5 and 0.5);
-    \node at (6.5,-9.75) {Sensor $n$};
-    
-    \fill [black] (3.5,-9) circle (0.05);
-    \fill [black] (4,-9) circle (0.05);
-    \fill [black] (4.5,-9) circle (0.05);
-    
-    
+    \fill  [blue!40] (1.5,-5.5) rectangle (5,-7.5);
+    \pic[xscale=0.22,yscale=0.3] at (3.25,-5.8275) {plane};
+    \node at (3.25,-6.625) {$\sum_{i=1}^n \rvec{i}'_{k,i}$, $\sum_{i=1}^n\mat{I}'_{k,i}$};
+    \node at (3.25,-7.125) {$\rvec{x}_k$, $\mat{P}_k$};
 \end{tikzpicture}
 
 

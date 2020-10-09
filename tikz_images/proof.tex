@@ -1,29 +1,28 @@
 
-\begin{tikzpicture}[font=\footnotesize]
-% Bounding box
-\draw [gray] (0,-0.25) rectangle (8,7.5);
+\begin{tikzpicture}[font=\small]
+    % Bounding box
+    \draw [gray] (0,0) rectangle (6.5,6.5);
 
-% Outer adversary rectangle
-\draw[rounded corners=15pt, fill=gray!30] (0.5,7) rectangle (7.5,2.75);
-% Inner adversary rectangle
-\draw[rounded corners=15pt, fill=gray!60] (1,6.5) rectangle (7,5.5);
+    % Outer adversary rectangle
+    \draw[rounded corners=15pt, fill=gray!30] (0.25,6.25) rectangle (6.25,2.75);
+    % Inner adversary rectangle
+    \draw[rounded corners=15pt, fill=gray!60] (0.5,6) rectangle (6,5);
 
-% Adversaries and challenger
-\node at (4,3.5) {\LARGE$\mathcal{A}'$};
-\node at (4,6) {\LARGE$\mathcal{A}$};
-\node at (4,0.5) {\LARGE$\mathcal{C}$};
+    % Adversaries and challenger
+    \node at (3.25,3.25) {\LARGE$\mathcal{A}'$};
+    \node at (3.25,5.5) {\LARGE$\mathcal{A}$};
+    \node at (3.25,0.5) {\LARGE$\mathcal{C}$};
 
-% Arrows
-\node[text width=3cm, align=center] at (2,1.25) {Joye-Libert\\AO scheme};
-\draw [-latex] (2,1.75) -- (2,2.75);
+    % Arrows
+    \node[text width=3cm, align=center] at (2,1.25) {Joye-Libert\\AO scheme};
+    \draw [-latex] (2,1.75) -- (2,2.75);
 
-\node[text width=3cm, align=center] at (2,4) {Our\\LCAO scheme};
-\draw [-latex] (2,4.5) --(2,5.5);
+    \node[text width=3cm, align=center] at (2,4) {Our\\LCAO scheme};
+    \draw [-latex] (2,4.5) --(2,5);
 
-\node[text width=3cm, align=center] at (6,4) {``Break''\\Our scheme};
-\draw [-latex] (6,5.5) -- (6,4.5);
+    \node[text width=3cm, align=center] at (4.5,4) {``Break''\\Our scheme};
+    \draw [-latex] (4.5,5) -- (4.5,4.5);
 
-\node[text width=3cm, align=center] at (6,1) {``Break''\\Joye-Libert\\scheme};
-\draw [-latex] (6,2.75) -- (6,1.75);
-
+    \node[text width=3cm, align=center] at (4.5,1) {``Break''\\Joye-Libert\\scheme};
+    \draw [-latex] (4.5,2.75) -- (4.5,1.75);
 \end{tikzpicture}
