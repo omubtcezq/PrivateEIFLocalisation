@@ -43,9 +43,9 @@
     \node at (3.25,7.5) {\small 1. Prediction};
 
     % Navigator
-    \fill  [blue!40] (2.5,7) rectangle (4,5.5);
+    \fill  [blue!40] (2,7) rectangle (4.5,5.5);
     \pic[xscale=0.22,yscale=0.3] at (3.25,6.6725) {plane};
-    \node at (3.25,5.875) {$\rvec{x}_k$, $\mat{P}_k$};
+    \node at (3.25,5.875) {$\rvec{x}_{k|k-1}$, $\mat{P}_{k|k-1}$};
     
     % Sensors
     \fill  (1.25,3) [red!40] ellipse (0.4 and 0.4);
@@ -62,7 +62,7 @@
     \draw [-latex] plot[smooth, tension=.7] coordinates {(3.5,5.25) (5,3.5)};
     
     \fill [lightgray]  (0.25,5) rectangle (6.25,4);
-    \node at (3.25,4.5) {$\langle\mathcal{E}_{pk_0}(\mathsf{E}_0(\rv{\omega})) \,|\, \rv{\omega} \!\in\! \{\rv{x}^3_k, \rv{y}^3_k, \rv{x}^2_k\rv{y}_k, \dots , \rv{y}_k\}\rangle$};
+    \node at (3.25,4.5) {$\langle\mathcal{E}_{pk_0}(\mathsf{E}_0(\rv{\omega})) \,|\, \rv{\omega} \!\in\! \{\rv{x}^3_{k|k-1}, \rv{y}^3_{k|k-1}, \dots\}\rangle$};
     
     
     % Measurement
@@ -104,7 +104,7 @@
     \fill  [blue!40] (1.5,-5.5) rectangle (5,-7.5);
     \pic[xscale=0.22,yscale=0.3] at (3.25,-5.8275) {plane};
     \node at (3.25,-6.625) {$\sum_{i=1}^n \rvec{i}'_{k,i}$, $\sum_{i=1}^n\mat{I}'_{k,i}$};
-    \node at (3.25,-7.125) {$\rvec{x}_k$, $\mat{P}_k$};
+    \node at (3.25,-7.125) {$\rvec{x}_{k|k}$, $\mat{P}_{k|k}$};
 \end{tikzpicture}
 
 
