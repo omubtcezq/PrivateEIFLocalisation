@@ -760,6 +760,18 @@ Our scheme is based on the Paillier and Joye-Libert schemes introduced in Sectio
 
 Additionally, we note that in the above construction, all weights $\omega^{(t)}_j$ and values $x^{(t)}_{i,j}$ are integers, and that resulting linear combinations and summations are computed $\pmod{N}$.
 
+\begin{rem} \label{rem:lcao_implicit_weight}
+    The construction of this scheme additionally supports the linear combination of the implicit weight, $\omega^{(t)}_j = 1$, by replacing
+    \begin{equation}
+        \mathcal{E}_{pk_0}(1)^{x^{(t)}_{i,j}} = (N+1)^{1}r_j^N \pmod{N^2}
+    \end{equation}
+    in \eqref{eqn:our_scheme_lin_comb} by
+    \begin{equation}
+        (N+1)^{x^{(t)}_{i,j}} \pmod{N^2}\,,
+    \end{equation}
+    due to the removal of $r_j^N$ terms during decryption. This can be used to reduce the broadcast communication cost by one weight.
+\end{rem}
+
 % 
 % ########  ########   #######   #######  ######## 
 % ##     ## ##     ## ##     ## ##     ## ##       
@@ -1226,7 +1238,7 @@ The privacy-preserving localisation filter can be described by the following ste
 
     \item[Prediction] The navigator computes the typical EKF prediction equations before encrypting state variables and broadcasting to sensors. This is given by Algorithm \ref{alg:nav_prediction}.
 
-    \item[Measurement] Sensors modify their measurements before homomorphically computing measurement vectors and matrices $\rvec{i}'_{k,i}$ and $\mat{I}'_{k,i}$, encrypting them for aggregation, and sending them back to the navigator. Care must be taken when encoding during homomorphic operations to ensure fractional factor $m$ satisfies \eqref{eqn:encoding_homomorphic_add}. This is described by Algorithm \ref{alg:measurement_info}.
+    \item[Measurement] Sensors modify their measurements before homomorphically computing measurement vectors and matrices $\rvec{i}'_{k,i}$ and $\mat{I}'_{k,i}$, encrypting them for aggregation, and sending them back to the navigator. Care must be taken when encoding during homomorphic operations to ensure fractional factor $m$ satisfies \eqref{eqn:encoding_homomorphic_add}, in particular when using the property from Remark \ref{rem:lcao_implicit_weight}. This is described by Algorithm \ref{alg:measurement_info}.
 
     \item[Update] The navigator aggregates measurement vectors and matrices before decrypting them. The typical EIF update equations can then be computed. This is shown in Algorithm \ref{alg:nav_update}.
 \end{description}
@@ -1277,7 +1289,7 @@ The privacy-preserving localisation filter can be described by the following ste
     (N+1)^{\mathsf{E}_{1}(2\rv{r}_{k, i}^{-1}s_{x,i}s_{y,i}^2)}\cdot$\par
     \ $(N+1)^{\mathsf{E}_{1}(-2\rv{r}_{k, i}^{-1}s_{x,i}\rv{z}_{k,i}')}
     H(k\mathbin\|1\mathbin\|1\mathbin\|0)\pmod{N^2}$
-    \State Compute $\beta_{21}^{(i)}$ using \eqref{eqn:hrz_linear_comb} and \eqref{eqn:our_scheme_lin_comb} in the form above
+    \State Compute $\beta_{21}^{(i)}$ using \eqref{eqn:hrz_linear_comb}, \eqref{eqn:our_scheme_lin_comb} and Remark \ref{rem:lcao_implicit_weight} in the form above
     \For{$v \gets 1$ to $2$}
         \State Send $\beta_{v1}$ to the navigator
     \EndFor
@@ -1287,7 +1299,7 @@ The privacy-preserving localisation filter can be described by the following ste
     \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}_{k|k-1}))^{\mathsf{E}_{0}(-8\rv{r}_{k, i}^{-1}s_{x,i})}\cdot$\par
     \ $(N+1)^{\mathsf{E}_{1}(4\rv{r}_{k, i}^{-1}s_{x,i}^2)}\cdot$\par
     \ $H(k\mathbin\|1\mathbin\|1\mathbin\|1)\pmod{N^2}$
-    \State Compute remaining $\alpha_{vw}^{(i)}$ using \eqref{eqn:hrh_linear_comb} and \eqref{eqn:our_scheme_lin_comb} in the form above
+    \State Compute remaining $\alpha_{vw}^{(i)}$ using \eqref{eqn:hrh_linear_comb}, \eqref{eqn:our_scheme_lin_comb} and Remark \ref{rem:lcao_implicit_weight} in the form above
     \For{$v \gets 1$ to $2$}
         \For{$w \gets 1$ to $2$} 
             \State Send $\alpha_{vw}^{(i)}$ to the navigator
@@ -1429,7 +1441,7 @@ Algorithms \ref{alg:nav_prediction}, \ref{alg:measurement_info} and \ref{alg:nav
 % 
 
 \subsection{Leakage} \label{subsec:leakage}
-With the algorithm defined, we can analyse the localisation leakage when the strictly defined LCAO leakage is taken into account. We recall the assumptions on participant capabilities made in Section \ref{subsec:capabilities}. Consistent broadcasting is in line with the LCAO definition and required to guarantee the scheme's leakage. Honest-but-curious sensors are not required for scheme security, but avoid the possibility of malicious sensors gaining prior knowledge about remaining sensor measurements. This is possibly achieved by detecting changes in real measurements after reporting false measurements to the navigator. As stated in Section \ref{subsec:capabilities}, misbehaving sensors are a known problem which complicates homomorphic operations and active malicious sensors are not considered in the scope of this work.
+With the algorithm defined, we can analyse the localisation leakage when the strictly defined LCAO leakage is taken into account. We recall the assumptions on participant capabilities made in Section \ref{subsec:capabilities}. Consistent broadcasting is in line with the LCAO definition and required to guarantee the scheme's leakage. Honest-but-curious sensors are not required for scheme privacy, but avoid the possibility of malicious sensors gaining prior knowledge about remaining sensor measurements. This is possibly achieved by detecting changes in real measurements after reporting false measurements to the navigator. As stated in Section \ref{subsec:capabilities}, misbehaving sensors are a known problem which complicates homomorphic operations and active malicious sensors are not considered in the scope of this work.
 
 The aggregation operation of our encryption scheme leaks the sums of sensor measurement vectors and matrices $\sum_{i=1}^n\rvec{i}'_{k,i}$ and $\sum_{i=1}^n\mat{I}'_{k,i}$. However, as stated in Remark \ref{rem:lcao_leakage}, weights chosen by a corrupted navigator mean that individual sums of coefficients can be leaked as well. That is, sums of coefficients in \eqref{eqn:hrz_linear_comb} and \eqref{eqn:hrh_linear_comb} (\textit{i.e.} $\sum_{i=1}^n2\rv{r}^{-1}_{k,i}$, $\sum_{i=1}^n-\rv{r}^{-1}_{k,i}s_{x,i}$, $\sum_{i=1}^n-2\rv{r}^{-1}_{k,i}s_{x,i}$, $\sum_{i=1}^n2\rv{r}^{-1}_{k,i}\rv{z}'_{k,i}$, \dots) are leaked to a corrupted navigator.
 
