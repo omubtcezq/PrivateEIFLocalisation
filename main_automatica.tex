@@ -1,406 +1,62 @@
+% autosam.tex
+% Annotated sample file for the preparation of LaTeX files
+% for the final versions of papers submitted to or accepted for 
+% publication in AUTOMATICA.
 
-%% bare_jrnl_compsoc.tex
-%% V1.4b
-%% 2015/08/26
-%% by Michael Shell
-%% See:
-%% http://www.michaelshell.org/
-%% for current contact information.
-%%
-%% This is a skeleton file demonstrating the use of IEEEtran.cls
-%% (requires IEEEtran.cls version 1.8b or later) with an IEEE
-%% Computer Society journal paper.
-%%
-%% Support sites:
-%% http://www.michaelshell.org/tex/ieeetran/
-%% http://www.ctan.org/pkg/ieeetran
-%% and
-%% http://www.ieee.org/
+% See also the Information for Authors.
 
-%%*************************************************************************
-%% Legal Notice:
-%% This code is offered as-is without any warranty either expressed or
-%% implied; without even the implied warranty of MERCHANTABILITY or
-%% FITNESS FOR A PARTICULAR PURPOSE! 
-%% User assumes all risk.
-%% In no event shall the IEEE or any contributor to this code be liable for
-%% any damages or losses, including, but not limited to, incidental,
-%% consequential, or any other damages, resulting from the use or misuse
-%% of any information contained here.
-%%
-%% All comments are the opinions of their respective authors and are not
-%% necessarily endorsed by the IEEE.
-%%
-%% This work is distributed under the LaTeX Project Public License (LPPL)
-%% ( http://www.latex-project.org/ ) version 1.3, and may be freely used,
-%% distributed and modified. A copy of the LPPL, version 1.3, is included
-%% in the base LaTeX documentation of all distributions of LaTeX released
-%% 2003/12/01 or later.
-%% Retain all contribution notices and credits.
-%% ** Modified files should be clearly indicated as such, including  **
-%% ** renaming them and changing author support contact information. **
-%%*************************************************************************
+% Make sure that the zip file that you send contains all the 
+% files, including the files for the figures and the bib file.
 
+% Output produced with the elsart style file does not imitate the
+% AUTOMATICA style. The style file is generic for all Elsevier
+% journals and the output is laid out for easy copy editing. The
+% final document is produced from the source file in the
+% AUTOMATICA style at Elsevier.
 
-% *** Authors should verify (and, if needed, correct) their LaTeX system  ***
-% *** with the testflow diagnostic prior to trusting their LaTeX platform ***
-% *** with production work. The IEEE's font choices and paper sizes can   ***
-% *** trigger bugs that do not appear when using other class files.       ***                          ***
-% The testflow support page is at:
-% http://www.michaelshell.org/tex/testflow/
+% You may use the style file autart.cls to obtain a two-column 
+% document (see below) that more or less imitates the printed 
+% Automatica style. This may helpful to improve the formatting 
+% of the equations, tables and figures, and also serves to check 
+% whether the paper satisfies the length requirements.
 
+% Please note: Authors must not create their own macros.
 
-\documentclass[10pt,journal,compsoc]{IEEEtran}
-%
-% If IEEEtran.cls has not been installed into the LaTeX system files,
-% manually specify the path to it like:
-% \documentclass[10pt,journal,compsoc]{../sty/IEEEtran}
+% For further information regarding the preparation of LaTeX files 
+% for Elsevier, please refer to the "Full Instructions to Authors" 
+% from Elsevier's anonymous ftp server on ftp.elsevier.nl in the
+% directory pub/styles, or from the internet (CTAN sites) on
+% ftp.shsu.edu, ftp.dante.de and ftp.tex.ac.uk in the directory
+% tex-archive/macros/latex/contrib/supported/elsevier.
 
 
+% The use of LaTeX2e is preferred.
+%\documentclass{elsart}
 
+% Enable this line and disable the 
+% preceding line to obtain a two-column 
+% document whose style resembles the
+% printed Automatica style.
+\documentclass[twocolumn]{autart}
 
 
-% Some very useful LaTeX packages include:
-% (uncomment the ones you want to load)
-
-
-% *** MISC UTILITY PACKAGES ***
-%
-%\usepackage{ifpdf}
-% Heiko Oberdiek's ifpdf.sty is very useful if you need conditional
-% compilation based on whether the output is pdf or dvi.
-% usage:
-% \ifpdf
-%   % pdf code
-% \else
-%   % dvi code
-% \fi
-% The latest version of ifpdf.sty can be obtained from:
-% http://www.ctan.org/pkg/ifpdf
-% Also, note that IEEEtran.cls V1.7 and later provides a builtin
-% \ifCLASSINFOpdf conditional that works the same way.
-% When switching from latex to pdflatex and vice-versa, the compiler may
-% have to be run twice to clear warning/error messages.
-
-
-
-
-
-
-% *** CITATION PACKAGES ***
-%
-\ifCLASSOPTIONcompsoc
-  % IEEE Computer Society needs nocompress option
-  % requires cite.sty v4.0 or later (November 2003)
-  \usepackage[nocompress]{cite}
-\else
-  % normal IEEE
-  \usepackage{cite}
-\fi
-% cite.sty was written by Donald Arseneau
-% V1.6 and later of IEEEtran pre-defines the format of the cite.sty package
-% \cite{} output to follow that of the IEEE. Loading the cite package will
-% result in citation numbers being automatically sorted and properly
-% "compressed/ranged". e.g., [1], [9], [2], [7], [5], [6] without using
-% cite.sty will become [1], [2], [5]--[7], [9] using cite.sty. cite.sty's
-% \cite will automatically add leading space, if needed. Use cite.sty's
-% noadjust option (cite.sty V3.8 and later) if you want to turn this off
-% such as if a citation ever needs to be enclosed in parenthesis.
-% cite.sty is already installed on most LaTeX systems. Be sure and use
-% version 5.0 (2009-03-20) and later if using hyperref.sty.
-% The latest version can be obtained at:
-% http://www.ctan.org/pkg/cite
-% The documentation is contained in the cite.sty file itself.
-%
-% Note that some packages require special options to format as the Computer
-% Society requires. In particular, Computer Society  papers do not use
-% compressed citation ranges as is done in typical IEEE papers
-% (e.g., [1]-[4]). Instead, they list every citation separately in order
-% (e.g., [1], [2], [3], [4]). To get the latter we need to load the cite
-% package with the nocompress option which is supported by cite.sty v4.0
-% and later. Note also the use of a CLASSOPTION conditional provided by
-% IEEEtran.cls V1.7 and later.
-
-
-
-
-
-% *** GRAPHICS RELATED PACKAGES ***
-%
-\ifCLASSINFOpdf
-  % \usepackage[pdftex]{graphicx}
-  % declare the path(s) where your graphic files are
-  % \graphicspath{{../pdf/}{../jpeg/}}
-  % and their extensions so you won't have to specify these with
-  % every instance of \includegraphics
-  % \DeclareGraphicsExtensions{.pdf,.jpeg,.png}
-\else
-  % or other class option (dvipsone, dvipdf, if not using dvips). graphicx
-  % will default to the driver specified in the system graphics.cfg if no
-  % driver is specified.
-  % \usepackage[dvips]{graphicx}
-  % declare the path(s) where your graphic files are
-  % \graphicspath{{../eps/}}
-  % and their extensions so you won't have to specify these with
-  % every instance of \includegraphics
-  % \DeclareGraphicsExtensions{.eps}
-\fi
-% graphicx was written by David Carlisle and Sebastian Rahtz. It is
-% required if you want graphics, photos, etc. graphicx.sty is already
-% installed on most LaTeX systems. The latest version and documentation
-% can be obtained at: 
-% http://www.ctan.org/pkg/graphicx
-% Another good source of documentation is "Using Imported Graphics in
-% LaTeX2e" by Keith Reckdahl which can be found at:
-% http://www.ctan.org/pkg/epslatex
-%
-% latex, and pdflatex in dvi mode, support graphics in encapsulated
-% postscript (.eps) format. pdflatex in pdf mode supports graphics
-% in .pdf, .jpeg, .png and .mps (metapost) formats. Users should ensure
-% that all non-photo figures use a vector format (.eps, .pdf, .mps) and
-% not a bitmapped formats (.jpeg, .png). The IEEE frowns on bitmapped formats
-% which can result in "jaggedy"/blurry rendering of lines and letters as
-% well as large increases in file sizes.
-%
-% You can find documentation about the pdfTeX application at:
-% http://www.tug.org/applications/pdftex
-
-
-
-
-
-
-% *** MATH PACKAGES ***
-%
-%\usepackage{amsmath}
-% A popular package from the American Mathematical Society that provides
-% many useful and powerful commands for dealing with mathematics.
-%
-% Note that the amsmath package sets \interdisplaylinepenalty to 10000
-% thus preventing page breaks from occurring within multiline equations. Use:
-%\interdisplaylinepenalty=2500
-% after loading amsmath to restore such page breaks as IEEEtran.cls normally
-% does. amsmath.sty is already installed on most LaTeX systems. The latest
-% version and documentation can be obtained at:
-% http://www.ctan.org/pkg/amsmath
-
-
-
-
-
-% *** SPECIALIZED LIST PACKAGES ***
-%
-%\usepackage{algorithmic}
-% algorithmic.sty was written by Peter Williams and Rogerio Brito.
-% This package provides an algorithmic environment fo describing algorithms.
-% You can use the algorithmic environment in-text or within a figure
-% environment to provide for a floating algorithm. Do NOT use the algorithm
-% floating environment provided by algorithm.sty (by the same authors) or
-% algorithm2e.sty (by Christophe Fiorio) as the IEEE does not use dedicated
-% algorithm float types and packages that provide these will not provide
-% correct IEEE style captions. The latest version and documentation of
-% algorithmic.sty can be obtained at:
-% http://www.ctan.org/pkg/algorithms
-% Also of interest may be the (relatively newer and more customizable)
-% algorithmicx.sty package by Szasz Janos:
-% http://www.ctan.org/pkg/algorithmicx
-
-
-
-
-% *** ALIGNMENT PACKAGES ***
-%
-%\usepackage{array}
-% Frank Mittelbach's and David Carlisle's array.sty patches and improves
-% the standard LaTeX2e array and tabular environments to provide better
-% appearance and additional user controls. As the default LaTeX2e table
-% generation code is lacking to the point of almost being broken with
-% respect to the quality of the end results, all users are strongly
-% advised to use an enhanced (at the very least that provided by array.sty)
-% set of table tools. array.sty is already installed on most systems. The
-% latest version and documentation can be obtained at:
-% http://www.ctan.org/pkg/array
-
-
-% IEEEtran contains the IEEEeqnarray family of commands that can be used to
-% generate multiline equations as well as matrices, tables, etc., of high
-% quality.
-
-
-
-
-% *** SUBFIGURE PACKAGES ***
-%\ifCLASSOPTIONcompsoc
-%  \usepackage[caption=false,font=footnotesize,labelfont=sf,textfont=sf]{subfig}
-%\else
-%  \usepackage[caption=false,font=footnotesize]{subfig}
-%\fi
-% subfig.sty, written by Steven Douglas Cochran, is the modern replacement
-% for subfigure.sty, the latter of which is no longer maintained and is
-% incompatible with some LaTeX packages including fixltx2e. However,
-% subfig.sty requires and automatically loads Axel Sommerfeldt's caption.sty
-% which will override IEEEtran.cls' handling of captions and this will result
-% in non-IEEE style figure/table captions. To prevent this problem, be sure
-% and invoke subfig.sty's "caption=false" package option (available since
-% subfig.sty version 1.3, 2005/06/28) as this is will preserve IEEEtran.cls
-% handling of captions.
-% Note that the Computer Society format requires a sans serif font rather
-% than the serif font used in traditional IEEE formatting and thus the need
-% to invoke different subfig.sty package options depending on whether
-% compsoc mode has been enabled.
-%
-% The latest version and documentation of subfig.sty can be obtained at:
-% http://www.ctan.org/pkg/subfig
-
-
-
-
-% *** FLOAT PACKAGES ***
-%
-%\usepackage{fixltx2e}
-% fixltx2e, the successor to the earlier fix2col.sty, was written by
-% Frank Mittelbach and David Carlisle. This package corrects a few problems
-% in the LaTeX2e kernel, the most notable of which is that in current
-% LaTeX2e releases, the ordering of single and double column floats is not
-% guaranteed to be preserved. Thus, an unpatched LaTeX2e can allow a
-% single column figure to be placed prior to an earlier double column
-% figure.
-% Be aware that LaTeX2e kernels dated 2015 and later have fixltx2e.sty's
-% corrections already built into the system in which case a warning will
-% be issued if an attempt is made to load fixltx2e.sty as it is no longer
-% needed.
-% The latest version and documentation can be found at:
-% http://www.ctan.org/pkg/fixltx2e
-
-
-%\usepackage{stfloats}
-% stfloats.sty was written by Sigitas Tolusis. This package gives LaTeX2e
-% the ability to do double column floats at the bottom of the page as well
-% as the top. (e.g., "\begin{figure*}[!b]" is not normally possible in
-% LaTeX2e). It also provides a command:
-%\fnbelowfloat
-% to enable the placement of footnotes below bottom floats (the standard
-% LaTeX2e kernel puts them above bottom floats). This is an invasive package
-% which rewrites many portions of the LaTeX2e float routines. It may not work
-% with other packages that modify the LaTeX2e float routines. The latest
-% version and documentation can be obtained at:
-% http://www.ctan.org/pkg/stfloats
-% Do not use the stfloats baselinefloat ability as the IEEE does not allow
-% \baselineskip to stretch. Authors submitting work to the IEEE should note
-% that the IEEE rarely uses double column equations and that authors should try
-% to avoid such use. Do not be tempted to use the cuted.sty or midfloat.sty
-% packages (also by Sigitas Tolusis) as the IEEE does not format its papers in
-% such ways.
-% Do not attempt to use stfloats with fixltx2e as they are incompatible.
-% Instead, use Morten Hogholm'a dblfloatfix which combines the features
-% of both fixltx2e and stfloats:
-%
-% \usepackage{dblfloatfix}
-% The latest version can be found at:
-% http://www.ctan.org/pkg/dblfloatfix
-
-
-
-
-%\ifCLASSOPTIONcaptionsoff
-%  \usepackage[nomarkers]{endfloat}
-% \let\MYoriglatexcaption\caption
-% \renewcommand{\caption}[2][\relax]{\MYoriglatexcaption[#2]{#2}}
-%\fi
-% endfloat.sty was written by James Darrell McCauley, Jeff Goldberg and 
-% Axel Sommerfeldt. This package may be useful when used in conjunction with 
-% IEEEtran.cls'  captionsoff option. Some IEEE journals/societies require that
-% submissions have lists of figures/tables at the end of the paper and that
-% figures/tables without any captions are placed on a page by themselves at
-% the end of the document. If needed, the draftcls IEEEtran class option or
-% \CLASSINPUTbaselinestretch interface can be used to increase the line
-% spacing as well. Be sure and use the nomarkers option of endfloat to
-% prevent endfloat from "marking" where the figures would have been placed
-% in the text. The two hack lines of code above are a slight modification of
-% that suggested by in the endfloat docs (section 8.4.1) to ensure that
-% the full captions always appear in the list of figures/tables - even if
-% the user used the short optional argument of \caption[]{}.
-% IEEE papers do not typically make use of \caption[]'s optional argument,
-% so this should not be an issue. A similar trick can be used to disable
-% captions of packages such as subfig.sty that lack options to turn off
-% the subcaptions:
-% For subfig.sty:
-% \let\MYorigsubfloat\subfloat
-% \renewcommand{\subfloat}[2][\relax]{\MYorigsubfloat[]{#2}}
-% However, the above trick will not work if both optional arguments of
-% the \subfloat command are used. Furthermore, there needs to be a
-% description of each subfigure *somewhere* and endfloat does not add
-% subfigure captions to its list of figures. Thus, the best approach is to
-% avoid the use of subfigure captions (many IEEE journals avoid them anyway)
-% and instead reference/explain all the subfigures within the main caption.
-% The latest version of endfloat.sty and its documentation can obtained at:
-% http://www.ctan.org/pkg/endfloat
-%
-% The IEEEtran \ifCLASSOPTIONcaptionsoff conditional can also be used
-% later in the document, say, to conditionally put the References on a 
-% page by themselves.
-
-
-
-
-% *** PDF, URL AND HYPERLINK PACKAGES ***
-%
-%\usepackage{url}
-% url.sty was written by Donald Arseneau. It provides better support for
-% handling and breaking URLs. url.sty is already installed on most LaTeX
-% systems. The latest version and documentation can be obtained at:
-% http://www.ctan.org/pkg/url
-% Basically, \url{my_url_here}.
-
-
-
-
-
-% *** Do not adjust lengths that control margins, column widths, etc. ***
-% *** Do not use packages that alter fonts (such as pslatex).         ***
-% There should be no need to do such things with IEEEtran.cls V1.6 and later.
-% (Unless specifically asked to do so by the journal or conference you plan
-% to submit to, of course. )
-
-
-% 
-% 8888888 888b     d888 8888888b.   .d88888b.  8888888b. 88888888888 .d8888b.  
-%   888   8888b   d8888 888   Y88b d88P" "Y88b 888   Y88b    888    d88P  Y88b 
-%   888   88888b.d88888 888    888 888     888 888    888    888    Y88b.      
-%   888   888Y88888P888 888   d88P 888     888 888   d88P    888     "Y888b.   
-%   888   888 Y888P 888 8888888P"  888     888 8888888P"     888        "Y88b. 
-%   888   888  Y8P  888 888        888     888 888 T88b      888          "888 
-%   888   888   "   888 888        Y88b. .d88P 888  T88b     888    Y88b  d88P 
-% 8888888 888       888 888         "Y88888P"  888   T88b    888     "Y8888P"  
-%                                                                              
-%                                                                              
-%                                                                              
-% 
-
-% Graphics
+% Include this line if your 
+% document contains figures,
 \usepackage{graphicx}
-\usepackage{tikz}
-% Maths
+% or this line, depending on which
+% you prefer.
+%\usepackage[dvips]{epsfig}
+
+% User imported packages
 \usepackage{amsmath}
 \usepackage{amsfonts}
-\usepackage{amsthm}
 \usepackage{mathtools}
-% Algorithms
 \usepackage{algorithm}
 \usepackage{algpseudocode}
-% Local
+\usepackage{tikz}
+
+% Local packages
 \usepackage{ISASmacros/isasmathmacros}
-
-% Environments
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[section]
-
-\theoremstyle{definition}
-\newtheorem{theorem}{Theorem}[section]
-
-\theoremstyle{remark}
-\newtheorem*{remark}{Remark}
-
 
 % Algorithm settings
 \algnewcommand{\LineComment}[1]{\State \(\triangleright\) #1}
@@ -445,103 +101,39 @@
    }
 }
 
-% correct bad hyphenation here
-\hyphenation{op-tical net-works semi-conduc-tor}
-
-
 \begin{document}
-%
-% paper title
-% Titles are generally capitalized except for words such as a, an, and, as,
-% at, but, by, for, in, nor, of, on, or, the, to and up, which are usually
-% not capitalized unless they are the first or last word of the title.
-% Linebreaks \\ can be used within to get better formatting as desired.
-% Do not put math or special symbols in the title.
-\title{Privacy-Preserving Localisation Using Private Linear-Combination Aggregation}
-%
-%
-% author names and IEEE memberships
-% note positions of commas and nonbreaking spaces ( ~ ) LaTeX will not break
-% a structure at a ~ so this keeps an author's name from being broken across
-% two lines.
-% use \thanks{} to gain access to the first footnote area
-% a separate \thanks must be used for each paragraph as LaTeX2e's \thanks
-% was not built to handle multiple paragraphs
-%
-%
-%\IEEEcompsocitemizethanks is a special \thanks that produces the bulleted
-% lists the Computer Society journals use for "first footnote" author
-% affiliations. Use \IEEEcompsocthanksitem which works much like \item
-% for each affiliation group. When not in compsoc mode,
-% \IEEEcompsocitemizethanks becomes like \thanks and
-% \IEEEcompsocthanksitem becomes a line break with idention. This
-% facilitates dual compilation, although admittedly the differences in the
-% desired content of \author between the different types of papers makes a
-% one-size-fits-all approach a daunting prospect. For instance, compsoc 
-% journal papers have the author affiliations above the "Manuscript
-% received ..."  text while in non-compsoc journals this is reversed. Sigh.
 
-\author{Marko~Ristic,
-        Benjamin~Noack,~\IEEEmembership{Member,~IEEE,}
-        and~Uwe~D.~Hanebeck,~\IEEEmembership{Fellow,~IEEE}% <-this % stops a space
-\IEEEcompsocitemizethanks{\IEEEcompsocthanksitem M. Ristic, B. Noack and U. D. Hanebeck are with the Intelligent Sensor-Actuator-Systems Laboratory, Institute for Anthropomatics, Karlsruhe Institute of Technology, 76131 Karlsruhe, Germany.\protect\\
-% note need leading \protect in front of \\ to get a newline within \thanks as
-% \\ is fragile and will error, could use \hfil\break instead.
-E-mail: marko.ristic@kit.edu}% <-this % stops an unwanted space
-}
+\begin{frontmatter}
+% Running title for regular 
+% papers but only if the title  
+% is over 5 words. Running title 
+% is not shown in output.
+%\runtitle{Insert a suggested running title}
 
-% note the % following the last \IEEEmembership and also \thanks - 
-% these prevent an unwanted space from occurring between the last author name
-% and the end of the author line. i.e., if you had this:
-% 
-% \author{....lastname \thanks{...} \thanks{...} }
-%                     ^------------^------------^----Do not want these spaces!
-%
-% a space would be appended to the last name and could cause every name on that
-% line to be shifted left slightly. This is one of those "LaTeX things". For
-% instance, "\textbf{A} \textbf{B}" will typeset as "A B" not "AB". To get
-% "AB" then you have to do: "\textbf{A}\textbf{B}"
-% \thanks is no different in this regard, so shield the last } of each \thanks
-% that ends a line with a % and do not let a space in before the next \thanks.
-% Spaces after \IEEEmembership other than the last one are OK (and needed) as
-% you are supposed to have spaces between the names. For what it is worth,
-% this is a minor point as most people would not even notice if the said evil
-% space somehow managed to creep in.
+% Title, preferably not more than 10 words.
+\title{Privacy-Preserving Localisation Using Private Linear-Combination Aggregation\thanksref{footnoteinfo}}
 
+\thanks[footnoteinfo]{This paper was not presented at any IFAC 
+meeting. Corresponding author Uwe~D.~Hanebeck. Tel. +49--721--608--43909.}
 
+% Add the 
+% e-mail address 
+% (ead) as shown
+\author[ISAS]{Marko Ristic}\ead{marko.ristic@kit.edu},
+\author[ISAS]{Benjamin Noack}\ead{noack@kit.edu},
+\author[ISAS]{Uwe D. Hanebeck}\ead{uwe.hanebeck@kit.edu}
 
-% The paper headers
-%\markboth{Journal of \LaTeX\ Class Files,~Vol.~14, No.~8, August~2015}%
-%{Shell \MakeLowercase{\textit{et al.}}: Bare Demo of IEEEtran.cls for Computer Society Journals}
-% The only time the second header will appear is for the odd numbered pages
-% after the title page when using the twoside option.
-% 
-% *** Note that you probably will NOT want to include the author's ***
-% *** name in the headers of peer review papers.                   ***
-% You can use \ifCLASSOPTIONpeerreview for conditional compilation here if
-% you desire.
+% Please supply
+\address[ISAS]{Intelligent Sensor-Actuator-Systems Laboratory, Institute for Anthropomatics, Karlsruhe Institute of Technology, 76131 Karlsruhe, Germany}
 
-
-
-% The publisher's ID mark at the bottom of the page is less important with
-% Computer Society journal papers as those publications place the marks
-% outside of the main text columns and, therefore, unlike regular IEEE
-% journals, the available text space is not reduced by their presence.
-% If you want to put a publisher's ID mark on the page you can do it like
-% this:
-%\IEEEpubid{0000--0000/00\$00.00~\copyright~2015 IEEE}
-% or like this to get the Computer Society new two part style.
-%\IEEEpubid{\makebox[\columnwidth]{\hfill 0000--0000/00/\$00.00~\copyright~2015 IEEE}%
-%\hspace{\columnsep}\makebox[\columnwidth]{Published by the IEEE Computer Society\hfill}}
-% Remember, if you use this you must call \IEEEpubidadjcol in the second
-% column for its text to clear the IEEEpubid mark (Computer Society jorunal
-% papers don't need this extra clearance.)
-
-
-
-% use for special paper notices
-%\IEEEspecialpapernotice{(Invited Paper)}
-
+% Five to ten keywords,  
+% chosen from the IFAC 
+% keyword list or with the 
+% help of the Automatica 
+% keyword wizard
+\begin{keyword}
+System state estimation; Data privacy; Sensor fusion; Kalman filters.
+\end{keyword}
 
 % 
 %        d8888 888888b.    .d8888b. 88888888888 8888888b.         d8888  .d8888b. 88888888888 
@@ -557,49 +149,12 @@ E-mail: marko.ristic@kit.edu}% <-this % stops an unwanted space
 %                                                                                             
 % 
 
-% for Computer Society papers, we must declare the abstract and index terms
-% PRIOR to the title within the \IEEEtitleabstractindextext IEEEtran
-% command as these need to go into the title area created by \maketitle.
-% As a general rule, do not put math, special symbols or citations
-% in the abstract or keywords.
-\IEEEtitleabstractindextext{%
+% Abstract of not more than 200 words.
 \begin{abstract}
 Distributed state estimation and localisation methods have become increasingly popular with the rise of ubiquitous computing, and have led naturally to an increased concern regarding data and estimation privacy. Traditional distributed sensor navigation methods involve the leakage of sensor or navigator information during localisation protocols, thus not preserving participants’ data privacy. Existing approaches which provide such guarantees fail to address sensor and navigator privacy in some common non-linear measurement model applications and forfeit broad applicability. We define the novel notion of linear-combination aggregation encryption and provide a cryptographically secure instance that is applied to the Extended Information Filter with range-sensor measurements. Our method keeps navigator location, sensor locations and sensor measurements private during navigation, and is implemented and run on simulations to evaluate its accuracy and performance. The novel computationally plausible and provably secure range-based localisation filter has direct applications to environments where nodes are not trusted or data is considered sensitive.
 \end{abstract}
 
-% Note that keywords are not normally used for peerreview papers.
-\begin{IEEEkeywords}
-State Estimation, Data Privacy, Sensor Fusion, Kalman Filters.
-\end{IEEEkeywords}}
-
-
-% make the title area
-\maketitle
-
-
-% To allow for easy dual compilation without having to reenter the
-% abstract/keywords data, the \IEEEtitleabstractindextext text will
-% not be used in maketitle, but will appear (i.e., to be "transported")
-% here as \IEEEdisplaynontitleabstractindextext when the compsoc 
-% or transmag modes are not selected <OR> if conference mode is selected 
-% - because all conference papers position the abstract like regular
-% papers do.
-\IEEEdisplaynontitleabstractindextext
-% \IEEEdisplaynontitleabstractindextext has no effect when using
-% compsoc or transmag under a non-conference mode.
-
-
-
-% For peer review papers, you can put extra information on the cover
-% page as needed:
-% \ifCLASSOPTIONpeerreview
-% \begin{center} \bfseries EDICS Category: 3-BBND \end{center}
-% \fi
-%
-% For peerreview papers, this IEEEtran command inserts a page break and
-% creates the second title. It will be ignored for other modes.
-\IEEEpeerreviewmaketitle
-
+\end{frontmatter}
 
 % 
 % 8888888 888b    888 88888888888 8888888b.   .d88888b.  
@@ -615,34 +170,8 @@ State Estimation, Data Privacy, Sensor Fusion, Kalman Filters.
 %                                                        
 % 
 
-\IEEEraisesectionheading{\section{Introduction}\label{sec:introduction}}
-% Computer Society journal (but not conference!) papers do something unusual
-% with the very first section heading (almost always called "Introduction").
-% They place it ABOVE the main text! IEEEtran.cls does not automatically do
-% this for you, but you can achieve this effect with the provided
-% \IEEEraisesectionheading{} command. Note the need to keep any \label that
-% is to refer to the section immediately after \section in the above as
-% \IEEEraisesectionheading puts \section within a raised box.
-
-
-
-
-% The very first letter is a 2 line initial drop letter followed
-% by the rest of the first word in caps (small caps for compsoc).
-% 
-% form to use if the first word consists of a single letter:
-% \IEEEPARstart{A}{demo} file is ....
-% 
-% form to use if you need the single drop letter followed by
-% normal text (unknown if ever used by the IEEE):
-% \IEEEPARstart{A}{}demo file is ....
-% 
-% Some journals put the first two words in caps:
-% \IEEEPARstart{T}{his demo} file is ....
-% 
-% Here we have the typical use of a "T" for an initial drop letter
-% and "HIS" in caps to complete the first word.
-\IEEEPARstart{L}{ocalisation} methods in distributed sensor environments have long been an active topic of research \cite{pierceIntroductionLoran1946,liContributedReviewSourcelocalization2016}. Ongoing advancements in portable computing power and sensor capabilities have led to the development of various forms of localisation methods, from range-free and range-based signal strength measurements \cite{wangConvexCombinationSource2018,heRangeFreeLocalizationSchemes}, acoustic range estimates \cite{beutlerNewNonlinearFiltering2004} and magnetic field measurements \cite{sieblerLocalizationMagneticField2020} to the TDOA and TOA pseudo-range multilateration methods for aircraft \cite{liContributedReviewSourcelocalization2016}. Range-based localisation methods, including the use of radar measurements, GPS clocks and signal strength measurements, have found particularly large application due to their robustness and accuracy. These methods use distance measurements, or computed estimates, to produce location estimates and typically involve gathering sensor details such as measurement noise, geographical location and observations centrally. Broadcasting or gathering information in this way, however, implies a trust between participants within a trusted communication network to ensure shared data may not be used for individual malicious gain. With the advancements in cloud and ubiquitous computing, changes in possible use-cases involving distributed sensors have made the requirements of information security and user privacy more apparent than before \cite{brennerSecretProgramExecution2011,renSecurityChallengesPublic2012}. For example, an aircraft localisation scenario in the presence of privately operated measurement stations may imply measurements and locations of stations should be kept private from navigating vehicles. Or in autonomous vehicle state estimation, benefit from neighbouring vehicles' information may be desired while no participant wishes to share information about their hardware. Additionally, the dispatching of any expensive intermediate computations to service-providing cloud operators may require ensuring the privacy of information involved in the computations. All of these scenarios, and the one we will consider, require methods for computing specific operations while ensuring the privacy of some or all of the input data. Our contributions in this work will be presented in two parts. We first propose a novel aggregation-based encryption scheme which allows private aggregation of weighted sums, before we develop a localisation filter using this scheme such that sensor and navigator privacy is preserved.
+\section{Introduction}
+Localisation methods in distributed sensor environments have long been an active topic of research \cite{pierceIntroductionLoran1946,liContributedReviewSourcelocalization2016}. Ongoing advancements in portable computing power and sensor capabilities have led to the development of various forms of localisation methods, from range-free and range-based signal strength measurements \cite{wangConvexCombinationSource2018,heRangeFreeLocalizationSchemes}, acoustic range estimates \cite{beutlerNewNonlinearFiltering2004} and magnetic field measurements \cite{sieblerLocalizationMagneticField2020} to the TDOA and TOA pseudo-range multilateration methods for aircraft \cite{liContributedReviewSourcelocalization2016}. Range-based localisation methods, including the use of radar measurements, GPS clocks and signal strength measurements, have found particularly large application due to their robustness and accuracy. These methods use distance measurements, or computed estimates, to produce location estimates and typically involve gathering sensor details such as measurement noise, geographical location and observations centrally. Broadcasting or gathering information in this way, however, implies a trust between participants within a trusted communication network to ensure shared data may not be used for individual malicious gain. With the advancements in cloud and ubiquitous computing, changes in possible use-cases involving distributed sensors have made the requirements of information security and user privacy more apparent than before \cite{brennerSecretProgramExecution2011,renSecurityChallengesPublic2012}. For example, an aircraft localisation scenario in the presence of privately operated measurement stations may imply measurements and locations of stations should be kept private from navigating vehicles. Or in autonomous vehicle state estimation, benefit from neighbouring vehicles' information may be desired while no participant wishes to share information about their hardware. Additionally, the dispatching of any expensive intermediate computations to service-providing cloud operators may require ensuring the privacy of information involved in the computations. All of these scenarios, and the one we will consider, require methods for computing specific operations while ensuring the privacy of some or all of the input data. Our contributions in this work will be presented in two parts. We first propose a novel aggregation-based encryption scheme which allows private aggregation of weighted sums, before we develop a localisation filter using this scheme such that sensor and navigator privacy is preserved.
 
 The remainder of the paper is structured as follows. In Section \ref{sec:problem_statement} we introduce the localisation problem, the relevant aggregation opertation for its solution and the restrictions on involved parties. Sections \ref{sec:crypto_prelim} and \ref{sec:lcao_definition} will summarise cryptographic preliminaries and introduce a novel security notion for our required aggregation before defining and proving an encryption scheme which satisfies it. Sections \ref{sec:loc_prelim} and \ref{sec:priv_localisation} introduce localisation preliminaries and our privacy-preserving localisation method using the private aggregation scheme. We show and discuss simulation results in Section \ref{sec:sim_and_results} and conclude our work in Section \ref{sec:conclusion}.
 
@@ -688,19 +217,19 @@ In this section, we will discuss methods for providing security guarantees in si
 
 \subsection{Encryption Schemes in Signal Processing}
 Of the methods used to preserve privacy during distributed signal processing, it is common for the information exchanging portion of the algorithm to be reduced to a form of aggregation of involved parties' data. The most common methods for ensuring privacy during aggregation required for signal processing tasks have been described below.
-\begin{LaTeXdescription}
+\begin{description}
     \item[Differential Privacy] These techniques formalise preserving the privacy of individual datum within an aggregation operation by introducing known distributions of noise to the resulting aggregation. To handle the cases with no trusted aggregator, local differential privacy is achieved by introducing noise to individual inputs \cite{hanPrivacyControlDynamical2018,dworkDifferentialPrivacySurvey2008,andresGeoindistinguishabilityDifferentialPrivacy2013}. Although differential privacy has strong computational benefits due to its implementational simplicity, it provides relatively weak security guarantees for multi-party networks, with no guarantees in the presence of multiple colluding corrupted parties. Additionally, noisy aggregation results hinder its use in scenarios where high precision is a desired property such as aircraft localisation.
     \item[Aggregator Oblivious Encryption] This method of encryption formalises the privacy of \textit{all} aggregation data from honest parties \cite{shiPrivacyPreservingAggregationTimeSeries2011,chanPrivacyPreservingStreamAggregation2012,joyeScalableSchemePrivacyPreserving2013}. Encryptions of aggregation data are proven to be computationally indistinguishable and guarantee that only their sum can be learned by an aggregator, whether or not they are trusted. The originally proposed method \cite{shiPrivacyPreservingAggregationTimeSeries2011} is restricted to a small input domain which has been expanded and computationally simplified in later works \cite{joyeScalableSchemePrivacyPreserving2013,benhamoudaNewFrameworkPrivacyPreserving2016}. The aggregation operation in these schemes is, however, strictly limited to the sum operation and restricts its applicability to simple processing tasks such as smart-meter sum or mean calculation \cite{chanPrivacyPreservingStreamAggregation2012,benhamoudaNewFrameworkPrivacyPreserving2016}.
-\end{LaTeXdescription}
+\end{description}
 In addition to the private aggregation of data, it may also be the case that private data needs to be modified by an external party before being returned, as with privacy-preserving cloud computing. These methods have been broadly grouped into two domains and described below.
-\begin{LaTeXdescription}
+\begin{description}
     \item[Fully Homomorphic Encryption] These schemes allow all algebraic computations to be performed on encrypted data without the computing party learning any information about inputs, intermediate values or results \cite{gentryFullyHomomorphicEncryption2009,stehleFasterFullyHomomorphic2010}. Although theoretically ideal for many data-sensitive tasks, current implementations are still computationally impractical for real-time or large scale tasks \cite{acarSurveyHomomorphicEncryption2018}.
     \item[Partially Homomorphic Encryption] A simplification of fully homomorphic schemes; these schemes provide only a subset, typically one, of algebraic operations on encrypted data \cite{elgamalPublicKeyCryptosystem1985,paillierPublicKeyCryptosystemsBased1999,bonehEvaluating2DNFFormulas2005}. Reduced computational requirements and implementation simplicity have made partially homomorphic encryption schemes commonly used in privacy-preserving signal processing tasks, including private matrix multiplication \cite{kogisoCyberSecurityEnhancementNetworked2015}, set intersection computation \cite{kerschbaumOutsourcedPrivateSet2012} and control input aggregation \cite{alexandruEncryptedCooperativeControl2019}. However, these works are relatively restricted in application due to the limited operations provided.
-\end{LaTeXdescription}
+\end{description}
 Lastly, recent developments in encryption schemes have presented some novel methods also suitable for privacy-preserving computation in distributed environments.
-\begin{LaTeXdescription}
+\begin{description}
     \item[Multi-Client Function Encryption] These schemes allow the computing of a specific function given encrypted inputs \cite{bonehFunctionalEncryptionDefinitions2011,goldwasserMultiinputFunctionalEncryption2014}. It is suitable for data-sensitive distributed processing as encryptions must be combined before a result is obtained, and can be considered a generalisation of the aggregation schemes described earlier. While general schemes that allow computing arbitrary functions are computationally expensive and complicate security definitions in distributed settings \cite{agrawalFunctionalEncryptionNew2013}, partial schemes supporting only some functions, such as vector dot products \cite{chotardDecentralizedMultiClientFunctional2018}, exist with formal security proofs, but have yet to find applications in more complicated signal processing tasks.
-\end{LaTeXdescription}
+\end{description}
 Of the aforementioned encryption schemes, some have found uses in privacy-preserving localisation and estimation tasks and we summarise these in the next section.
 
 % 
@@ -846,9 +375,9 @@ To support multiple aggregations at each time-step $k$, as is required for the a
 
 In Section \ref{sec:priv_localisation} we will show how this protocol is sufficient to compute the required estimation information at the sensors required to update the navigator's estimation filter.
 
-\begin{remark}
+\begin{rem}
     From the aggregation definition above and the distributive property of real numbers, it is clear that an alternative method to the bi-directional communication requirement would be computing $\sum^{m}_{j=1}\omega_j^{(t)}\sum^{n}_{i=1} x_{i,j}^{(t)}$ by the navigator, requiring only uni-directional communication by sending values $x_{i,j}^{(t)}, 1 \leq j \leq m$ from each sensor $i$. We justify the use of bi-directional communication by reducing communication costs when the number of weights is larger than the number of sensors, $m>n$, and by sending fewer weights in the presence of repeats, as will be shown to be the case in Section \ref{subsec:algorithm}.
-\end{remark}
+\end{rem}
 
 % 
 %  ######     ###    ########     ###    ########  #### ##       #### ######## #### ########  ######  
@@ -862,7 +391,7 @@ In Section \ref{sec:priv_localisation} we will show how this protocol is suffici
 
 \subsection{Participant Capabilities} \label{subsec:capabilities}
 Before we can define concrete security requirements and a filtering protocol, we require some assumptions on the capabilities of the navigator and sensors in our problem scenario.
-\begin{LaTeXdescription}
+\begin{description}
     \item[Global navigator broadcast] From the decomposition defined above, we know that bi-directional communication between navigator and sensors is required. We make the assumption that broadcast information from the navigator is received by \textit{all} sensors involved in the protocol.
     
     A problem caused by this requirement is apparent in the context of aircraft navigation. It may be the case that some sensors are not within the range of a navigator broadcast. We loosely propose that this scenario can be handled with pre-defined sensor subsets during an initial step by a trusted party. An example has been shown in Figure \ref{fig:sensor_subsets}, which reduces to two separate localisation instances with global broadcasts.
@@ -873,7 +402,7 @@ Before we can define concrete security requirements and a filtering protocol, we
     
     Misbehaving sensors are a known problem in estimation theory, often requiring inconsistency or outlier detection mechanisms \cite{lazosSeRLocSecureRangeindependent2004,ben-galOutlierDetection2005}. As privacy-preserving implementations of such mechanisms require additional complications, we will not consider the scenario in this work.
     \item[Computational capabilities] The computational requirements for computing encryptions and homomorphic operations are typically more costly than their plaintext equivalents. We make the implicit assumption that all involved parties are computationally capable of computing the required encryption and filter operations.
-\end{LaTeXdescription}
+\end{description}
 \begin{figure}[htbp]
 \centering
 \begin{tikzpicture}[font=\footnotesize]
@@ -994,17 +523,17 @@ When defining our aggregation security requirements and encryption scheme, we wi
 
 \subsection{Security Notions}
 The security of a cryptographic scheme is typically defined by a security \textit{game}, which captures both the desired privacy guarantees, as well as the capabilities of attackers \cite{katzIntroductionModernCryptography2008}. The typical security notion for a homomorphic encryption scheme is Indistinguishability under Chosen Plaintext Attack (IND-CPA) \cite{chaseSecurityHomomorphicEncryption2017}. 
-\begin{definition}
+\begin{defn}
 An encryption scheme meets IND-CPA security if an attacker who can choose plaintext messages to be encrypted at will, gains no additional information about an unknown plaintext message when they learn only its encryption. 
 
 The formal security game for IND-CPA has been given in Appendix \ref{app:ind_cpa}.
-\end{definition}
+\end{defn}
 Private aggregation schemes aim for the security notion of Aggregator Obliviousness (AO) \cite{shiPrivacyPreservingAggregationTimeSeries2011}. 
-\begin{definition}
+\begin{defn}
 An encryption scheme meets AO security if no colluding subset of participants \textit{excluding} the aggregator gains additional information about the remaining aggregation values given only their encryptions, while any colluding subset \textit{including} the aggregator learns only their sum. 
 
 The formal security game for AO has been given in Appendix \ref{app:ao}.
-\end{definition}
+\end{defn}
 
 % 
 % ########     ###    #### ##       ##       #### ######## ########  
@@ -1096,14 +625,14 @@ removing all noise terms.
 
 \section{Private Linear-Combination Aggregation} \label{sec:lcao_definition}
 As stated in Section \ref{subsec:problem_decomposition}, we decompose the localisation method such that the multi-party aggregation protocol, given in Figure \ref{fig:agg_steps}, captures all communication between the navigator and sensors. To perform this protocol in a secure manner, we must first describe the security properties we aim to achieve during aggregation. Broadly speaking, we want a cryptographic scheme which allows instances of homomorphically computed linear combinations of encrypted weights, to be summed by a private aggregation scheme. That is, we do not want sensors to learn the navigator weights, while we do not want the navigator to learn individual weighted linear combinations. This can be summarised by the two informal security notions:
-\begin{LaTeXdescription}
+\begin{description}
     \item[Indistinguishable Weights] No colluding subset of sensors gains any additional knowledge about the navigator weights $\omega_j,\,1\leq j \leq m$ from receiving only their encryptions from the current and previous instances, and the ability to encrypt plaintexts of their choice.
     \item[Private Linear-Combination Aggregation] No colluding subset \textit{excluding} the aggregator gains additional information about the remaining sensor values to be weighted $x^{(t)}_{i,j},\,1\leq j\leq m$, where sensor $i$ is not colluding, given only encryptions of their linear combinations $y_i$ from the current and previous instances. Any colluding subset \textit{including} the aggregator learns only the sum of all linear combinations weighted by weights of their choice, $\sum^{n}_{i=1}y_i^{(t)}=\sum^{n}_{i=1}\sum^{m}_{j=1} x^{(t)}_{i,j}\omega^{(t)}_j$.
-\end{LaTeXdescription}
+\end{description}
 
-\begin{remark} \label{rem:lcao_leakage}
+\begin{rem} \label{rem:lcao_leakage}
     The notion of a leakage function including parameters from the aggregator requires extra care to be taken when giving its definition. Since an attacker may compromise the aggregator, they have control over the choice of these parameters, and therefore over the leakage function. We note that in the leakage function above, $\sum^n_{i=n}\sum^m_{j=1}x^{(t)}_{i,j}\omega^{(t)}_j$, an individual sum weighted by the same weight may be learned by the colluding subset, \textit{e.g.} $\sum^m_{j=1}x^{(t)}_{i,j}$ given weights $(1,0,\dots,0)$, but that individual sensor values $x^{(t)}_{i,j}$ remain private due to the requirement that all sensors receive the same weights.
-\end{remark}
+\end{rem}
 
 From the informal definitions above, it is clear that weights encrypted by an IND-CPA secure encryption scheme are sufficient for the first requirement, while a scheme satisfying AO is not sufficient for the second. To formalise the second requirement, we define a novel encryption type ``Linear-Combination Aggregator Oblivious Encryption'' and an accompanying security game, which capture the additional weights and modified leakage of AO.
 
@@ -1120,19 +649,19 @@ From the informal definitions above, it is clear that weights encrypted by an IN
 \subsection{Linear-Combination Aggregator Oblivious Encryption} \label{subsec:lcao}
 We let a linear-combination aggregator oblivious encryption scheme be defined as a tuple of the four algorithms $(\mathsf{Setup}, \mathsf{Enc}, \mathsf{CombEnc}, \mathsf{AggDec})$. These are used by a trusted third party, an aggregator and value producing users $i\,1\leq i \leq n$. They are defined as follows
 
-\begin{LaTeXdescription}
+\begin{description}
     \item[$\mathsf{Setup}(\kappa)$] On input of security paramater $\kappa$, generate public parameters $\mathsf{pub}$, the number of weights $m$, the aggregator's public and private keys $pk_0$ and $sk_0$, and the user private keys $sk_i,\,1\leq i \leq n$.
     \item[$\mathsf{Enc}(pk_0, a)$] The aggregator and users can encrypt any value $a$ with the aggregator public key $pk_0$, and obtain the encryption $\mathcal{E}_{pk_0}(a)$.
     \item[$\mathsf{CombEnc}(t, pk_0, sk_i, \mathcal{E}_{pk_0}(\omega_1^{(t)}),\dots,\mathcal{E}_{pk_0}(\omega_m^{(t)}), x^{(t)}_{i,1},\dots,x^{(t)}_{i,m})$] At instance $t$, user $i$ computes and obtains the encrypted linear combination $y^{(t)}_i = \mathcal{E}_{pk_0,sk_i}(\sum^m_{j=1}x^{(t)}_{i,j}\omega^{(t)}_j)$ using its secret key $sk_i$.
     \item[$\mathsf{AggDec}(t, pk_0, sk_0, y^{(t)}_1,\dots,y^{(t)}_n)$] At instance $t$, the aggregator computes the aggregation of linear combinations $\sum^{n}_{i=1}y_i^{(t)}=\sum^{n}_{i=1}\sum^{m}_{j=1} x^{(t)}_{i,j}\omega^{(t)}_j$ using its public and private keys $pk_0$, $sk_0$.
-\end{LaTeXdescription}
+\end{description}
 
 We formalise the security notion of Linear-Combination Aggregator Obliviousness (LCAO) as the following game between attacker and challenger:
 
-\begin{LaTeXdescription}
+\begin{description}
     \item[Setup] The challenger runs the $\mathsf{Setup}$ algorithm and gives $\mathsf{pub}$, $m$ and $pk_0$ to the attacker
     \item[Queries] The attacker can now perform encryptions or submit queries that are answered by the challenger. The types of actions are:
-    \begin{LaTeXenumerate}
+    \begin{enumerate}
         \item \textit{Encryption:} The attacker chooses a value $a$ and computes an encryption of $a$ under the aggregator's public key $pk_0$, obtaining $\mathcal{E}_{pk_0}(a)$.
         \item \textit{Weight Queries:} The attacker chooses an instance $t$ and receives the weights for that instance encrypted with the aggregator's public key, $\mathcal{E}_{pk_0}(\omega^{(t)}_{j}),\,1\leq j\leq m$.
         \item \textit{Combine Queries:} The attacker chooses a tuple $(i,t,x^{(t)}_{i,1},\dots,x^{(t)}_{i,m})$ such that for any two chosen combine query tuples $(i,t,x^{(t)}_{i,1},\dots,x^{(t)}_{i,m})$ and $(i',t',x^{\prime(t')}_{i',1},\dots,x^{\prime(t')}_{i',m})$, the following condition holds:
@@ -1141,7 +670,7 @@ We formalise the security notion of Linear-Combination Aggregator Obliviousness 
         \end{equation*}
         The attacker is then given back the encryption of the linear combination $\mathcal{E}_{pk_0,sk_i}(\sum^m_{j=1}x^{(t)}_{i,j}\omega^{(t)}_j)$ encrypted under both the aggregator public key $pk_0$ and the secret key $sk_i$.
         \item \textit{Compromise queries:} The attacker chooses $i$ and receives the secret key $sk_i$. The aggregator's secret key may also be compromised (when choosing $i=0$).
-    \end{LaTeXenumerate} 
+    \end{enumerate} 
     \item[Challenge] Next, the attacker chooses an instance $t^*$, and a subset of users $S \subseteq U$ where $U$ is the complete set of users for which no combine queries, for the instance $t^*$, and no compromise queries, are made for the duration of the game. The attacker then chooses two series of tuples
     \begin{equation*}
         \langle(i,t^*,x^{(t^*)(0)}_{i,1},\dots,x^{(t^*)(0)}_{i,m})\,|\,i \in S\rangle
@@ -1163,11 +692,11 @@ We formalise the security notion of Linear-Combination Aggregator Obliviousness 
     \begin{equation*}
         \mathsf{Adv}^{LCAO}(\mathcal{A}) \coloneqq \left\lvert \Pr [b'=b] - \frac{1}{2}\right\rvert\,.
     \end{equation*} 
-\end{LaTeXdescription}
+\end{description}
 
-\begin{definition}
+\begin{defn}
     An encryption scheme meets LCAO security if no adversary, running in probabilistic-time with respect to security parameter, has more than a negligible advantage in winning the above security game. Probabilities are taken over randomness introduced by $\mathcal{A}$, and in $\mathsf{Setup}$, $\mathsf{Enc}$ and $\mathsf{CombEnc}$.
-\end{definition}
+\end{defn}
 
 In the next section, we will give a solution to an encryption scheme meeting LCAO security, with IND-CPA secure weight encryption, and give a cryptographic proof for its security.
 
@@ -1184,7 +713,7 @@ In the next section, we will give a solution to an encryption scheme meeting LCA
 \subsection{Our Scheme} \label{subsec:our_scheme}
 Our scheme is based on the Paillier and Joye-Libert schemes introduced in Sections \ref{subsec:paillier_scheme} and \ref{subsec:joye_libert_scheme}, and similarly bases its security on the DCRA. As with Joye-Libert's private aggregation scheme, a trusted party is required for the initial distribution of user secret keys. Below, we give definitions for the four algorithms comprising the linear-combination aggregation encryption scheme.
 
-\begin{LaTeXdescription}
+\begin{description}
     \item[$\mathsf{Setup}(\kappa)$] On input parameter $\kappa$, generate two equal length, sufficiently large, primes $p$ and $q$, and compute $N=pq$. Define a hash function $H:\mathbb{Z} \rightarrow \mathbb{Z}_{N^2}^*$, choose an $m>1$ as the number of weights to combine, and set public parameter $\mathsf{pub}=H$, aggregator public key $pk_0 = N$ and aggregator private key $sk_0=(p,q)$. The remaining user secret keys are generated by choosing $sk_i,\,1\leq i\leq n-1$ uniformly from $\mathbb{Z}_{N^2}$ and setting the last key as $sk_n = -\sum^{n-1}_{i=1}sk_i \pmod{N^2}$.
  
     \item[$\mathsf{Enc}(pk_0, a)$] Encryption of values is computed as a Paillier encryption with implicit generator $g=N+1$. This is given by
@@ -1225,11 +754,11 @@ Our scheme is based on the Paillier and Joye-Libert schemes introduced in Sectio
         &= (N+1)^{\sum^n_{i=1}\sum^{m}_{j=1}x^{(t)}_{i,j}\omega^{(t)}_j}r'^N \pmod{N^2}\,,
     \end{align*}
     for some values $r_i,r' \in \mathbb{Z}_N,\,1\leq i \leq n$.
-\end{LaTeXdescription}
+\end{description}
 
 Additionally, we note that in the above construction, all weights $\omega^{(t)}_j$ and values $x^{(t)}_{i,j}$ are integers, and that resulting linear combinations and summations are computed $\pmod{N}$.
 
-\begin{remark} \label{rem:lcao_implicit_weight}
+\begin{rem} \label{rem:lcao_implicit_weight}
     The construction of this scheme additionally supports the linear combination of the implicit weight, $\omega^{(t)}_j = 1$, by replacing
     \begin{equation}
         \mathcal{E}_{pk_0}(1)^{x^{(t)}_{i,j}} = (N+1)^{1}r_j^N \pmod{N^2}
@@ -1239,7 +768,7 @@ Additionally, we note that in the above construction, all weights $\omega^{(t)}_
         (N+1)^{x^{(t)}_{i,j}} \pmod{N^2}\,,
     \end{equation}
     due to the removal of $r_j^N$ terms during decryption. This can be used to reduce the broadcast communication cost by one weight.
-\end{remark}
+\end{rem}
 
 % 
 % ########  ########   #######   #######  ######## 
@@ -1295,12 +824,12 @@ for some negligible functions $\eta_1$ and $\eta_2$. (\textit{i.e.} if we assume
 \label{fig:proof_summary}
 \end{figure}
 
-\begin{proof}
+\begin{pf}
     Consider adversary $\mathcal{A}$ playing the LCAO game defined in Section \ref{subsec:lcao}. The following is a construction of an adversary $\mathcal{A}'$ playing the AO game in Appendix \ref{app:ao} against a challenger $\mathcal{C}$ using the Joye-Libert aggregation scheme from Section \ref{subsec:joye_libert_scheme}.
-    \begin{LaTeXdescription}
+    \begin{description}
         \item[Setup] When receiving $N$ and $H$ as public parameters from $\mathcal{C}$, choose an $m>1$ and give public parameter $H$, number of weights $m$, and $pk_0=N$ to $\mathcal{A}$.
         \item[Queries] Handle queries from $\mathcal{A}$:
-        \begin{LaTeXdescription}
+        \begin{description}
             \item[\textit{Weight Query}] When $\mathcal{A}$ submits a weight query $t$, choose weights $\omega^{(t)}_j,\,1 \leq j \leq m$ and random values $r_j \in \mathbb{Z}_N,\,1 \leq j \leq m$, and return encryptions 
             \begin{equation*}
                 (N+1)^{\omega^{(t)}_{j}}r_j^N\pmod{N^2},\,1\leq j\leq m
@@ -1312,7 +841,7 @@ for some negligible functions $\eta_1$ and $\eta_2$. (\textit{i.e.} if we assume
             \end{equation*}
             to $\mathcal{A}$.
             \item[\textit{Compromise Query}] When $\mathcal{A}$ submits compromise query $i$, make the same compromise query $i$ to $\mathcal{C}$, and return the recieved secret key $sk_i$ to $\mathcal{A}$.
-        \end{LaTeXdescription}
+        \end{description}
         \item[Challenge] When $\mathcal{A}$ submits challenge series
         \begin{equation*}
             \langle(i,t^*,x^{(t^*)(0)}_{i,1},\dots,x^{(t^*)(0)}_{i,m})\,|\,i \in S\rangle
@@ -1339,14 +868,14 @@ for some negligible functions $\eta_1$ and $\eta_2$. (\textit{i.e.} if we assume
         \end{equation*}
         to $\mathcal{A}$.
         \item[Guess] When $\mathcal{A}$ makes guess $b'$, make the same guess $b'$ to $\mathcal{C}$.
-    \end{LaTeXdescription}
+    \end{description}
 
     In the above construction, $\mathcal{C}$ follows the Joye-Libert scheme from Section \ref{subsec:joye_libert_scheme} exactly, and to $\mathcal{A}$, $\mathcal{A}'$ follows our scheme in Section \ref{subsec:our_scheme} exactly. Since $\mathcal{A}'$ runs in polynomial-time to security parameter when $\mathcal{A}$ does, and no non-neglibile advantage adversary to $\mathcal{C}$ exists \cite{joyeScalableSchemePrivacyPreserving2013}, we conclude that no non-negligible advantage adversary $\mathcal{A}$ exists. That is, there exists a negligible function $\eta$, such that
     \begin{equation*}
         \mathsf{Adv}^{LCAO}(\mathcal{A}) \leq \eta(\kappa)
     \end{equation*}
-    for security parameter $\kappa$.
-\end{proof}
+    for security parameter $\kappa$. \qed
+\end{pf}
 
 % 
 % 888      .d88888b.   .d8888b.       8888888b.  8888888b.  8888888888 888      8888888 888b     d888 
@@ -1623,9 +1152,9 @@ The final step required for the application of our LCAO secure encryption scheme
     t=k\mathbin\|i\mathbin\|j\mathbin\|b
 \end{equation}
 for aggregation in row $i$ and column $j$, with $b=0$ for aggregations in $\rvec{i}'_{k,i}$ and $b=1$ otherwise.
-\begin{remark}
+\begin{rem}
     The solutions \eqref{eqn:hrz_linear_comb} and \eqref{eqn:hrh_linear_comb} have been derived for two-dimensional localisation, but can be similarly extended to the three-dimensional case. We note however, the additional cost with increasing dimension. The number of weights is increased in the rearranged functions $h'_i$, and therefore combinatorially increased in $\rvec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ by \eqref{eqn:matrix_mult_weights}. This results in a combinatorial increase in weights, and therefore communication, with respect to the number of state parameters required for computing functions $h_i$.
-\end{remark}
+\end{rem}
 
 % 
 %  ######   #######  ##     ##    ###    ########  ######## ########     ######## 
@@ -1690,7 +1219,7 @@ Together, the model and variance, \eqref{eqn:modified_measurement} and \eqref{eq
 In this section, we piece together our LCAO secure encryption scheme in Section \ref{subsec:our_scheme} with the modified measurement model in Sections \ref{subsec:observation_model} and \ref{subsec:range_measurement_mod} and define our privacy-preserving localisation algorithm.
 
 The privacy-preserving localisation filter can be described by the following steps.
-\begin{LaTeXdescription}
+\begin{description}
     \item[Setup] The $\mathsf{Setup}$ algorithm from Section \ref{subsec:our_scheme} is executed by a trusted third party, $N$ and $H$ are made known to the navigator and all sensors, and the navigator and sensor secret keys, $sk_0=\lambda$ and $sk_i$, $1 \leq i \leq n$ respectively, are distributed accordingly. Additionally, we assume that fractional precision $f$ from Section \ref{subsec:encoding} is also a public parameter and made known to the navigator and sensors. We will thus simplify the encoding notation $\mathsf{E}_{N,f,m}(\cdot)$ to $\mathsf{E}_{m}(\cdot)$.
 
     \item[Prediction] The navigator computes the typical EKF prediction equations before encrypting state variables and broadcasting to sensors. This is given by Algorithm \ref{alg:nav_prediction}.
@@ -1698,7 +1227,7 @@ The privacy-preserving localisation filter can be described by the following ste
     \item[Measurement] Sensors modify their measurements before homomorphically computing measurement vectors and matrices $\rvec{i}'_{k,i}$ and $\mat{I}'_{k,i}$, encrypting them for aggregation, and sending them back to the navigator. Care must be taken when encoding during homomorphic operations to ensure fractional factor $m$ satisfies \eqref{eqn:encoding_homomorphic_add}, in particular when using the property from Remark \ref{rem:lcao_implicit_weight}. This is described by Algorithm \ref{alg:measurement_info}.
 
     \item[Update] The navigator aggregates measurement vectors and matrices before decrypting them. The typical EIF update equations can then be computed. This is shown in Algorithm \ref{alg:nav_update}.
-\end{LaTeXdescription}
+\end{description}
 
 \begin{algorithm}[htbp]
     \caption{Navigator Prediction}\label{alg:nav_prediction}
@@ -1907,9 +1436,9 @@ From the leaked coefficient sums, we see that all information private to the sen
     \sum_{i=1}^n\rv{z}'_{k,i}\,,\ \sum_{i=1}^n\rv{r}_{k,i}\,,\ \sum_{i=1}^ns_{x,i}\ \textrm{and}\ \sum_{i=1}^ns_{y,i}\,.\label{eqn:localisation_leakage}
 \end{equation}
 From these sums and the definitions \eqref{eqn:modified_measurement} and \eqref{eqn:modified_measurement_variance_estimate}, we conclude that the navigator can \textit{at most} learn the sums of sensor private data, which in practice corresponds to the average sensor modified measurements, estimated variances and locations.
-\begin{theorem}
+\begin{thm}
     In the context of our localisation scheme, leakage of the incorporated LCAO secure encryption scheme corresponds to the leakage of average sensor private information, given by the sums in \eqref{eqn:localisation_leakage}.
-\end{theorem}
+\end{thm}
 
 % 
 % 8888888b.  8888888888 .d8888b.  888     888 888    88888888888 .d8888b.  
@@ -1975,26 +1504,24 @@ As sensor and navigator computations run in parallel, increases in runtime from 
 \section{Conclusion} \label{sec:conclusion}
 To develop a model-based localisation algorithm which preserves navigator and sensor privacy, we first defined the novel notion of an LCAO secure encryption scheme and gave a provably secure implementation based on the Joye-Libert aggregation scheme. This scheme was then used in our proposed privacy-preserving EIF, where sensors compute measurement information homomorphically such that it can be privately used by a navigator. Our privacy-preserving estimation method may find uses in a variety of untrusted distributed localisation environments including airspaces and autonomous vehicle networks as well as those where alternative measurement models satisfying our defined linearity requirements can be applied. Possible future work in this topic includes the expanding of the LCAO security notion to \textit{ensure} that the same weights are broadcast to all sensors, the application of LCAO secure schemes to alternative measurement models and the exploring of implications behind an active sensor attacker model.
 
+% Place acknowledgements
+% here.
+\begin{ack}                               
+Partially supported by ZIM \dots
+\end{ack}
 
+% Include this if you use bibtex 
+% and a bib file to produce the 
+% bibliography (preferred). The
+% correct style is generated by
+% Elsevier at the time of printing.
+\bibliographystyle{unsrt}
+\bibliography{BibTeX/PrivateEIFLocalisation}
 
-
-
-% if have a single appendix:
-%\appendix[Proof of the Zonklar Equations]
-% or
-%\appendix  % for no appendix heading
-% do not use \section anymore after \appendix, only \section*
-% is possibly needed
-
-% use appendices with more than one appendix
-% then use \section to start each appendix
-% you must declare a \section before using any
-% \subsection or using \label (\appendices by itself
-% starts a section numbered zero.)
-%
-
-
-\appendices
+% Each appendix must have a short title.
+% Sections and subsections are supported
+% in the appendices.
+\appendix
 % 
 %        d8888 8888888b.  8888888b.  8888888888 888b    888 8888888b. 8888888 Y88b   d88P 
 %       d88888 888   Y88b 888   Y88b 888        8888b   888 888  "Y88b  888    Y88b d88P  
@@ -2011,14 +1538,14 @@ To develop a model-based localisation algorithm which preserves navigator and se
 
 \section{Indistinguishability under Chosen Plaintext Attack (IND-CPA)} \label{app:ind_cpa}
 A public-key encryption scheme is defined by the tuple of algorithms $(\mathsf{Setup}, \mathsf{Enc}, \mathsf{Dec})$, defined as
-\begin{LaTeXdescription}
+\begin{description}
     \item[$\mathsf{Setup}(\kappa)$] On input of security paramater $\kappa$, generate public key $pk$ and secret key $sk$
     \item[$\mathsf{Enc}(pk, x)$] Encryption of value $x$ is computable using the public key $pk$, obtaining $\mathcal{E}_{pk}(x)$.
     \item[$\mathsf{Dec}(sk, \mathcal{E}_{pk}(x))$] Decryption of value $x$ is computable using the secret key $sk$.
-\end{LaTeXdescription}
+\end{description}
 
 The security game between attacker and challenger for IND-CPA security is given by
-\begin{LaTeXdescription}
+\begin{description}
     \item[Setup] The challenger runs the $\mathsf{Setup}$ algorithm and gives public key $pk$ to the attacker
     \item[Encryptions] The attacker may compute encryptions using the public key $pk$.
     \item[Challenge] Next, the attacker chooses two values
@@ -2034,28 +1561,28 @@ The security game between attacker and challenger for IND-CPA security is given 
     \begin{equation*}
         \mathsf{Adv}^{IND-CPA}(\mathcal{A}) \coloneqq \left\lvert \Pr [b'=b] - \frac{1}{2}\right\rvert\,.
     \end{equation*} 
-\end{LaTeXdescription}
+\end{description}
 
 \section{Aggregator Obliviousness (AO)} \label{app:ao}
 An aggregator oblivious encryption scheme is defined by the tuple of algorithms $(\mathsf{Setup}, \mathsf{Enc}, \mathsf{AggDec})$, defined as
-\begin{LaTeXdescription}
+\begin{description}
     \item[$\mathsf{Setup}(\kappa)$] On input of security paramater $\kappa$, generate public parameters $\mathsf{pub}$, the user private keys $sk_i,\,1\leq i \leq n$, and the aggregator's private key $sk_0=-\sum^n_{i=1}sk_i$.
     \item[$\mathsf{Enc}(t, sk_i, x^{(t)}_i)$] At instance $t$, user $i$ computes and obtains the encrypted value $y^{(t)}_i = \mathcal{E}_{sk_i}(x^{(t)}_i)$ using its secret key $sk_i$.
     \item[$\mathsf{AggDec}(t, sk_0, y^{(t)}_1,\dots,y^{(t)}_n)$] At instance $t$, the aggregator computes the aggregation of values $\sum^{n}_{i=1} x^{(t)}_i$ using its private key $sk_0$.
-\end{LaTeXdescription}
+\end{description}
 
 The security game between attacker and challenger for AO security is given by
-\begin{LaTeXdescription}
+\begin{description}
     \item[Setup] The challenger runs the $\mathsf{Setup}$ algorithm and gives public parameters $\mathsf{pub}$ to the attacker
     \item[Queries] The attacker can now submit queries that are answered by the challenger. The types of queries are:
-    \begin{LaTeXenumerate}
+    \begin{enumerate}
         \item \textit{Combine Queries:} The attacker chooses a tuple $(i,t,x^{(t)}_i$ such that for any two chosen combine query tuples $(i,t,x^{(t)}_i)$ and $(i',t',x^{\prime(t')}_{i'}$, the following condition holds:
         \begin{equation*}
             i = i' \wedge t = t' \implies x^{(t)}_{i} = x^{\prime(t')}_{i'}\,.
         \end{equation*}
         The attacker is then given back the encryption of the value $\mathcal{E}_{sk_i}(x^{(t)}_i)$ encrypted under the secret key $sk_i$.
         \item \textit{Compromise queries:} The attacker chooses $i$ and receives the secret key $sk_i$. The aggregator's secret key may also be compromised (when choosing $i=0$).
-    \end{LaTeXenumerate} 
+    \end{enumerate} 
     \item[Challenge] Next, the attacker chooses an instance $t^*$, and a subset of users $S \subseteq U$ where $U$ is the complete set of users for which no combine queries, for the instance $t^*$, and no compromise queries, are made for the duration of the game. The attacker then chooses two series of tuples
     \begin{equation*}
         \langle(i,t^*,x^{(t^*)(0)}_i)\,|\,i \in S\rangle
@@ -2077,104 +1604,6 @@ The security game between attacker and challenger for AO security is given by
     \begin{equation*}
         \mathsf{Adv}^{AO}(\mathcal{A}) \coloneqq \left\lvert \Pr [b'=b] - \frac{1}{2}\right\rvert\,.
     \end{equation*} 
-\end{LaTeXdescription}
+\end{description}
 
-
-% use section* for acknowledgment
-\ifCLASSOPTIONcompsoc
-  % The Computer Society usually uses the plural form
-  \section*{Acknowledgments}
-\else
-  % regular IEEE prefers the singular form
-  \section*{Acknowledgment}
-\fi
-
-
-Partially supported by ZIM \dots
-
-
-% Can use something like this to put references on a page
-% by themselves when using endfloat and the captionsoff option.
-\ifCLASSOPTIONcaptionsoff
-  \newpage
-\fi
-
-
-
-% trigger a \newpage just before the given reference
-% number - used to balance the columns on the last page
-% adjust value as needed - may need to be readjusted if
-% the document is modified later
-%\IEEEtriggeratref{8}
-% The "triggered" command can be changed if desired:
-%\IEEEtriggercmd{\enlargethispage{-5in}}
-
-% references section
-
-% can use a bibliography generated by BibTeX as a .bbl file
-% BibTeX documentation can be easily obtained at:
-% http://mirror.ctan.org/biblio/bibtex/contrib/doc/
-% The IEEEtran BibTeX style support page is at:
-% http://www.michaelshell.org/tex/ieeetran/bibtex/
-%\bibliographystyle{IEEEtran}
-% argument is your BibTeX string definitions and bibliography database(s)
-%\bibliography{IEEEabrv,../bib/paper}
-%
-% <OR> manually copy in the resultant .bbl file
-% set second argument of \begin to the number of references
-% (used to reserve space for the reference number labels box)
-% \begin{thebibliography}{1}
-
-% \bibitem{IEEEhowto:kopka}
-% H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
-%   0.5em minus 0.4em\relax Harlow, England: Addison-Wesley, 1999.
-
-% \end{thebibliography}
-
-% biography section
-% 
-% If you have an EPS/PDF photo (graphicx package needed) extra braces are
-% needed around the contents of the optional argument to biography to prevent
-% the LaTeX parser from getting confused when it sees the complicated
-% \includegraphics command within an optional argument. (You could create
-% your own custom macro containing the \includegraphics command to make things
-% simpler here.)
-%\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{mshell}}]{Michael Shell}
-% or if you just want to reserve a space for a photo:
-
-% \begin{IEEEbiography}{Michael Shell}
-% Biography text here.
-% \end{IEEEbiography}
-
-% if you will not have a photo at all:
-% \begin{IEEEbiographynophoto}{John Doe}
-% Biography text here.
-% \end{IEEEbiographynophoto}
-
-% insert where needed to balance the two columns on the last page with
-% biographies
-%\newpage
-
-% \begin{IEEEbiographynophoto}{Jane Doe}
-% Biography text here.
-% \end{IEEEbiographynophoto}
-
-% You can push biographies down or up by placing
-% a \vfill before or after them. The appropriate
-% use of \vfill depends on what kind of text is
-% on the last page and whether or not the columns
-% are being equalized.
-
-%\vfill
-
-% Can be used to pull up biographies so that the bottom of the last one
-% is flush with the other column.
-%\enlargethispage{-5in}
-
-\bibliographystyle{IEEEtran}
-\bibliography{BibTeX/PrivateEIFLocalisation}
-
-% that's all folks
 \end{document}
-
-
