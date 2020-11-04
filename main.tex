@@ -1091,7 +1091,7 @@ To show how $\rvec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ can be formulated in a simila
 \begin{equation}
     \rv{z}'_{k,i} = h'_i(\rvec{x}_k)+\rv{v}'_{k,i}\,, \label{eqn:modified_measurement_model}
 \end{equation}
-where $\rv{z}'_{k,i}$ is the modified measurement, and noise $\rv{v}'_{k,i}$ is white and Gaussian. The approximation of $\rv{z}'_{k,i}$ and $\rv{r}_{k,i}$ from original measurements and variances $\rv{z}_{k,i}$ and $r_i$ will be shown in Section \ref{subsec:range_measurement_mod}. 
+where $\rv{z}'_{k,i}$ is the modified measurement, and noise $\rv{v}'_{k,i}$ is zero-mean with known variance. The approximation of $\rv{z}'_{k,i}$ and its noise variance $\rv{r}_{k,i}$ from original measurements and variances $\rv{z}_{k,i}$ and $r_i$ will be shown in Section \ref{subsec:range_measurement_mod}. 
 
 With the existence of \eqref{eqn:modified_measurement_model}, measurement vector and measurement matrix linear combinations can be given by
 \begin{equation}
@@ -1167,7 +1167,7 @@ for aggregation in row $i$ and column $j$, with $b=0$ for aggregations in $\rvec
 % 
 
 \subsection{Range Measurement Modification} \label{subsec:range_measurement_mod}
-In Section \ref{subsec:observation_model}, we assumed the existance of modified sensor measurements $\rv{z}'_{k,i}$ with white Gaussian noise and variances $\rv{r}_{k,i}$ in the modified measurement model \eqref{eqn:modified_measurement_model}. In practice, conversion of range measurements $\rv{z}_{k,i}$ to $\rv{z}'_{k,i}$ is complicated by the noise term $\rv{v}_{k,i} \sim \mathcal{N}(0, r_i)$ in \eqref{eqn:measurement_model}. Squaring the range measurement produces
+In Section \ref{subsec:observation_model}, we assumed the existance of a measurement model \eqref{eqn:modified_measurement_model} where modified sensor measurements $\rv{z}'_{k,i}$ had zero-mean noises with variances $\rv{r}_{k,i}$. In practice, conversion of range measurements $\rv{z}_{k,i}$ to $\rv{z}'_{k,i}$ is complicated by the noise term $\rv{v}_{k,i} \sim \mathcal{N}(0, r_i)$ in \eqref{eqn:measurement_model}. Squaring the range measurement produces
 \begin{equation}
     \begin{split}
         \rv{z}_{k,i}^2 &= (h_i(\rvec{x}_k) + \rv{v}_{k,i})^2 \\
@@ -1175,7 +1175,7 @@ In Section \ref{subsec:observation_model}, we assumed the existance of modified 
         &= h'_i(\rvec{x}_k) + 2h_i(\rvec{x}_k)\rv{v}_{k,i} + \rv{v}_{k,i}^2\,,
     \end{split}
 \end{equation}
-with new noise term, $2h_i(\rvec{x}_k)\rv{v}_{k,i} + \rv{v}_{k,i}^2$, now dependant on the measurement function $h_i$ and no longer white or Gaussian. We can compute the mean of the new noise term (a function of white Gaussian term $\rv{v}_{k,i}$) as
+with new noise term, $2h_i(\rvec{x}_k)\rv{v}_{k,i} + \rv{v}_{k,i}^2$, now dependant on the measurement function $h_i$ and no longer zero-mean or Gaussian. We can compute the mean of the new noise term (a function of the Gaussian term $\rv{v}_{k,i}$) as
 \begin{equation}
     \E{2h_i(\rvec{x}_k)\rv{v}_{k,i} + \rv{v}_{k,i}^2} = r_i\, \label{eqn:modified_noise_mean}
 \end{equation}
@@ -1191,7 +1191,7 @@ with now zero-mean noise $\rv{v}'_{k,i} = 2h_i(\rvec{x}_k)\rv{v}_{k,i} + \rv{v}_
 \begin{equation}
     \Var{\rv{v}'_{k,i}} = 4h_i(\rvec{x}_k)^2r_i + 2r_i^2
 \end{equation}
-and is dependant on $h_i(\rvec{x}_k)$. We also wish to approximate this noise using values available to the sensor, $\rv{z}_{k,i}$ and $r_i$, while providing a conservative estimate of the true variance so as not to affect the convergence of the EIF. While replacing $h_i(\rvec{x}_k)$ with $\rv{z}_{k,i}$ only provides a conservative estimate in the case
+and is dependant on $h_i(\rvec{x}_k)$. To use the modified measurement function \eqref{eqn:modified_measurement} with an EIF, we require an estimate of its noise variance using only the values available to the sensor, $\rv{z}_{k,i}$ and $r_i$. A conservative estimate of the variance (\textit{i.e.} a larger estimate resulting in less confidence in measurements) is desirable to avoid increasing the likeliness of filter divergence. While replacing $h_i(\rvec{x}_k)$ with $\rv{z}_{k,i}$ only provides a conservative estimate when
 \begin{equation}
     \begin{split}
         &\rv{z}_{k,i} > h_i(\rvec{x}_k) \\
@@ -1199,23 +1199,11 @@ and is dependant on $h_i(\rvec{x}_k)$. We also wish to approximate this noise us
         \implies &\rv{v}_{k,i} > 0\,,
     \end{split}
 \end{equation}
-which cannot be guaranteed, we can instead provide a conservative estimate with $95\%$ confidence, by shifting measurement $\rv{z}_{k,i}$ by two standard deviations $\sqrt{r_i}$. Thus, the modified measurement variance for sensor $i$ at time $k$ is conservatively approximated by
+and cannot be guaranteed, we can instead provide a conservative estimate with $95\%$ confidence, by shifting measurement $\rv{z}_{k,i}$ by two standard deviations $\sqrt{r_i}$. Thus, the modified measurement variance for sensor $i$ at time $k$ is conservatively approximated by
 \begin{equation}
-    \rv{r}_{k, i} = 4(\rv{z}_{k,i} + 2\sqrt{r_i})^2r_i + 2r_i^2\,. \label{eqn:modified_meaasurement_variance_estimate}
+    \rv{r}_{k, i} = 4(\rv{z}_{k,i} + 2\sqrt{r_i})^2r_i + 2r_i^2\,. \label{eqn:modified_measurement_variance_estimate}
 \end{equation}
-
-In addition, we note that the distribution of noise in \eqref{eqn:modified_measurement} approaches a Gaussian when true ranges are sufficiently larger than measurement variances, as shown by
-\begin{equation}
-    \begin{split}
-        &r_i << h_i(\rvec{x}_k) \\
-        \implies &2h_i(\rvec{x}_k)\rv{v}_{k,i} + \rv{v}_{k,i}^2 - r_i \approx 2h_i(\rvec{x}_k)\rv{v}_{k,i} \\
-        \implies &\rv{v}'_{k,i} \approx 2h_i(\rvec{x}_k)\rv{v}_{k,i}\,,
-    \end{split} \label{eqn:modified_noise_approaches_gaussian}
-\end{equation}
-and conclude with the following assumption.
-\begin{assum} \label{assum:measurement_size}
-    Given property \eqref{eqn:modified_noise_approaches_gaussian}, and our $95\%$ confindence in the conservativness of variance estimates \eqref{eqn:modified_meaasurement_variance_estimate}, we assume that range measurements $\rv{z}_i$ are in general large enough to produce sufficiently Gaussian modified measurement noise $\rv{v}'_{k,i}$ and its variance estimated sufficiently conservative to be used in the EIF and measurement model \eqref{eqn:modified_measurement_model}.
-\end{assum}
+Together, the model and variance, \eqref{eqn:modified_measurement} and \eqref{eqn:modified_measurement_variance_estimate}, provide a suitable substitute for the required measurement model \eqref{eqn:modified_measurement_model} and can be used to achieve the desired linear properties using only the available range sensors.
 
 % 
 %    ###    ##        ######    #######  ########  #### ######## ##     ## ##     ## 
@@ -1268,7 +1256,7 @@ The privacy-preserving localisation filter can be described by the following ste
 
     \State Measure $\rv{z}_{k,i}$
     \State Compute $\rv{z}_{k,i}'$ by \eqref{eqn:modified_measurement}
-    \State Compute $\rv{r}_{k, i}$ by \eqref{eqn:modified_meaasurement_variance_estimate}
+    \State Compute $\rv{r}_{k, i}$ by \eqref{eqn:modified_measurement_variance_estimate}
 
     \While{Navigator broadcasting}
     \State Recieve $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}^3_{k|k-1}))$
@@ -1447,7 +1435,7 @@ From the leaked coefficient sums, we see that all information private to the sen
 \begin{equation}
     \sum_{i=1}^n\rv{z}'_{k,i}\,,\ \sum_{i=1}^n\rv{r}_{k,i}\,,\ \sum_{i=1}^ns_{x,i}\ \textrm{and}\ \sum_{i=1}^ns_{y,i}\,.\label{eqn:localisation_leakage}
 \end{equation}
-From these sums and the definitions \eqref{eqn:modified_measurement} and \eqref{eqn:modified_meaasurement_variance_estimate}, we conclude that the navigator can \textit{at most} learn the sums of sensor private data, which in practice corresponds to the average sensor modified measurements, estimated variances and locations.
+From these sums and the definitions \eqref{eqn:modified_measurement} and \eqref{eqn:modified_measurement_variance_estimate}, we conclude that the navigator can \textit{at most} learn the sums of sensor private data, which in practice corresponds to the average sensor modified measurements, estimated variances and locations.
 \begin{thm}
     In the context of our localisation scheme, leakage of the incorporated LCAO secure encryption scheme corresponds to the leakage of average sensor private information, given by the sums in \eqref{eqn:localisation_leakage}.
 \end{thm}
@@ -1471,7 +1459,7 @@ To demonstrate our proposed approach, we have implemented the algorithm in Secti
 
 Code was written in the C programming language, using the MPI library \cite{OpenMPI2020} to support simultaneous computations by sensors and navigator as different processes. The OpenSSL library's \cite{OpenSSL2020} mask generation function MGF1 and hash function SHA256 were used to implement the required hash function $H$, while the Libpaillier library \cite{Libpaillier2010} was used for the implementation of the Paillier encryption scheme. Additionally, GNU libraries GSL \cite{GSLGNUScientific2019} and GMP \cite{GMPGNUMultiple2020} were used for algebraic operations and the handling of multiple-precision integers, respectively. Simulation execution was performed on a 3.00GHz Intel i7-9700 CPU, and run on the Windows Subsystem for Linux (WSL), where no real-time kernel was ensured but sufficiently consistent runtimes were observed for the purposes of our simulation.
 
-Recalling Assumption \ref{assum:measurement_size}, modified measurement noise resembles a Gaussian distribution when measurements are sufficiently large. We considered $4$ layouts with varying sensor distances when running our simulations to observe differences in estimation error when measurements are of different sizes. The considered layouts have been plotted and named in Figure \ref{fig:sim_layouts}.
+Recalling the dependence of the modified measurement noise on the true measurement in \eqref{eqn:modified_measurement}, the noise distribution of the model changes with varying sizes of measurements. We considered four layouts with varying sensor distances when running our simulations to observe differences in estimation error when measurements are of different sizes. The considered layouts have been plotted and named in Figure \ref{fig:sim_layouts}.
 \begin{figure}[htbp]
 \begin{center}
     \includegraphics{images/layouts.pdf}
@@ -1487,7 +1475,7 @@ To evaluate the accuracy of our method, we have run $100$ simulations, all with 
 \caption{Filter error for different layouts.}
 \label{fig:sim_layout_errors}
 \end{figure}
-From the results, it can be seen that sensor distance has little effect on the performance of the filter and that the measurement modification in Section \ref{subsec:range_measurement_mod} has almost no effect on the performance when compared to a normal EIF filter. The robustness of the privacy-preserving method is likely due to the rationality of Assumption \ref{assum:measurement_size}, the relative size of measurements to the sensor variances in our simulations, and the sufficiently large fractional precision.
+From the results, it can be seen that sensor distance has little effect on the performance of the filter and that the measurement modification from Section \ref{subsec:range_measurement_mod} has a negligible effect when compared to a normal EIF filter. The robustness of the privacy-preserving method can be attributed to the conservativeness of variance estimates in \eqref{eqn:modified_measurement_variance_estimate} and the sufficiently large fractional precision parameter.
 
 In addition to accuracy, computational requirements are an important factor in the adoption of novel cryptographic methods. Figure \ref{fig:sim_timing} shows the average simulation runtimes when encryption key bit lengths (\textit{i.e.} bit lengths of $N$) and the number of sensors are varied. Every plotted time is again the average of $100$ simulations, each running for $50$ filter iterations. 
 \begin{figure}[htbp]
@@ -1514,7 +1502,7 @@ As sensor and navigator computations run in parallel, increases in runtime from 
 % 
 
 \section{Conclusion} \label{sec:conclusion}
-To develop a model-based localisation algorithm which preserves navigator and sensor privacy, we first defined the novel notion of an LCAO secure encryption scheme and gave a provably secure implementation based on the Joye-Libert aggregation scheme. This scheme was then used in our proposed privacy-preserving EIF, where sensors compute measurement information homomorphically such that it can be privately used by a navigator. Our privacy-preserving estimation method may find uses in a variety of untrusted distributed localisation environments including airspaces and autonomous vehicle networks as well as those where alternative measurement models satisfying our defined linearity requirements can be applied. Possible future work in this topic includes the expanding of the LCAO security notion to \textit{ensure} that the same weights are broadcast to all sensors, the relaxing of the Gaussian modified noise assumption and the exploring of implications behind an active sensor attacker model.
+To develop a model-based localisation algorithm which preserves navigator and sensor privacy, we first defined the novel notion of an LCAO secure encryption scheme and gave a provably secure implementation based on the Joye-Libert aggregation scheme. This scheme was then used in our proposed privacy-preserving EIF, where sensors compute measurement information homomorphically such that it can be privately used by a navigator. Our privacy-preserving estimation method may find uses in a variety of untrusted distributed localisation environments including airspaces and autonomous vehicle networks as well as those where alternative measurement models satisfying our defined linearity requirements can be applied. Possible future work in this topic includes the expanding of the LCAO security notion to \textit{ensure} that the same weights are broadcast to all sensors, the application of LCAO secure schemes to alternative measurement models and the exploring of implications behind an active sensor attacker model.
 
 % Place acknowledgements
 % here.
