@@ -151,8 +151,7 @@
 % \markboth{Journal of \LaTeX\ Class Files,~Vol.~14, No.~8, August~2015}%
 % {Shell \MakeLowercase{\textit{et al.}}: Bare Demo of IEEEtran.cls for IEEE Journals}
 
-% If you want to put a publisher's ID mark on the page you can do it like
-% this:
+% If you want to put a publisher's ID mark on the page you can do it like this:
 %\IEEEpubid{0000--0000/00\$00.00~\copyright~2015 IEEE}
 % Remember, if you use this you must call \IEEEpubidadjcol in the second
 % column for its text to clear the IEEEpubid mark.
@@ -702,7 +701,7 @@ We formalise the security notion of Linear-Combination Aggregator Obliviousness 
         \item \textit{Weight Queries:} The attacker chooses an instance $t$ and receives the weights for that instance encrypted with the aggregator's public key, $\mathcal{E}_{pk_0}(\omega^{(t)}_{j}),\,1\leq j\leq m$.
         \item \textit{Combine Queries:} The attacker chooses a tuple $(i,t,x^{(t)}_{i,1},\dots,x^{(t)}_{i,m})$ such that for any two chosen combine query tuples $(i,t,x^{(t)}_{i,1},\dots,x^{(t)}_{i,m})$ and $(i',t',x^{\prime(t')}_{i',1},\dots,x^{\prime(t')}_{i',m})$, the following condition holds:
         \begin{equation*}
-            i = i' \wedge t = t' \implies x^{(t)}_{i,m} = x^{\prime(t')}_{i',m},\,1\leq j\leq m\,.
+            i = i' \wedge t = t' \implies x^{(t)}_{i,j} = x^{\prime(t')}_{i',j},\,1\leq j\leq m\,.
         \end{equation*}
         The attacker is then given back the encryption of the linear combination $\mathcal{E}_{pk_0,sk_i}(\sum^m_{j=1}x^{(t)}_{i,j}\omega^{(t)}_j)$ encrypted under both the aggregator public key $pk_0$ and the secret key $sk_i$.
         \item \textit{Compromise queries:} The attacker chooses $i$ and receives the secret key $sk_i$. The aggregator's secret key may also be compromised (when choosing $i=0$).
