@@ -1,15 +1,14 @@
 
-%% bare_jrnl_compsoc.tex
+%% bare_jrnl.tex
 %% V1.4b
 %% 2015/08/26
 %% by Michael Shell
-%% See:
-%% http://www.michaelshell.org/
+%% see http://www.michaelshell.org/
 %% for current contact information.
 %%
 %% This is a skeleton file demonstrating the use of IEEEtran.cls
 %% (requires IEEEtran.cls version 1.8b or later) with an IEEE
-%% Computer Society journal paper.
+%% journal paper.
 %%
 %% Support sites:
 %% http://www.michaelshell.org/tex/ieeetran/
@@ -17,39 +16,34 @@
 %% and
 %% http://www.ieee.org/
 
-\documentclass[10pt,journal,compsoc]{IEEEtran}
+%%*************************************************************************
+%% Legal Notice:
+%% This code is offered as-is without any warranty either expressed or
+%% implied; without even the implied warranty of MERCHANTABILITY or
+%% FITNESS FOR A PARTICULAR PURPOSE! 
+%% User assumes all risk.
+%% In no event shall the IEEE or any contributor to this code be liable for
+%% any damages or losses, including, but not limited to, incidental,
+%% consequential, or any other damages, resulting from the use or misuse
+%% of any information contained here.
+%%
+%% All comments are the opinions of their respective authors and are not
+%% necessarily endorsed by the IEEE.
+%%
+%% This work is distributed under the LaTeX Project Public License (LPPL)
+%% ( http://www.latex-project.org/ ) version 1.3, and may be freely used,
+%% distributed and modified. A copy of the LPPL, version 1.3, is included
+%% in the base LaTeX documentation of all distributions of LaTeX released
+%% 2003/12/01 or later.
+%% Retain all contribution notices and credits.
+%% ** Modified files should be clearly indicated as such, including  **
+%% ** renaming them and changing author support contact information. **
+%%*************************************************************************
 
 
-% *** CITATION PACKAGES ***
-%
-\ifCLASSOPTIONcompsoc
-  % IEEE Computer Society needs nocompress option
-  % requires cite.sty v4.0 or later (November 2003)
-  \usepackage[nocompress]{cite}
-\else
-  % normal IEEE
-  \usepackage{cite}
-\fi
 
+\documentclass[10pt,letterpaper,oneside,twocolumn,journal]{IEEEtran}
 
-
-
-
-
-% *** GRAPHICS RELATED PACKAGES ***
-%
-\ifCLASSINFOpdf
-  \usepackage[pdftex]{graphicx}
-\else
-  \usepackage[dvips]{graphicx}
-\fi
-
-
-% *** Do not adjust lengths that control margins, column widths, etc. ***
-% *** Do not use packages that alter fonts (such as pslatex).         ***
-% There should be no need to do such things with IEEEtran.cls V1.6 and later.
-% (Unless specifically asked to do so by the journal or conference you plan
-% to submit to, of course. )
 
 
 % 
@@ -135,6 +129,7 @@
    }
 }
 
+
 % correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
 
@@ -142,30 +137,31 @@
 \begin{document}
 %
 % paper title
-% Titles are generally capitalized except for words such as a, an, and, as,
-% at, but, by, for, in, nor, of, on, or, the, to and up, which are usually
-% not capitalized unless they are the first or last word of the title.
-% Linebreaks \\ can be used within to get better formatting as desired.
-% Do not put math or special symbols in the title.
 \title{Privacy-Preserving Localisation Using Private Linear-Combination Aggregation}
 %
 %
 % author names and IEEE memberships
-% note positions of commas and nonbreaking spaces ( ~ ) LaTeX will not break
-% a structure at a ~ so this keeps an author's name from being broken across
-% two lines.
-% use \thanks{} to gain access to the first footnote area
-% a separate \thanks must be used for each paragraph as LaTeX2e's \thanks
-% was not built to handle multiple paragraphs
-
 \author{Marko~Ristic,
         Benjamin~Noack,~\IEEEmembership{Member,~IEEE,}
         and~Uwe~D.~Hanebeck,~\IEEEmembership{Fellow,~IEEE}% <-this % stops a space
-\IEEEcompsocitemizethanks{\IEEEcompsocthanksitem M. Ristic, B. Noack and U. D. Hanebeck are with the Intelligent Sensor-Actuator-Systems Laboratory, Institute for Anthropomatics, Karlsruhe Institute of Technology, 76131 Karlsruhe, Germany.\protect\\
-% note need leading \protect in front of \\ to get a newline within \thanks as
-% \\ is fragile and will error, could use \hfil\break instead.
-E-mail: marko.ristic@kit.edu}% <-this % stops an unwanted space
-}
+\thanks{M. Ristic, B. Noack and U. D. Hanebeck are with the Intelligent Sensor-Actuator-Systems Laboratory, Institute for Anthropomatics, Karlsruhe Institute of Technology, 76131 Karlsruhe, Germany. e-mail: marko.ristic@kit.edu}}% <-this % stops a space
+% \thanks{Manuscript received April 19, 2005; revised August 26, 2015.}}
+
+% The paper headers
+% \markboth{Journal of \LaTeX\ Class Files,~Vol.~14, No.~8, August~2015}%
+% {Shell \MakeLowercase{\textit{et al.}}: Bare Demo of IEEEtran.cls for IEEE Journals}
+
+% If you want to put a publisher's ID mark on the page you can do it like
+% this:
+%\IEEEpubid{0000--0000/00\$00.00~\copyright~2015 IEEE}
+% Remember, if you use this you must call \IEEEpubidadjcol in the second
+% column for its text to clear the IEEEpubid mark.
+
+% use for special paper notices
+%\IEEEspecialpapernotice{(Invited Paper)}
+
+% make the title area
+\maketitle
 
 % 
 %        d8888 888888b.    .d8888b. 88888888888 8888888b.         d8888  .d8888b. 88888888888 
@@ -181,12 +177,8 @@ E-mail: marko.ristic@kit.edu}% <-this % stops an unwanted space
 %                                                                                             
 % 
 
-% for Computer Society papers, we must declare the abstract and index terms
-% PRIOR to the title within the \IEEEtitleabstractindextext IEEEtran
-% command as these need to go into the title area created by \maketitle.
 % As a general rule, do not put math, special symbols or citations
 % in the abstract or keywords.
-\IEEEtitleabstractindextext{%
 \begin{abstract}
 Distributed state estimation and localisation methods have become increasingly popular with the rise of ubiquitous computing, and have led naturally to an increased concern regarding data and estimation privacy. Traditional distributed sensor navigation methods involve the leakage of sensor or navigator information during localisation protocols, thus not preserving participants’ data privacy. Existing approaches which provide such guarantees fail to address sensor and navigator privacy in some common non-linear measurement model applications and forfeit broad applicability. We define the novel notion of linear-combination aggregation encryption and provide a cryptographically secure instance that is applied to the Extended Information Filter with range-sensor measurements. Our method keeps navigator location, sensor locations and sensor measurements private during navigation, and is implemented and run on simulations to evaluate its accuracy and performance. The novel computationally plausible and provably secure range-based localisation filter has direct applications to environments where nodes are not trusted or data is considered sensitive.
 \end{abstract}
@@ -194,36 +186,11 @@ Distributed state estimation and localisation methods have become increasingly p
 % Note that keywords are not normally used for peerreview papers.
 \begin{IEEEkeywords}
 State Estimation, Data Privacy, Sensor Fusion, Kalman Filters.
-\end{IEEEkeywords}}
+\end{IEEEkeywords}
 
-
-% make the title area
-\maketitle
-
-
-% To allow for easy dual compilation without having to reenter the
-% abstract/keywords data, the \IEEEtitleabstractindextext text will
-% not be used in maketitle, but will appear (i.e., to be "transported")
-% here as \IEEEdisplaynontitleabstractindextext when the compsoc 
-% or transmag modes are not selected <OR> if conference mode is selected 
-% - because all conference papers position the abstract like regular
-% papers do.
-\IEEEdisplaynontitleabstractindextext
-% \IEEEdisplaynontitleabstractindextext has no effect when using
-% compsoc or transmag under a non-conference mode.
-
-
-
-% For peer review papers, you can put extra information on the cover
-% page as needed:
-% \ifCLASSOPTIONpeerreview
-% \begin{center} \bfseries EDICS Category: 3-BBND \end{center}
-% \fi
-%
 % For peerreview papers, this IEEEtran command inserts a page break and
 % creates the second title. It will be ignored for other modes.
 \IEEEpeerreviewmaketitle
-
 
 % 
 % 8888888 888b    888 88888888888 8888888b.   .d88888b.  
@@ -239,15 +206,7 @@ State Estimation, Data Privacy, Sensor Fusion, Kalman Filters.
 %                                                        
 % 
 
-\IEEEraisesectionheading{\section{Introduction}\label{sec:introduction}}
-% Computer Society journal (but not conference!) papers do something unusual
-% with the very first section heading (almost always called "Introduction").
-% They place it ABOVE the main text! IEEEtran.cls does not automatically do
-% this for you, but you can achieve this effect with the provided
-% \IEEEraisesectionheading{} command. Note the need to keep any \label that
-% is to refer to the section immediately after \section in the above as
-% \IEEEraisesectionheading puts \section within a raised box.
-
+\section{Introduction}
 \IEEEPARstart{L}{ocalisation} methods in distributed sensor environments have long been an active topic of research \cite{pierceIntroductionLoran1946,liContributedReviewSourcelocalization2016}. Ongoing advancements in portable computing power and sensor capabilities have led to the development of various forms of localisation methods, from range-free and range-based signal strength measurements \cite{wangConvexCombinationSource2018,heRangeFreeLocalizationSchemes}, acoustic range estimates \cite{beutlerNewNonlinearFiltering2004} and magnetic field measurements \cite{sieblerLocalizationMagneticField2020} to the TDOA and TOA pseudo-range multilateration methods for aircraft \cite{liContributedReviewSourcelocalization2016}. Range-based localisation methods, including the use of radar measurements, GPS clocks and signal strength measurements, have found particularly large application due to their robustness and accuracy. These methods use distance measurements, or computed estimates, to produce location estimates and typically involve gathering sensor details such as measurement noise, geographical location and observations centrally. Broadcasting or gathering information in this way, however, implies a trust between participants within a trusted communication network to ensure shared data may not be used for individual malicious gain. With the advancements in cloud and ubiquitous computing, changes in possible use-cases involving distributed sensors have made the requirements of information security and user privacy more apparent than before \cite{brennerSecretProgramExecution2011,renSecurityChallengesPublic2012}. For example, an aircraft localisation scenario in the presence of privately operated measurement stations may imply measurements and locations of stations should be kept private from navigating vehicles. Or in autonomous vehicle state estimation, benefit from neighbouring vehicles' information may be desired while no participant wishes to share information about their hardware. Additionally, the dispatching of any expensive intermediate computations to service-providing cloud operators may require ensuring the privacy of information involved in the computations. All of these scenarios, and the one we will consider, require methods for computing specific operations while ensuring the privacy of some or all of the input data. Our contributions in this work will be presented in two parts. We first propose a novel aggregation-based encryption scheme which allows private aggregation of weighted sums, before we develop a localisation filter using this scheme such that sensor and navigator privacy is preserved.
 
 The remainder of the paper is structured as follows. In Section \ref{sec:problem_statement} we introduce the localisation problem, the relevant aggregation opertation for its solution and the restrictions on involved parties. Sections \ref{sec:crypto_prelim} and \ref{sec:lcao_definition} will summarise cryptographic preliminaries and introduce a novel security notion for our required aggregation before defining and proving an encryption scheme which satisfies it. Sections \ref{sec:loc_prelim} and \ref{sec:priv_localisation} introduce localisation preliminaries and our privacy-preserving localisation method using the private aggregation scheme. We show and discuss simulation results in Section \ref{sec:sim_and_results} and conclude our work in Section \ref{sec:conclusion}.
@@ -1578,26 +1537,6 @@ As sensor and navigator computations run in parallel, increases in runtime from 
 \section{Conclusion} \label{sec:conclusion}
 To develop a model-based localisation algorithm which preserves navigator and sensor privacy, we first defined the novel notion of an LCAO secure encryption scheme and gave a provably secure implementation based on the Joye-Libert aggregation scheme. This scheme was then used in our proposed privacy-preserving EIF, where sensors compute measurement information homomorphically such that it can be privately used by a navigator. Our privacy-preserving estimation method may find uses in a variety of untrusted distributed localisation environments including airspaces and autonomous vehicle networks as well as those where alternative measurement models satisfying our defined linearity requirements can be applied. Possible future work in this topic includes the expanding of the LCAO security notion to \textit{ensure} that the same weights are broadcast to all sensors, the application of LCAO secure schemes to alternative measurement models and the exploring of implications behind an active sensor attacker model.
 
-
-
-
-
-% if have a single appendix:
-%\appendix[Proof of the Zonklar Equations]
-% or
-%\appendix  % for no appendix heading
-% do not use \section anymore after \appendix, only \section*
-% is possibly needed
-
-% use appendices with more than one appendix
-% then use \section to start each appendix
-% you must declare a \section before using any
-% \subsection or using \label (\appendices by itself
-% starts a section numbered zero.)
-%
-
-
-\appendices
 % 
 %        d8888 8888888b.  8888888b.  8888888888 888b    888 8888888b. 8888888 Y88b   d88P 
 %       d88888 888   Y88b 888   Y88b 888        8888b   888 888  "Y88b  888    Y88b d88P  
@@ -1612,6 +1551,7 @@ To develop a model-based localisation algorithm which preserves navigator and se
 %                                                                                         
 % 
 
+\appendices
 \section{Indistinguishability under Chosen Plaintext Attack (IND-CPA)} \label{app:ind_cpa}
 A public-key encryption scheme is defined by the tuple of algorithms $(\mathsf{Setup}, \mathsf{Enc}, \mathsf{Dec})$, defined as
 \begin{LaTeXdescription}
@@ -1683,14 +1623,8 @@ The security game between attacker and challenger for AO security is given by
 \end{LaTeXdescription}
 
 
-% use section* for acknowledgement
-\ifCLASSOPTIONcompsoc
-  % The Computer Society usually uses the plural form
-  \section*{Acknowledgments}
-\else
-  % regular IEEE prefers the singular form
-  \section*{Acknowledgment}
-\fi
+% use section* for acknowledgment
+\section*{Acknowledgment}
 
 
 Partially supported by ZIM \dots
@@ -1701,6 +1635,7 @@ Partially supported by ZIM \dots
 \ifCLASSOPTIONcaptionsoff
   \newpage
 \fi
+
 
 \bibliographystyle{IEEEtran}
 \bibliography{BibTeX/PrivateEIFLocalisation}
