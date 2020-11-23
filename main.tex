@@ -139,7 +139,7 @@
 \begin{document}
 %
 % paper title
-\title{Privacy-Preserving Localisation Using Private Linear-Combination Aggregation}
+\title{Privacy-Preserving Localization Using Private Linear-Combination Aggregation}
 %
 %
 % author names and IEEE memberships
@@ -181,7 +181,7 @@
 % As a general rule, do not put math, special symbols or citations
 % in the abstract or keywords.
 \begin{abstract}
-Distributed state estimation and localisation methods have become increasingly popular with the rise of ubiquitous computing, and have led naturally to an increased concern regarding data and estimation privacy. Traditional distributed sensor navigation methods involve the leakage of sensor or navigator information during localisation protocols, thus not preserving participants’ data privacy. Existing approaches which provide such guarantees fail to address sensor and navigator privacy in some common non-linear measurement model applications and forfeit broad applicability. We define the novel notion of linear-combination aggregation encryption and provide a cryptographically secure instance that is applied to the Extended Information Filter with range-sensor measurements. Our method keeps navigator location, sensor locations and sensor measurements private during navigation, and has been implemented to evaluate its accuracy and performance. The novel computationally plausible and provably secure range-based localisation filter has direct applications to environments where participants are not trusted or data is considered sensitive.
+Distributed state estimation and localization methods have become increasingly popular with the rise of ubiquitous computing, and have led naturally to an increased concern regarding data and estimation privacy. Traditional distributed sensor navigation methods involve the leakage of sensor or navigator information during localization protocols, thus not preserving participants’ data privacy. Existing approaches which provide such guarantees fail to address sensor and navigator privacy in some common non-linear measurement model applications and forfeit broad applicability. We define the novel notion of linear-combination aggregation encryption and provide a cryptographically secure instance that is applied to the Extended Information Filter with range-sensor measurements. Our method keeps navigator location, sensor locations and sensor measurements private during navigation, and has been implemented to evaluate its accuracy and performance. The novel computationally plausible and provably secure range-based localization filter has direct applications to environments where participants are not trusted or data is considered sensitive.
 \end{abstract}
 
 % Note that keywords are not normally used for peerreview papers.
@@ -208,9 +208,9 @@ State Estimation, Data Privacy, Sensor Fusion, Kalman Filters.
 % 
 
 \section{Introduction}
-\IEEEPARstart{L}{ocalisation} methods in distributed sensor environments have long been an active topic of research \cite{pierceIntroductionLoran1946,liContributedReviewSourcelocalization2016}. Ongoing advancements in portable computing power and sensor capabilities have led to the development of various forms of localisation methods, from range-free and range-based signal strength measurements \cite{wangConvexCombinationSource2018,heRangeFreeLocalizationSchemes2003}, acoustic range estimates \cite{beutlerNewNonlinearFiltering2004} and magnetic field measurements \cite{sieblerLocalizationMagneticField2020} to the TDOA and TOA pseudo-range multilateration methods for aircraft \cite{liContributedReviewSourcelocalization2016}. Range-based localisation methods, including the use of radar measurements, GPS clocks and signal strength measurements, have found particularly large application due to their robustness and accuracy. These methods use distance measurements, or computed estimates, to produce location estimates and typically involve gathering sensor details such as measurement noise, geographical location and observations centrally. Broadcasting or gathering information in this way, however, implies a trust between participants within a trusted communication network to ensure shared data may not be used for individual malicious gain. With the advancements in cloud and ubiquitous computing, changes in possible use-cases involving distributed sensors have made the requirements of information security and user privacy more apparent than before \cite{brennerSecretProgramExecution2011,renSecurityChallengesPublic2012}. For example, an aircraft localisation scenario in the presence of privately operated measurement stations may imply measurements and locations of stations should be kept private from navigating vehicles. Or in autonomous vehicle state estimation, benefit from neighbouring vehicles' information may be desired while no participant wishes to share information about their hardware. Additionally, the dispatching of any expensive intermediate computations to service-providing cloud operators may require ensuring the privacy of information involved in the computations. All of these scenarios, and the one we will consider, require methods for computing specific operations while ensuring the privacy of some or all of the input data. Our contributions in this work will be presented in two parts. We first propose a novel aggregation-based encryption scheme which allows private aggregation of weighted sums, before we develop a localisation filter using this scheme such that sensor and navigator privacy is preserved.
+\IEEEPARstart{L}{ocalisation} methods in distributed sensor environments have long been an active topic of research \cite{pierceIntroductionLoran1946,liContributedReviewSourcelocalization2016}. Ongoing advancements in portable computing power and sensor capabilities have led to the development of various forms of localization methods, from range-free and range-based signal strength measurements \cite{wangConvexCombinationSource2018,heRangeFreeLocalizationSchemes2003}, acoustic range estimates \cite{beutlerNewNonlinearFiltering2004} and magnetic field measurements \cite{sieblerLocalizationMagneticField2020} to the TDOA and TOA pseudo-range multilateration methods for aircraft \cite{liContributedReviewSourcelocalization2016}. Range-based localization methods, including the use of radar measurements, GPS clocks and signal strength measurements, have found particularly large applications due to their robustness and accuracy. These methods use distance measurements, or computed estimates, to produce location estimates and typically involve gathering sensor details such as measurement noise, geographical location and observations centrally. Broadcasting or gathering information in this way, however, implies a trust between participants within a trusted communication network to ensure shared data may not be used for individual malicious gain. With the advancements in cloud and ubiquitous computing, changes in possible use-cases involving distributed sensors have made the requirements of information security and user privacy more apparent than before \cite{brennerSecretProgramExecution2011,renSecurityChallengesPublic2012}. For example, an aircraft localization scenario in the presence of privately operated measurement stations may imply measurements and locations of stations should be kept private from navigating vehicles. Or in autonomous vehicle state estimation, benefit from neighboring vehicles' information may be desired while no participant wishes to share information about their hardware. Additionally, the dispatching of any expensive intermediate computations to service-providing cloud operators may require ensuring the privacy of information involved in the computations. All of these scenarios, and the one we will consider, require methods for computing specific operations while ensuring the privacy of some or all of the input data. Our contributions in this work will be presented in two parts. We first propose a novel aggregation-based encryption scheme which allows private aggregation of weighted sums, before we develop a localization filter using this scheme such that sensor and navigator privacy is preserved.
 
-The remainder of the paper is structured as follows. In Section \ref{sec:lit_overview} we give an overview of the relevant literature to the topic and in Section \ref{sec:problem_statement} we introduce the localisation problem, the relevant aggregation opertation for its solution and the restrictions on involved parties. Sections \ref{sec:crypto_prelim} and \ref{sec:lcao_definition} will summarise cryptographic preliminaries and introduce a novel security notion for our required aggregation before defining and proving an encryption scheme which satisfies it. Sections \ref{sec:loc_prelim} and \ref{sec:priv_localisation} introduce localisation preliminaries and our privacy-preserving localisation method using the private aggregation scheme. We show and discuss simulation results in Section \ref{sec:sim_and_results} and conclude our work in Section \ref{sec:conclusion}.
+The remainder of the paper is structured as follows. In Section \ref{sec:lit_overview} we give an overview of the relevant literature to the topic and in Section \ref{sec:problem_statement} we introduce the localization problem, the relevant aggregation operation for its solution and the restrictions on involved parties. Sections \ref{sec:crypto_prelim} and \ref{sec:lcao_definition} will summarize cryptographic preliminaries and introduce a novel security notion for our required aggregation before defining and proving an encryption scheme which satisfies it. Sections \ref{sec:loc_prelim} and \ref{sec:priv_localization} introduce localization preliminaries and our privacy-preserving localization method using the private aggregation scheme. We show and discuss simulation results in Section \ref{sec:sim_and_results} and conclude our work in Section \ref{sec:conclusion}.
 
 % 
 % ##    ##  #######  ########    ###    ######## ####  #######  ##    ## 
@@ -240,7 +240,7 @@ Throughout this work, we will use the following notation. Lowercase underlined c
 % 
 
 \section{Literature Overview} \label{sec:lit_overview}
-In this section, we will discuss methods for providing security guarantees in signal processing tasks, and their applications to localisation and estimation problems.
+In this section, we will discuss methods for providing security guarantees in signal processing tasks, and their applications to localization and estimation problems.
 
 % 
 % ######## ##    ##  ######      ######   ######  ##     ## ######## ##     ## ########  ######  
@@ -255,8 +255,8 @@ In this section, we will discuss methods for providing security guarantees in si
 \subsection{Encryption Schemes in Signal Processing}
 Of the methods used to preserve privacy during distributed signal processing, it is common for the information exchanging portion of the algorithm to be reduced to a form of aggregation of involved parties' data. The most common methods for ensuring privacy during aggregation required for signal processing tasks have been described below.
 \begin{LaTeXdescription}
-    \item[Differential Privacy] These techniques formalise preserving the privacy of individual datum within an aggregation operation by introducing known distributions of noise to the resulting aggregation. To handle the cases with no trusted aggregator, local differential privacy is achieved by introducing noise to individual inputs \cite{hanPrivacyControlDynamical2018,dworkDifferentialPrivacySurvey2008,andresGeoindistinguishabilityDifferentialPrivacy2013}. Although differential privacy has strong computational benefits due to its implementational simplicity, it provides relatively weak security guarantees for multi-party networks, with no guarantees in the presence of multiple colluding corrupted parties. Additionally, noisy aggregation results hinder its use in scenarios where high precision is a desired property such as aircraft localisation.
-    \item[Aggregator Oblivious Encryption] This method of encryption formalises the privacy of \textit{all} aggregation data from honest parties \cite{shiPrivacyPreservingAggregationTimeSeries2011,chanPrivacyPreservingStreamAggregation2012,joyeScalableSchemePrivacyPreserving2013}. Encryptions of aggregation data are proven to be computationally indistinguishable and guarantee that only their sum can be learned by an aggregator, whether or not they are trusted. The originally proposed method \cite{shiPrivacyPreservingAggregationTimeSeries2011} is restricted to a small input domain which has been expanded and computationally simplified in later works \cite{joyeScalableSchemePrivacyPreserving2013,benhamoudaNewFrameworkPrivacyPreserving2016}. The aggregation operation in these schemes is, however, strictly limited to the sum operation and restricts its applicability to simple processing tasks such as smart-meter sums or mean calculations \cite{chanPrivacyPreservingStreamAggregation2012,benhamoudaNewFrameworkPrivacyPreserving2016}.
+    \item[Differential Privacy] These techniques formalize preserving the privacy of individual datum within an aggregation operation by introducing known distributions of noise to the resulting aggregation. To handle the cases with no trusted aggregator, local differential privacy is achieved by introducing noise to individual inputs \cite{hanPrivacyControlDynamical2018,dworkDifferentialPrivacySurvey2008,andresGeoindistinguishabilityDifferentialPrivacy2013}. Although differential privacy has strong computational benefits due to its implementational simplicity, it provides relatively weak security guarantees for multi-party networks, with no guarantees in the presence of multiple colluding corrupted parties. Additionally, noisy aggregation results hinder its use in scenarios where high precision is a desired property such as aircraft localization.
+    \item[Aggregator Oblivious Encryption] This method of encryption formalizes the privacy of \textit{all} aggregation data from honest parties \cite{shiPrivacyPreservingAggregationTimeSeries2011,chanPrivacyPreservingStreamAggregation2012,joyeScalableSchemePrivacyPreserving2013}. Encryptions of aggregation data are proven to be computationally indistinguishable and guarantee that only their sum can be learned by an aggregator, whether or not they are trusted. The originally proposed method \cite{shiPrivacyPreservingAggregationTimeSeries2011} is restricted to a small input domain which has been expanded and computationally simplified in later works \cite{joyeScalableSchemePrivacyPreserving2013,benhamoudaNewFrameworkPrivacyPreserving2016}. The aggregation operation in these schemes is, however, strictly limited to the sum operation and restricts its applicability to simple processing tasks such as smart-meter sums or mean calculations \cite{chanPrivacyPreservingStreamAggregation2012,benhamoudaNewFrameworkPrivacyPreserving2016}.
 \end{LaTeXdescription}
 In addition to the private aggregation of data, it may also be the case that private data needs to be modified by an external party before being returned, as with privacy-preserving cloud computing. These methods have been broadly grouped into two domains and described below.
 \begin{LaTeXdescription}
@@ -265,9 +265,9 @@ In addition to the private aggregation of data, it may also be the case that pri
 \end{LaTeXdescription}
 Lastly, recent developments in encryption schemes have presented some novel methods also suitable for privacy-preserving computation in distributed environments.
 \begin{LaTeXdescription}
-    \item[Multi-Client Function Encryption] These schemes allow the computing of a specific function given encrypted inputs \cite{bonehFunctionalEncryptionDefinitions2011,goldwasserMultiinputFunctionalEncryption2014}. They are suitable for data-sensitive distributed processing as encryptions must be combined before a result is obtained, and can be considered a generalisation of the aggregation schemes described earlier. While general schemes that allow computing arbitrary functions are computationally expensive and complicate security definitions in distributed settings \cite{agrawalFunctionalEncryptionNew2013}, partial schemes supporting only some functions, such as vector dot products \cite{chotardDecentralizedMultiClientFunctional2018}, exist with formal security proofs, but have yet to find applications in more complicated signal processing tasks.
+    \item[Multi-Client Function Encryption] These schemes allow the computing of a specific function given encrypted inputs \cite{bonehFunctionalEncryptionDefinitions2011,goldwasserMultiinputFunctionalEncryption2014}. They are suitable for data-sensitive distributed processing as encryptions must be combined before a result is obtained, and can be considered a generalization of the aggregation schemes described earlier. While general schemes that allow computing arbitrary functions are computationally expensive and complicate security definitions in distributed settings \cite{agrawalFunctionalEncryptionNew2013}, partial schemes supporting only some functions, such as vector dot products \cite{chotardDecentralizedMultiClientFunctional2018}, exist with formal security proofs, but have yet to find applications in more complicated signal processing tasks.
 \end{LaTeXdescription}
-In the context of privacy-preserving localisation and state estimation, some of the aforementioned schemes have found applications and some specialised encryption methods have been proposed. These have been summarised in the next section.
+In the context of privacy-preserving localization and state estimation, some of the aforementioned schemes have found applications and some specialized encryption methods have been proposed. These have been summarized in the next section.
 
 % 
 % ######## ##    ##  ######     ##        #######   ######  
@@ -279,16 +279,16 @@ In the context of privacy-preserving localisation and state estimation, some of 
 % ######## ##    ##  ######     ########  #######   ######  
 % 
 
-\subsection{Applications to Localisation and Estimation}
-Localisation methods exist for a variety of purposes requiring different levels of accuracy and supporting various forms of sensors. We aim to provide a computationally plausible and accurate localisation filter in the presence of range-only sensors while providing uncertainties associated with estimates. 
+\subsection{Applications to Localization and Estimation}
+Localization methods exist for a variety of purposes requiring different levels of accuracy and supporting various forms of sensors. We aim to provide a computationally plausible and accurate localization filter in the presence of range-only sensors while providing uncertainties associated with estimates. 
 
 Relevant estimation methods include both Bayesian estimation methods which make assumptions about target trajectories to form their location estimates, typically based on the Kalman Filter and later derivatives \cite{kalmanNewApproachLinear1960,mutambaraDecentralizedEstimationControl1998}, and time-independent methods where location estimates are made independently of each other \cite{alanwarPrOLocResilientLocalization2017,lazosSeRLocSecureRangeindependent2004}. The work in \cite{alanwarPrOLocResilientLocalization2017} uses partially homomorphic encryption to compute time-independent location estimates while preserving the privacy of sensor measurements and locations. The work proposes two approaches, using either polygon intersections suffering from geometric dilution of precision, or alternating projection requiring repeated interactive comparison protocols. Neither method considers measurement uncertainty, and no estimate errors are provided, making them unsuitable for our desired solution. Bayesian approaches can achieve better accuracy due to their exploitation of process dynamic knowledge. In \cite{aristovEncryptedMultisensorInformation2018}, partially homomorphic encryption is used to encrypt measurement information and produce location estimates at a navigator. While producing estimate errors and requiring only uni-directional communication, this method exclusively supports linear measurement models and is therefore not suitable for range-only measurements. 
 
-Encrypted model-predictive-control methods \cite{farokhiPrivacyDynamicalSystems2020} also introduce some privacy-preserving methods relevant to estimation. In \cite{alexandruEncryptedCooperativeControl2019,alexandruPrivateWeightedSum2020}, the novel security notions of private weighted sum aggregation with centralised or hidden weights (pWSAc and pWSAh, respectively) are proposed. The schemes capture a weighted aggregation operation suitable for providing privacy in some control environments and are similar in principle to the aggregation decomposition proposed in this work. The requirements of our aggregation operation differ however, in that weights are generalised to arbitrary length linear-combinations, which must be consistent across all participants, and can vary over time. We also require a formal security proof capturing these weight requirements as well as the explicit capabilities of participants.
+Encrypted model-predictive-control methods \cite{farokhiPrivacyDynamicalSystems2020} also introduce some privacy-preserving methods relevant to estimation. In \cite{alexandruEncryptedCooperativeControl2019,alexandruPrivateWeightedSum2020}, the novel security notions of private weighted sum aggregation with centralized or hidden weights (pWSAc and pWSAh, respectively) are proposed. The schemes capture a weighted aggregation operation suitable for providing privacy in some control environments and are similar in principle to the aggregation decomposition proposed in this work. The requirements of our aggregation operation differ however, in that weights are generalized to arbitrary length linear-combinations, which must be consistent across all participants, and can vary over time. We also require a formal security proof capturing these weight requirements as well as the explicit capabilities of participants.
 
-Along with encryption schemes and their application to localisation-relevant algorithms, encryption schemes with homomorphic properties also require suitable encoding when used with real numbers. As is the case with range sensors, real-valued measurements need to be encoded as integers with operations consistent under scheme-provided homomorphic operations. Google's Encrypted BigQuery Client \cite{googleEncryptedbigqueryclient2015} provides an encoding which supports both addition and unencrypted multiplication when used with an additively homomorphic encryption scheme. It, however, leaks the exponent information of encrypted numbers. In \cite{farokhiSecurePrivateControl2017}, a simpler alternative is proposed, which leaks no information about encrypted numbers, but allows only a single unencrypted multiplication between encodings. We use a modified version of \cite{farokhiSecurePrivateControl2017} due to its simplicity and applicability, and introduce the scheme details in Section \ref{sec:loc_prelim}.
+Along with encryption schemes and their application to localization-relevant algorithms, encryption schemes with homomorphic properties also require suitable encoding when used with real numbers. As is the case with range sensors, real-valued measurements need to be encoded as integers with operations consistent under scheme-provided homomorphic operations. Google's Encrypted BigQuery Client \cite{googleEncryptedbigqueryclient2015} provides an encoding which supports both addition and unencrypted multiplication when used with an additively homomorphic encryption scheme. It, however, leaks the exponent information of encrypted numbers. In \cite{farokhiSecurePrivateControl2017}, a simpler alternative is proposed, which leaks no information about encrypted numbers, but allows only a single unencrypted multiplication between encodings. We use a modified version of \cite{farokhiSecurePrivateControl2017} due to its simplicity and applicability, and introduce the scheme details in Section \ref{sec:loc_prelim}.
 
-While some aspects of privacy-preserving localisation are solved in the above methods and encryption schemes, they fail to provide a localisation solution in our context. In the next section, we will formalise our problem and its accompanying security requirements.
+While some aspects of privacy-preserving localization are solved in the above methods and encryption schemes, they fail to provide a localization solution in our context. In the next section, we will formalize our problem and its accompanying security requirements.
 
 % 
 % 8888888b.  8888888b.   .d88888b.  888888b.   888      8888888888 888b     d888 
@@ -305,7 +305,7 @@ While some aspects of privacy-preserving localisation are solved in the above me
 % 
 
 \section{Problem Statement} \label{sec:problem_statement}
-The localisation scenario we consider in this work is that of Bayesian self-navigation using range-only sensors. We consider localisation in the two-dimensional case for simplicity but will derive methods suitable for an extension to the three-dimensional equivalent.
+The localization scenario we consider in this work is that of Bayesian self-navigation using range-only sensors. We consider localization in the two-dimensional case for simplicity but will derive methods suitable for an extension to the three-dimensional equivalent.
 
 The navigator state is defined as 
 \begin{equation}
@@ -340,7 +340,7 @@ defined as
         &= \sqrt{(\rv{x}-s_{x,i})^2 + (\rv{y}-s_{y,i})^2}\,.
     \end{split}
 \end{equation}
-We wish to run a state estimation filter with models \eqref{eqn:process_model} and \eqref{eqn:measurement_model} such that all involved sensors $1 \leq i \leq n$ do not learn state estimates of $\rvec{x}_{k}$ and the navigator does not learn sensor locations $\vec{s}_i,\,1 \leq i \leq n$, measurement variances $r_i$ or their measurements $\rv{z}_{k,i}$ at any time $k$. We motivate these goals with the example of aircraft navigation in the presence of privately-operated range-measuring stations. It is reasonable to assume that the current state of an aircraft may not wish to be disclosed to unknown parties and, similarly, that tower locations may wish to be kept private from unidentified navigating aircraft. The additional safety to passengers provided by accurate aircraft localisation, however, may be a goal of all those involved, justifying their cooperation.
+We wish to run a state estimation filter with models \eqref{eqn:process_model} and \eqref{eqn:measurement_model} such that all involved sensors $1 \leq i \leq n$ do not learn state estimates of $\rvec{x}_{k}$ and the navigator does not learn sensor locations $\vec{s}_i,\,1 \leq i \leq n$, measurement variances $r_i$ or their measurements $\rv{z}_{k,i}$ at any time $k$. We motivate these goals with the example of aircraft navigation in the presence of privately-operated range-measuring stations. It is reasonable to assume that the current state of an aircraft may not wish to be disclosed to unknown parties and, similarly, that tower locations may wish to be kept private from unidentified navigating aircraft. The additional safety to passengers provided by accurate aircraft localization, however, may be a goal of all those involved, justifying their cooperation.
 
 % 
 % ########  ########  ######   #######  ##     ## ########  
@@ -353,9 +353,9 @@ We wish to run a state estimation filter with models \eqref{eqn:process_model} a
 % 
 
 \subsection{Problem Decomposition} \label{subsec:problem_decomposition}
-The recursive nature of the problem definition above complicates defining and proving of security requirements for the localisation scenario. As with existing estimation methods \cite{benhamoudaNewFrameworkPrivacyPreserving2016,alexandruEncryptedCooperativeControl2019} we will reduce the communication requirements, of sensors and the navigator in our case, to an aggregation operation which will make security more easily definable. 
+The recursive nature of the problem definition above complicates defining and proving of security requirements for the localization scenario. As with existing estimation methods \cite{benhamoudaNewFrameworkPrivacyPreserving2016,alexandruEncryptedCooperativeControl2019} we will reduce the communication requirements, of sensors and the navigator in our case, to an aggregation operation which will make security more easily definable. 
 
-To support multiple aggregations at each time-step $k$, as is required for the aggregation of multi-dimensional data, aggregation instances have been denoted by a different \textit{instance} variable $t$. The desired bi-direction communication protocol at instance $t$ consists of of the computation of linear combinations of navigator weights by sensors, before their privacy-preserving aggregation by the navigator. That is, $m$ weights $\omega_j^{(t)}, 1 \leq j \leq m$ are broadcast by the navigator, linear combinations $l^{(t)}_i=\sum^m_{j=1}a_{j,i}^{(t)}\omega_i^{(t)}$ are computed by each sensor $1\leq i\leq n$, and aggregation is computed back at the navigator. This has been summarised in Figure \ref{fig:agg_steps}.
+To support multiple aggregations at each time-step $k$, as is required for the aggregation of multi-dimensional data, aggregation instances have been denoted by a different \textit{instance} variable $t$. The desired bi-direction communication protocol at instance $t$ consists of of the computation of linear combinations of navigator weights by sensors, before their privacy-preserving aggregation by the navigator. That is, $m$ weights $\omega_j^{(t)}, 1 \leq j \leq m$ are broadcast by the navigator, linear combinations $l^{(t)}_i=\sum^m_{j=1}a_{j,i}^{(t)}\omega_i^{(t)}$ are computed by each sensor $1\leq i\leq n$, and aggregation is computed back at the navigator. This has been summarized in Figure \ref{fig:agg_steps}.
 \begin{figure}[htbp]
 \centering
 \vspace{\baselineskip}
@@ -412,7 +412,7 @@ To support multiple aggregations at each time-step $k$, as is required for the a
 \label{fig:agg_steps}
 \end{figure}
 
-In Section \ref{sec:priv_localisation} we will show how this protocol is sufficient to compute the required estimation information at the sensors needed to update the navigator's estimation filter.
+In Section \ref{sec:priv_localization} we will show how this protocol is sufficient to compute the required estimation information at the sensors needed to update the navigator's estimation filter.
 
 \begin{remark}
     From the aggregation definition above and the distributive property of real numbers, it is clear that an alternative method to the bi-directional communication requirement would be computing $\sum^{m}_{j=1}(\omega_j^{(t)}\sum^{n}_{i=1} a_{i,j}^{(t)})$ by the navigator, requiring only uni-directional communication by sending values $a_{i,j}^{(t)}, 1 \leq j \leq m$ from each sensor $i$. We justify the use of bi-directional communication by reducing communication costs when the number of weights is larger than the number of sensors, $m>n$, and by sending fewer weights in the presence of repeats, as will be shown to be the case in Section \ref{subsec:algorithm}.
@@ -433,11 +433,11 @@ Before we can define formal security requirements and a filtering protocol, we r
 \begin{LaTeXdescription}
     \item[Global navigator broadcast] From the decomposition defined above, we know that bi-directional communication between navigator and sensors is required. We make the assumption that broadcast information from the navigator is received by \textit{all} sensors involved in the protocol.
     
-    A problem caused by this requirement is apparent in the context of aircraft navigation. It may be the case that some sensors are not within the range of a navigator broadcast. We loosely propose that this scenario can be handled with pre-defined sensor subsets during an initial step by a trusted party. An example has been shown in Figure \ref{fig:sensor_subsets}, which reduces to two separate localisation instances with global broadcasts.
+    A problem caused by this requirement is apparent in the context of aircraft navigation. It may be the case that some sensors are not within the range of a navigator broadcast. We loosely propose that this scenario can be handled with pre-defined sensor subsets during an initial step by a trusted party. An example has been shown in Figure \ref{fig:sensor_subsets}, which reduces to two separate localization instances with global broadcasts.
     \item[Consistent navigator broadcast] Further, we make the assumption that broadcast information from the navigator is received equal by all sensors. This means the navigator may not send different information to individual sensors during a single time-step.
     
     In the context of wireless communication, the wide-spread use of cheap non-directional antennas make this assumption reasonable.
-    \item[Honest-but-curious sensors] We adopt the honest-but-curious attacker model for all involved sensors, meaning they are assumed to follow the localisation procedure correctly but may store or use any gained sensitive information. 
+    \item[Honest-but-curious sensors] We adopt the honest-but-curious attacker model for all involved sensors, meaning they are assumed to follow the localization procedure correctly but may store or use any gained sensitive information. 
     
     Misbehaving sensors are a known problem in estimation theory, often requiring inconsistency or outlier detection mechanisms \cite{lazosSeRLocSecureRangeindependent2004,ben-galOutlierDetection2005}. As privacy-preserving implementations of such mechanisms require additional complications, we will not consider the scenario in this work.
     \item[Computational capabilities] The computational requirements for computing encryptions and homomorphic operations are typically more costly than their plaintext equivalents. We make the implicit assumption that all involved parties are computationally capable of computing the required encryption and filter operations.
@@ -516,7 +516,7 @@ Before we can define formal security requirements and a filtering protocol, we r
     \node[label=4] at (s4) {};
     \node[label=5] at (s5) {};
 \end{tikzpicture}
-\caption{An example of sensor subsets. Subsets $\{1,2,3\}$ and $\{3,4,5\}$ can be used independently for localisation when the navigator is within their ranges.}
+\caption{An example of sensor subsets. Subsets $\{1,2,3\}$ and $\{3,4,5\}$ can be used independently for localization when the navigator is within their ranges.}
 \label{fig:sensor_subsets}
 \end{figure}
 
@@ -531,7 +531,7 @@ Before we can define formal security requirements and a filtering protocol, we r
 % 
 
 \subsection{Inherent Leakage}
-Leakage of information will be discussed in more detail in Section \ref{subsec:leakage}, however, we stress that in any estimation problem where process and measurement models are known, knowledge of sequential state estimates as is the case at the navigator, or the knowledge of one or more measurements as is the case by one or more malicious sensors, naturally leads to the leakage of some information. For this reason, we accept that average sensor information may be leaked to the navigator and that less accurate estimates of location may be leaked to sensors. We will Instead show that individual sensor information remains private to sensors and that the most precise localisation estimate, requiring all measurements, remains private to the navigator. 
+Leakage of information will be discussed in more detail in Section \ref{subsec:leakage}, however, we stress that in any estimation problem where process and measurement models are known, knowledge of sequential state estimates as is the case at the navigator, or the knowledge of one or more measurements as is the case by one or more malicious sensors, naturally leads to the leakage of some information. For this reason, we accept that average sensor information may be leaked to the navigator and that less accurate estimates of location may be leaked to sensors. We will Instead show that individual sensor information remains private to sensors and that the most precise localization estimate, requiring all measurements, remains private to the navigator. 
 
 % 
 % 8888888888 888b    888  .d8888b.       8888888b.  8888888b.  8888888888 888      8888888 888b     d888 
@@ -585,7 +585,7 @@ The formal security game for AO has been given in Appendix \ref{app:ao}.
 % 
 
 \subsection{Paillier Encryption Scheme} \label{subsec:paillier_scheme}
-The Paillier encryption scheme \cite{paillierPublicKeyCryptosystemsBased1999} is an additively homomorphic encryption scheme which bases its security on the decisional composite residuosity assumption (DCRA) and meets the security notion of IND-CPA. Key generation of the Paillier scheme is performed by choosing two sufficiently large primes $p$ and $q$, and computing $N=pq$. A generator $g$ is also required for encryption, which is often set to $g=N+1$ when $p$ and $q$ are of equal bit length \cite{katzIntroductionModernCryptography2008}. The public key is defined by $(N, g)$ and secret key by $(p, q)$.
+The Paillier encryption scheme \cite{paillierPublicKeyCryptosystemsBased1999} is an additively homomorphic encryption scheme which bases its security on the decisional composite residuosity assumption (DCRA) and meets the security notion of IND-CPA. Key generation of the Paillier scheme is performed by choosing two sufficiently large primes $p$ and $q$, and computing $N=pq$. A generator $g$ is also required for encryption, which is often set to $g=N+1$ when $p$ and $q$ are of equal bit length \cite{katzIntroductionModernCryptography2008}. The public key is defined by $(N, g)$ and the secret key by $(p, q)$.
 
 Encryption of a plaintext message $a \in \mathbb{Z}_N$, producing ciphertext $c \in \mathbb{Z}^{*}_{N^2}$, is computed by
 \begin{equation}
@@ -663,7 +663,7 @@ removing all noise terms.
 % 
 
 \section{Private Linear-Combination Aggregation} \label{sec:lcao_definition}
-As stated in Section \ref{subsec:problem_decomposition}, we decompose the localisation method such that the multi-party aggregation protocol, given in Figure \ref{fig:agg_steps}, captures all communication between the navigator and sensors. To perform this protocol in a secure manner, we must first describe the security properties we aim to achieve during aggregation. Broadly speaking, we want a cryptographic scheme which allows instances of homomorphically computed linear combinations of encrypted weights, to be summed by a private aggregation scheme. That is, we do not want sensors to learn the navigator weights, while we do not want the navigator to learn individual weighted linear combinations. This can be summarised by the two informal security notions:
+As stated in Section \ref{subsec:problem_decomposition}, we decompose the localization method such that the multi-party aggregation protocol, given in Figure \ref{fig:agg_steps}, captures all communication between the navigator and sensors. To perform this protocol in a secure manner, we must first describe the security properties we aim to achieve during aggregation. Broadly speaking, we want a cryptographic scheme which allows instances of homomorphically computed linear combinations of encrypted weights, to be summed by a private aggregation scheme. That is, we do not want sensors to learn the navigator weights, while we do not want the navigator to learn individual weighted linear combinations. This can be summarized by the two informal security notions:
 \begin{LaTeXdescription}
     \item[Indistinguishable Weights] No colluding subset of sensors gains any additional knowledge about the navigator weights $\omega_j,\,1\leq j \leq m$ from receiving only their encryptions from the current and previous instances, and the ability to encrypt plaintexts of their choice.
     \item[Private Linear-Combination Aggregation] No colluding subset \textit{excluding} the aggregator gains additional information about the remaining sensor values to be weighted $a^{(t)}_{i,j},\,1\leq j\leq m$, where sensor $i$ is not colluding, given only encryptions of their linear combinations $l_i$ from the current and previous instances. Any colluding subset \textit{including} the aggregator learns only the sum of all linear combinations weighted by weights of their choice, $\sum^{n}_{i=1}l_i^{(t)}=\sum^{n}_{i=1}\sum^{m}_{j=1} a^{(t)}_{i,j}\omega^{(t)}_j$.
@@ -673,7 +673,7 @@ As stated in Section \ref{subsec:problem_decomposition}, we decompose the locali
     The notion of a leakage function including parameters from the aggregator requires extra care to be taken when giving its definition. Since an attacker may compromise the aggregator, they have control over the choice of these parameters, and therefore over the leakage function. We note that in the leakage function above, $\sum^n_{i=n}\sum^m_{j=1}a^{(t)}_{i,j}\omega^{(t)}_j$, an individual sum weighted by the same weight may be learned by the colluding subset, \textit{e.g.} $\sum^m_{j=1}a^{(t)}_{i,j}$ given weights $(1,0,\dots,0)$, but that individual sensor values $a^{(t)}_{i,j}$ remain private due to the requirement that all sensors receive the same weights.
 \end{remark}
 
-From the informal definitions above, it is clear that weights encrypted by an IND-CPA secure encryption scheme are sufficient for the first requirement, while a scheme satisfying AO is not sufficient for the second. To formalise the second requirement, we define a novel encryption type ``Linear-Combination Aggregator Oblivious Encryption'' and an accompanying security game, which capture the additional weights and modified leakage of AO.
+From the informal definitions above, it is clear that weights encrypted by an IND-CPA secure encryption scheme are sufficient for the first requirement, while a scheme satisfying AO is not sufficient for the second. To formalize the second requirement, we define a novel encryption type ``Linear-Combination Aggregator Oblivious Encryption'' and an accompanying security game, which capture the additional weights and modified leakage of AO.
 
 % 
 % ##        ######     ###     #######  
@@ -695,7 +695,7 @@ We let a linear-combination aggregator oblivious encryption scheme be defined as
     \item[$\mathsf{AggDec}(t, pk_0, sk_0, l^{(t)}_1,\shrtdots,l^{(t)}_n)$] At instance $t$, the aggregator computes the aggregation of linear combinations $\sum^{n}_{i=1}l_i^{(t)}=\sum^{n}_{i=1}\sum^{m}_{j=1} a^{(t)}_{i,j}\omega^{(t)}_j$ using its public and private keys $pk_0$, $sk_0$.
 \end{LaTeXdescription}
 
-We formalise the security notion of Linear-Combination Aggregator Obliviousness (LCAO) as the following game between attacker and challenger:
+We formalize the security notion of Linear-Combination Aggregator Obliviousness (LCAO) as the following game between attacker and challenger:
 
 \begin{LaTeXdescription}
     \item[Setup] The challenger chooses security parameter $\kappa$, runs the $\mathsf{Setup}(\kappa)$ algorithm and gives $\mathsf{pub}$, $m$ and $pk_0$ to the attacker
@@ -930,8 +930,8 @@ for some negligible functions $\eta_1$, $\eta_2$ and security parameter $\kappa$
 %                                                                                                     
 % 
 
-\section{Encrypted Localisation Preliminaries} \label{sec:loc_prelim}
-Our next goal is to apply the LCAO secure encryption scheme introduced to a Bayesian localisation filter. The filter we introduce requires the use of real-valued inputs and functions, and relies on a non-linear measurement model. We will make use of a real-number encoding scheme supporting our required homomorphic operations as well as a reformulated Extended Kalman Filter which reduces the filter update step to use only these operations.
+\section{Encrypted Localization Preliminaries} \label{sec:loc_prelim}
+Our next goal is to apply the LCAO secure encryption scheme introduced to a Bayesian localization filter. The filter we introduce requires the use of real-valued inputs and functions, and relies on a non-linear measurement model. We will make use of a real-number encoding scheme supporting our required homomorphic operations as well as a reformulated Extended Kalman Filter which reduces the filter update step to use only these operations.
 
 % 
 % ######## ##    ##  ######   #######  ########  #### ##    ##  ######   
@@ -944,15 +944,15 @@ Our next goal is to apply the LCAO secure encryption scheme introduced to a Baye
 % 
 
 \subsection{Integer Encoding for Real Numbers} \label{subsec:encoding}
-In the encryption scheme introduced, weights and values are restricted to integers and all operations are computed $\pmod{N}$, thus bounding meaningful inputs to $\{a \,|\, a \in \mathbb{Z}_N\}$. For this reason, a quantisation and integer mapping method for real numbers is required for their encryption and homomorphic processing. We quantise with a generalised Q number format \cite{oberstarFixedPointRepresentationFractional2007} due to implementation simplicity and applicability.
+In the encryption scheme introduced, weights and values are restricted to integers and all operations are computed $\pmod{N}$, thus bounding meaningful inputs to $\{a \,|\, a \in \mathbb{Z}_N\}$. For this reason, a quantization and integer mapping method for real numbers is required for their encryption and homomorphic processing. We quantize with a generalized Q number format \cite{oberstarFixedPointRepresentationFractional2007} due to implementation simplicity and applicability.
 
 We define a subset of rational numbers in terms of a range $M \in \mathbb{N}$ and fractional precision $\phi \in \mathbb{N}$. This contrasts with the common definition given in terms of total bits and fractional bits \cite{oberstarFixedPointRepresentationFractional2007,schulzedarupEncryptedCooperativeControl2019,farokhiSecurePrivateControl2017}, but allows for a direct mapping to integer ranges which are not powers of two. Rational subset $\mathbb{Q}_{M,\phi}$ is given by
 \begin{equation}
     \mathbb{Q}_{M,\phi} = \left\{q \,\middle|\, \phi q \in \mathbb{N} \wedge -\left\lfloor\frac{M}{2}\right\rfloor \leq \phi q < \left\lfloor\frac{M}{2}\right\rfloor \right\}\,,
 \end{equation}
-and we quantise any real number $a$ by taking the nearest rational $q \in \mathbb{Q}_{M,\phi}$. That is, $\argmin_{q\in\mathbb{Q}_{M,\phi}} |a-q|$. In this form, mapping rationals $\mathbb{Q}_{M,\phi}$ to the encryption scheme range $\mathbb{Z}_N$ is achieved by choosing $M=N$, and handling negatives with modulo arithmetic. In addition, we note that the Q number format requires a precision factor $\phi$ to be removed after each encoded multiplication, which is not supported by our encryption scheme. This is captured by a third parameter $d$; the number of multiplication factors to add or remove from encodings.
+and we quantize any real number $a$ by taking the nearest rational $q \in \mathbb{Q}_{M,\phi}$. That is, $\argmin_{q\in\mathbb{Q}_{M,\phi}} |a-q|$. In this form, mapping rationals $\mathbb{Q}_{M,\phi}$ to the encryption scheme range $\mathbb{Z}_N$ is achieved by choosing $M=N$, and handling negatives with modulo arithmetic. In addition, we note that the Q number format requires a precision factor $\phi$ to be removed after each encoded multiplication, which is not supported by our encryption scheme. This is captured by a third parameter $d$; the number of multiplication factors to add or remove from encodings.
 
-The function for combined quantisation and encoding $\mathsf{E}_{M,\phi,d}(a)$, of a given real number $a \in \mathbb{R}$, integer range $\mathbb{Z}_M$, and the desired scaling for $d$ prior encoded multiplications, is given by
+The function for combined quantization and encoding $\mathsf{E}_{M,\phi,d}(a)$, of a given real number $a \in \mathbb{R}$, integer range $\mathbb{Z}_M$, and the desired scaling for $d$ prior encoded multiplications, is given by
 \begin{equation}
     \mathsf{E}_{M,\phi,d}(a) = \left\lfloor \phi^{d+1} a \right\rceil \pmod{M}\,. \label{eqn:encode}
 \end{equation}
@@ -981,7 +981,7 @@ and
 \end{equation}
 noting that when $M=N$, the modulus corresponds with the encrypted homomorphic operations in \eqref{eqn:paillier_hom_plain_add}, \eqref{eqn:paillier_hom_mult} and therefore \eqref{eqn:our_scheme_lin_comb}.
 
-The choice of a high fractional precision $\phi$ may reduce quantisation errors introduced in \eqref{eqn:encode}, however, risks an overflow following too many multiplications. Given the largest number of expected multiplications $d_{max}$, and the largest expected decoded value $a_{max}$, the parameter should be chosen such that the following condition holds
+The choice of a high fractional precision $\phi$ may reduce quantization errors introduced in \eqref{eqn:encode}, however, risks an overflow following too many multiplications. Given the largest number of expected multiplications $d_{max}$, and the largest expected decoded value $a_{max}$, the parameter should be chosen such that the following condition holds
 \begin{equation}
     \left|\phi^{d_{max}+1}a_{max}\right| < \left\lfloor \frac{M}{2} \right\rfloor\,.
 \end{equation}
@@ -1048,8 +1048,8 @@ with Jacobian
 %                                
 % 
 
-\section{Privacy-Preserving Localisation} \label{sec:priv_localisation}
-With the relevant preliminaries, we now apply the LCAO secure scheme to our original localisation problem. Recall we are considering a navigator in the presence of $n$ range sensors. The navigator runs a local filter, computing its update step with equations \eqref{eqn:eif_info_vec_update} and \eqref{eqn:eif_info_mat_update}, where received information from each sensor $i$ consists of the measurement vector
+\section{Privacy-Preserving Localization} \label{sec:priv_localization}
+With the relevant preliminaries, we now apply the LCAO secure scheme to our original localization problem. Recall we are considering a navigator in the presence of $n$ range sensors. The navigator runs a local filter, computing its update step with equations \eqref{eqn:eif_info_vec_update} and \eqref{eqn:eif_info_mat_update}, where received information from each sensor $i$ consists of the measurement vector
 \begin{equation}
     \rvec{i}_{k,i} = \mat{H}^\top_{k,i} r^{-1}_i (\rv{z}_{k,i} - h_i(\rvec{x}_{k|k-1}) + \mat{H}_{k,i}\rvec{x}_{k|k-1}) \label{eqn:measurement_vec}
 \end{equation}
@@ -1080,7 +1080,7 @@ From the definition of matrix multiplication, we know that matrices whose elemen
         &=\sum_{d=0}^N\sum_{i=0}^W\sum_{j=0}^W (a_{i,v,d}b_{j,d,w})x_{i,v,d}y_{j,d,w}\,.
     \end{split} \label{eqn:matrix_mult_weights}
 \end{equation}
-Similarly, scalar multiplication also holds this property. It is, therefore, sufficient for $h_i$ and $\mat{H}_{k,i}$ to be linear combinations of information private to the navigator, for $\rvec{i}_{k,i}$ and $\mat{I}_{k,i}$ to be as well. Next, we will show how this can be achieved for the specific case of two-dimensional range-only localisation.
+Similarly, scalar multiplication also holds this property. It is, therefore, sufficient for $h_i$ and $\mat{H}_{k,i}$ to be linear combinations of information private to the navigator, for $\rvec{i}_{k,i}$ and $\mat{I}_{k,i}$ to be as well. Next, we will show how this can be achieved for the specific case of two-dimensional range-only localization.
 
 % 
 %  #######  ########   ######     ##     ##  #######  ########  ######## ##       
@@ -1092,7 +1092,7 @@ Similarly, scalar multiplication also holds this property. It is, therefore, suf
 %  #######  ########   ######     ##     ##  #######  ########  ######## ######## 
 % 
 
-\subsection{Localisation Measurement Model} \label{subsec:observation_model}
+\subsection{Localization Measurement Model} \label{subsec:observation_model}
 Recalling the state definition \eqref{eqn:state_def} and two-dimensional measurement model \eqref{eqn:measurement_model}, we can see that $h_i$ \textit{cannot} be rearranged to a linear combination of elements private to the navigator. In addition, the Jacobian of $h_i$ at $\rvec{x}_{k|k-1}$,
 \begin{equation}
     \mat{H}_{k,i} = 
@@ -1192,7 +1192,7 @@ The final step required for the application of our LCAO secure encryption scheme
 \end{equation}
 for aggregation in row $v$ and column $w$, with $\tau=0$ for aggregations in $\rvec{i}'_{k,i}$ and $\tau=1$ otherwise.
 \begin{remark}
-    The solutions \eqref{eqn:hrz_linear_comb} and \eqref{eqn:hrh_linear_comb} have been derived for two-dimensional localisation, but can be similarly extended to the three-dimensional case. We note however, the additional cost with increasing dimension. The number of weights is increased in the rearranged functions $h'_i$, and therefore combinatorially increased in $\rvec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ by \eqref{eqn:matrix_mult_weights}. This results in a combinatorial increase in weights, and therefore communication, with respect to the number of state parameters required for computing functions $h_i$.
+    The solutions \eqref{eqn:hrz_linear_comb} and \eqref{eqn:hrh_linear_comb} have been derived for two-dimensional localization, but can be similarly extended to the three-dimensional case. We note however, the additional cost with increasing dimension. The number of weights is increased in the rearranged functions $h'_i$, and therefore combinatorially increased in $\rvec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ by \eqref{eqn:matrix_mult_weights}. This results in a combinatorial increase in weights, and therefore communication, with respect to the number of state parameters required for computing functions $h_i$.
 \end{remark}
 
 % 
@@ -1255,9 +1255,9 @@ Together, the model and variance, \eqref{eqn:modified_measurement} and \eqref{eq
 % 
 
 \subsection{Algorithm} \label{subsec:algorithm}
-In this section, we piece together our LCAO secure encryption scheme in Section \ref{subsec:our_scheme} with the modified measurement model in Sections \ref{subsec:observation_model} and \ref{subsec:range_measurement_mod} and define our privacy-preserving localisation algorithm.
+In this section, we piece together our LCAO secure encryption scheme in Section \ref{subsec:our_scheme} with the modified measurement model in Sections \ref{subsec:observation_model} and \ref{subsec:range_measurement_mod} and define our privacy-preserving localization algorithm.
 
-The privacy-preserving localisation filter can be described by the following steps.
+The privacy-preserving localization filter can be described by the following steps.
 \begin{LaTeXdescription}
     \item[Setup] The $\mathsf{Setup}$ algorithm from Section \ref{subsec:our_scheme} is executed by a trusted third party, $N$ and $H$ are made known to the navigator and all sensors, and the navigator and sensor secret keys, $sk_0=\lambda=\mathsf{lcm}(p-1, q-1)$ and $sk_i$, $1 \leq i \leq n$ respectively, are distributed accordingly. Additionally, we assume that fractional precision $\phi$ from Section \ref{subsec:encoding} is also a public parameter and made known to the navigator and sensors. We will thus simplify the encoding notation $\mathsf{E}_{N,\phi,d}(\cdot)$ to $\mathsf{E}_{d}(\cdot)$.
 
@@ -1377,7 +1377,7 @@ The privacy-preserving localisation filter can be described by the following ste
 \end{algorithmic}
 \end{algorithm}
 
-Algorithms \ref{alg:nav_prediction}, \ref{alg:measurement_info} and \ref{alg:nav_update} have been summarised graphically in Figure \ref{fig:alg_steps}, where encryptions and encodings of vectors and matrices have been denoted with $\mathcal{E}_{pk_0,sk_i}(\cdot)$ and $\mathsf{E}_d(\cdot)$ for brevity, and represent element-wise operations with the same parameters.
+Algorithms \ref{alg:nav_prediction}, \ref{alg:measurement_info} and \ref{alg:nav_update} have been summarized graphically in Figure \ref{fig:alg_steps}, where encryptions and encodings of vectors and matrices have been denoted with $\mathcal{E}_{pk_0,sk_i}(\cdot)$ and $\mathsf{E}_d(\cdot)$ for brevity, and represent element-wise operations with the same parameters.
 
 \begin{figure}[htbp]
 \centering
@@ -1467,17 +1467,17 @@ Algorithms \ref{alg:nav_prediction}, \ref{alg:measurement_info} and \ref{alg:nav
 % 
 
 \subsection{Leakage} \label{subsec:leakage}
-With the algorithm defined, we can analyse the localisation leakage when the strictly defined LCAO leakage is taken into account. We recall the assumptions on participant capabilities made in Section \ref{subsec:capabilities}. Global and consistent broadcasting is in line with the LCAO definition and required to guarantee the scheme's leakage. Honest-but-curious sensors are not required for scheme privacy, but avoid the possibility of malicious sensors gaining knowledge about other sensors' measurements when navigator behaviour is dependant on its estimate. This may be achievable by detecting changes in measurements after reporting false ones. As misbehaving sensors are also a known problem which complicates homomorphic operations, active malicious sensors are not considered in the scope of this work.
+With the algorithm defined, we can analyze the localization leakage when the strictly defined LCAO leakage is taken into account. We recall the assumptions on participant capabilities made in Section \ref{subsec:capabilities}. Global and consistent broadcasting is in line with the LCAO definition and required to guarantee the scheme's leakage. Honest-but-curious sensors are not required for scheme privacy, but avoid the possibility of malicious sensors gaining knowledge about other sensors' measurements when navigator behavior is dependant on its estimate. This may be achievable by detecting changes in measurements after reporting false ones. As misbehaving sensors are also a known problem which complicates homomorphic operations, active malicious sensors are not considered in the scope of this work.
 
 The aggregation operation of our encryption scheme leaks the sums of sensor measurement vectors and matrices $\sum_{i=1}^n\rvec{i}'_{k,i}$ and $\sum_{i=1}^n\mat{I}'_{k,i}$, however, as stated in Remark \ref{rem:lcao_leakage}, weights chosen by a corrupted navigator mean that individual sums of coefficients can be leaked as well. That is, sums of coefficients in \eqref{eqn:hrz_linear_comb} and \eqref{eqn:hrh_linear_comb} (\textit{i.e.} $\sum_{i=1}^n2\rv{r}^{-1}_{k,i}$, $\sum_{i=1}^n-\rv{r}^{-1}_{k,i}s_{x,i}$, $\sum_{i=1}^n-2\rv{r}^{-1}_{k,i}s_{x,i}$, $\sum_{i=1}^n2\rv{r}^{-1}_{k,i}\rv{z}'_{k,i}$, \dots) are leaked to a corrupted navigator.
 
 From the leaked sums of coefficients, we see that all information private to the sensors and broadcast to the navigator, namely their modified measurements $\rv{z}'_{k,i}$, variance estimates $\rv{r}_{k,i}$ and locations $\vec{s}_i$, are present only in the sums
 \begin{equation}
-    \sum_{i=1}^n\rv{z}'_{k,i}\,,\ \sum_{i=1}^n\rv{r}_{k,i}\,,\ \sum_{i=1}^ns_{x,i}\ \textrm{and}\ \sum_{i=1}^ns_{y,i}\,.\label{eqn:localisation_leakage}
+    \sum_{i=1}^n\rv{z}'_{k,i}\,,\ \sum_{i=1}^n\rv{r}_{k,i}\,,\ \sum_{i=1}^ns_{x,i}\ \textrm{and}\ \sum_{i=1}^ns_{y,i}\,.\label{eqn:localization_leakage}
 \end{equation}
 From these sums and the definitions \eqref{eqn:modified_measurement} and \eqref{eqn:modified_measurement_variance_estimate}, we conclude that the navigator can \textit{at most} learn the sums of sensor private data, which in practice corresponds to the average sensor modified measurements, estimated variances and locations.
 \begin{theorem}
-    In the context of our localisation scheme, leakage of the incorporated LCAO secure encryption scheme corresponds to the leakage of average sensor private information, given by the sums in \eqref{eqn:localisation_leakage}.
+    In the context of our localization scheme, leakage of the incorporated LCAO secure encryption scheme corresponds to the leakage of average sensor private information, given by the sums in \eqref{eqn:localization_leakage}.
 \end{theorem}
 
 % 
@@ -1539,7 +1539,7 @@ As sensor and navigator computations run in parallel, increases in runtime from 
 % 
 
 \section{Conclusion} \label{sec:conclusion}
-To develop a Bayesian localisation algorithm which preserves navigator and sensor privacy, we first defined the novel notion of an LCAO secure encryption scheme and gave a provably secure implementation based on the Paillier and Joye-Libert encryption and aggregation schemes, respectively. This scheme was then used in our proposed privacy-preserving EIF, where sensors compute measurement information homomorphically such that it can be privately used by a navigator. Our privacy-preserving estimation method may find uses in a variety of untrusted distributed localisation environments including airspaces and autonomous vehicle networks as well as those where alternative measurement models satisfying our defined linearity requirements can be applied. Possible future work in this topic includes the expanding of the LCAO security notion to \textit{ensure} that the same weights are broadcast to all sensors, the application of LCAO secure schemes to alternative measurement models and the exploring of implications behind an active sensor attacker model.
+To develop a Bayesian localization algorithm which preserves navigator and sensor privacy, we first defined the novel notion of an LCAO secure encryption scheme and gave a provably secure implementation based on the Paillier and Joye-Libert encryption and aggregation schemes, respectively. This scheme was then used in our proposed privacy-preserving EIF, where sensors compute measurement information homomorphically such that it can be privately used by a navigator. Our privacy-preserving estimation method may find uses in a variety of untrusted distributed localization environments including airspaces and autonomous vehicle networks as well as those where alternative measurement models satisfying our defined linearity requirements can be applied. Possible future work in this topic includes the expanding of the LCAO security notion to \textit{ensure} that the same weights are broadcast to all sensors, the application of LCAO secure schemes to alternative measurement models and the exploring of implications behind an active sensor attacker model.
 
 % 
 %        d8888 8888888b.  8888888b.  8888888888 888b    888 8888888b. 8888888 Y88b   d88P 
