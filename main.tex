@@ -569,7 +569,7 @@ An encryption scheme meets IND-CPA security if an attacker who can choose plaint
 An encryption scheme meets AO security if no colluding subset of participants \textit{excluding} the aggregator gains additional information about the remaining aggregation values given only their encryptions, while any colluding subset \textit{including} the aggregator learns only their sum. The formal security game and definition for AO has been given in Appendix \ref{app:ao}.
 \end{definition}
 
-The Paillier encryption scheme and Joye-Libert private aggregation scheme meet the above security notions, respectively, and have been given below.
+The Paillier encryption scheme and the Joye-Libert private aggregation scheme meet the IND-CPA and AO security notions respectively, and are given below.
 
 % 
 % ########     ###    #### ##       ##       #### ######## ########  
@@ -1510,7 +1510,7 @@ To evaluate the accuracy of our method, we have run $100$ simulations, all with 
 \begin{figure}[htbp]
 \centering
 \includegraphics{images/layout_errors.pdf}
-\caption{Filter error for different layouts, where solid lines show the results for our privacy-preserving filter and dashed lines for an unmodified EIF.}
+\caption{Filter error for different layouts, where solid lines show the results from our privacy-preserving filter and dashed lines from an unmodified EIF.}
 \label{fig:sim_layout_errors}
 \end{figure}
 From the results, it can be seen that sensor distance has little effect on the performance of the filter and that the measurement modification from Section \ref{subsec:range_measurement_mod} has a negligible effect when compared to a normal EIF filter. The robustness of the privacy-preserving method can be attributed to the conservativeness of variance estimates in \eqref{eqn:modified_measurement_variance_estimate} and the sufficiently large fractional precision parameter $\phi$.
