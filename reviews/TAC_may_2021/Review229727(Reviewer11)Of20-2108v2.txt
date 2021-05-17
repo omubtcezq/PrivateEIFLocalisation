@@ -1,0 +1,26 @@
+This paper presented a theoretical framework for privacy-preserving
+localisation combining the encryption scheme and filtering. In
+particular, the private linear-combination aggregation has been adopted
+in the presented framework. Basically, the contribution of the paper is
+clearly indicated with an interesting and important topic. However,
+some technical problems need to be further clarified. Therefore, a
+major revision is necessary in my opinion.
+
+1) Is any filtering method can be integrated into the presented
+framework? If so, can we replace the method via numerical approach such
+as particle filter.
+2) How does the linear combination reflect the dynamics of the
+investigated system in Eq.(2)?
+3) Why is the noise of the system Gaussian? In Eq.(2), function f() is
+known then what is the physical meaning of the Gaussian process noise?
+4) In the paper, the noise is depended on covariance matrix $Q$ which
+is also particularly used in Algroithm 1, however, in practice, Q is
+unmeasurable and unknown. How to estimate the value of Q in terms of
+performance guarantee. 
+5) The experimental results are limited. The comparison is essential to
+validate the performance of the presented algorithm. What about using
+the existing filtering method to demonstrate the various encryption
+scheme?
+6) There are some typos in the manuscript please correct them, for
+example, page 1 Notation, '$\left\|\underline a\right\|$ the vector
+norm' should be '$\left\|\underline a\right\|$ is the vector norm' etc.

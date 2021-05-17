@@ -1,0 +1,11 @@
+This paper concerns the localization problem under privacy constraints.
+Cryptographic schemes have been devised by the authors to achieve some
+privacy requirements. The contribution is significant enough and the
+paper is well written but hard to understand for a usual reader of IEEE
+TAC due to sections with cryptographic background. 
+As a TAC paper, performance analysis in terms of estimation accuracy
+was expected but is actually missing. This reviewer wonders if IEEE TAC
+is well adapted for an efficient exposition of the authors’ findings. 
+In the framework of a Control theory paper, cryptographic notions would
+be kept as minimum as possible in the main body of the paper or moved
+to Appendices.

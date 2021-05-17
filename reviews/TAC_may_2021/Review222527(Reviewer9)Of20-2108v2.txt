@@ -1,0 +1,28 @@
+This paper deals with a suitable notion of linear-combination
+aggregation encryption and provides a cryptographically secure instance
+applied to a filter with range-sensor measurements. This approach keeps
+navigator location, sensor’s location and sensors’ measurements private
+during navigation.
+
+The proposed approach is interesting and the results are technically
+sound. The literature review is OK. But the organization of paper and
+its length make its reading difficult.
+The reviewer encourages the authors to reorganize the article by
+greatly shortening it and to highlight the novelty. Some additional
+comments are given below:
+ -Introduction (2 pages) is too long and does not focus on the main
+ideas of the paper. There are too many reminders of classical notions. 
+
+-Equation (3): i from 1 to n must be added.
+-The actual computation steps are in fact scattered all over the paper,
+in several sections.  In the current version, the reader has to collect
+all the scattered pieces to come out with the approach. I would
+therefore, strongly recommend the authors to summarize all the steps of
+the approach gathered by the end of the paper, to
+help the reader directly use and implement the algorithm.
+-Page 10, Equation (36), Right part of Equation: d is from 0 to D
+-Inequality (50) must be clarified,
+-Algorithm 1, steps 2/3/4, it is F_{k-1},
+-Section VIII-some explanations on the process model must be added.
+Figure 6 is too small; it is difficult to distinguish the different
+lines.
