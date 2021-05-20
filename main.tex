@@ -249,6 +249,9 @@ Encrypted model-predictive-control methods \cite{farokhiPrivacyDynamicalSystems2
 % Used to be in problem formulation but better point out the differences in our contribution to pWSAc here and not mention it again
 Although similar to the pWSAc communication protocol in \cite{alexandruPrivateWeightedSum2020}, we formalise the assumptions 
 
+% Was in problem formulation but all motivations should be in the introduction instead
+We motivate these goals with the example of aircraft navigation in the presence of privately-operated range-measuring stations. It is reasonable to assume that the current state of an aircraft may not wish to be disclosed to unknown parties and, similarly, that tower locations may wish to be kept private from unidentified navigating aircraft. The additional safety to passengers provided by accurate aircraft localization, however, may be a goal of all those involved, justifying their cooperation.
+
 Along with encryption schemes and their application to localization-relevant algorithms, encryption schemes with homomorphic properties also require suitable encoding when used with real numbers. As is the case with range sensors, real-valued measurements need to be encoded as integers with operations consistent under scheme-provided homomorphic operations. Google's Encrypted BigQuery Client \cite{googleEncryptedbigqueryclient2015} provides an encoding which supports both addition and unencrypted multiplication when used with an additively homomorphic encryption scheme. It, however, leaks the exponent information of encrypted numbers. In \cite{farokhiSecurePrivateControl2017}, a simpler alternative is proposed, which leaks no information about encrypted numbers, but allows only a single unencrypted multiplication between encodings. We use a modified version of \cite{farokhiSecurePrivateControl2017} due to its simplicity and applicability, and introduce the scheme details in Section .
 
 While some aspects of privacy-preserving localization are solved in the above methods and encryption schemes, they fail to provide a localization solution in our context. In the next section, we will formalize our problem and its accompanying security requirements.
@@ -281,7 +284,7 @@ Throughout this work, we will use the following notation. Lowercase underlined c
 % 
 
 \section{Problem Statement} \label{sec:problem_statement}
-In this work, we consider the context of privacy-presering range-sensor navigation, in which we wish for no sensor to learn information about the navigator or other sensors beyond their local measurements, and the navigator to learn no information about individual sensors beyond its location estimate. The problem is two-fold, in that we require explicit cryptographic requirements with a suitable encryption scheme meeting them, as well as an estimation scheme that can use the scheme in the context of range-sensor navigation.
+In this work, we consider the context of privacy-preserving range-sensor navigation, in which we wish for no sensor to learn information about the navigator or other sensors beyond their local measurements, and the navigator to learn no information about individual sensors beyond its location estimate. The problem is two-fold, in that we require explicit cryptographic requirements with a suitable encryption scheme meeting them, as well as an estimation scheme that can use the scheme in the context of range-sensor navigation.
 
 To give a formal cryptographic requirement in a distributed setting, we must first consider the communication requirements of our context, and define the attacker capabilities and the desired security of a suitable encryption scheme. In this section, we will define a communication protocol and the relevant formal definition of security we aim to achieve, followed by the estimation problem to which we will apply it.
 
@@ -390,35 +393,29 @@ While indistinguishable weights can be achieved by encrypting weights with an en
 % 
 
 \subsection{Estimation problem} \label{subsec:est_problem}
-
-
-
-
-The localization scenario we consider in this work is that of Bayesian self-navigation using range-only sensors. We consider localization in the two-dimensional case for simplicity but will derive methods suitable for an extension to the three-dimensional equivalent.
-
-The navigator state captures the position and change in position ($\Delta$), and is of the form 
+The estimation problem we consider, for which we will reduce communication to the protocol required for the introduced cryptographic problem, is localisation with range-only sensors. In this work, we will focus on the two-dimensional case for simplicity but will derive methods suitable for extension to a three-dimensional equivalent. The state that we wish to estimate captures the navigator position and the change in position ($\Delta$), and is given by
 \begin{equation}
     \vec{x} = 
     \begin{bmatrix}
         x & \Delta x & y & \Delta y
-    \end{bmatrix}^\top\,. \label{eqn:state_def}
+    \end{bmatrix}^\top\,. \label{eqn:state_definition}
 \end{equation}
-A known process model is followed, in which the state at time $k$ is given by
+The state evolves following a known system model, which at timestep $k$ is given by
 \begin{equation}
-    \rvec{x}_k = \vec{f}(\rvec{x}_{k-1})+\rvec{w}_k\,, \label{eqn:process_model}
+    \vec{x}_k = \vec{f}(\vec{x}_{k-1})+\vec{w}_k\,, \label{eqn:system_model}
 \end{equation}
-with zero-mean Gaussian process noise $\rvec{w}_k \sim \mathcal{N}(\vec{0},\mat{Q})$. The measurement model is dependent on sensor $i$ and given by
-\begin{equation}
-    \rv{z}_{k,i} = h_i(\rvec{x}_k)+\rv{v}_{k,i}\,, \label{eqn:measurement_model}
-\end{equation}
-with noise $\rv{v}_{k,i} \sim \mathcal{N}(0,r_i)$. The measurement function $h_i$, for sensor $i$ at location
+with system noise covariance $\mathsf{Cov}[\vec{w}_k]=\mat{Q}_k$. The measurement model is dependent on sensor $i$'s location,
 \begin{equation}
     \vec{s}_i = 
     \begin{bmatrix}
         s_{x,i} & s_{y,i}
     \end{bmatrix}^\top\,,
 \end{equation} 
-is defined as
+and is given by
+\begin{equation}
+    z_{k,i} = h_i(\vec{x}_k)+v_{k,i}\,, \label{eqn:measurement_model}
+\end{equation}
+with measurement noise variance $\mathsf{Var}[v_{k,i}] = r_i$ and measurement function $h_i$, for sensor $i$, as
 \begin{equation}
     \begin{split}
         h_i(\vec{x}) &= \left\lVert
@@ -429,13 +426,8 @@ is defined as
         &= \sqrt{(x-s_{x,i})^2 + (y-s_{y,i})^2}\,.
     \end{split}
 \end{equation}
-We wish to run a state estimation filter with models \eqref{eqn:process_model} and \eqref{eqn:measurement_model} such that all involved sensors $1 \leq i \leq n$ do not learn state estimates of $\rvec{x}_{k}$ and the navigator does not learn sensor locations $\vec{s}_i,\,1 \leq i \leq n$, measurement variances $r_i$ or their measurements $\rv{z}_{k,i}$ at any time $k$. We motivate these goals with the example of aircraft navigation in the presence of privately-operated range-measuring stations. It is reasonable to assume that the current state of an aircraft may not wish to be disclosed to unknown parties and, similarly, that tower locations may wish to be kept private from unidentified navigating aircraft. The additional safety to passengers provided by accurate aircraft localization, however, may be a goal of all those involved, justifying their cooperation.
 
-% LEAKAGE
-
-Leakage of information will be discussed in more detail in Section \ref{subsec:leakage}, however, we stress that in any estimation problem where process and measurement models are known, knowledge of sequential state estimates as is the case at the navigator, or the knowledge of one or more measurements as is the case by one or more malicious sensors, naturally leads to the leakage of some information. For this reason, we accept that average sensor information may be leaked to the navigator and that less accurate estimates of location may be leaked to sensors. We will instead show that individual sensor information remains private to sensors and that the most precise localization estimate, requiring all measurements, remains private to the navigator. 
-
-This has been captured in the associated secruity notions i nthe communication protocol
+Our aim is to provide a filter that estimates the navigator's state $\vec{x}_k$, at every timestep $k$, without learning sensor positions $\vec{s}_i$, measurements $z_{k,i}$ and measurement variances $r_i$ beyond information in the corresponding aggregation leakage function. Similarly, sensors should not learn any information about current state estimates or any other sensor information. Leakage will be further discussed in section \ref{subsec:leakage}, but we note that from any sequential state estimates, following known models, some sensor information leakage can be computed by the navigator. In the context of our leakage function, we will show that this corresponds to the global sums of private sensor information, while individual, or subsets of sensors', information remain private. Similarly, corrupted sensors with access to one or more measurements can produce state estimates of their own, leaking information about navigator state estimates, however, the most accurate estimates, requiring all measurements, will always remain private to the navigator.
 
 % 
 % 8888888b.  8888888b.  8888888888 888      8888888 888b     d888  .d8888b.  
@@ -453,6 +445,11 @@ This has been captured in the associated secruity notions i nthe communication p
 
 \section{Preliminaries} \label{sec:preliminaries}
 When defining our aggregation security requirements and encryption scheme we will reference some existing cryptographic security notions, the additively homomorphic Paillier encryption scheme, and the Joye-Libert private aggregation scheme.
+
+
+% INTRO
+
+Our next goal is to apply the LCAO secure encryption scheme introduced to a Bayesian localization filter. The filter we introduce requires the use of real-valued inputs and functions, and relies on a non-linear measurement model. We will make use of a real-number encoding scheme supporting our required homomorphic operations as well as a reformulated Extended Kalman Filter which reduces the filter update step to use only these operations.
 
 % SECURITY NOTIONS
 
@@ -552,9 +549,6 @@ removing all noise terms.
 
 \subsection{Integer Encoding for Real Numbers} \label{subsec:encoding}
 
-% INTRO
-
-Our next goal is to apply the LCAO secure encryption scheme introduced to a Bayesian localization filter. The filter we introduce requires the use of real-valued inputs and functions, and relies on a non-linear measurement model. We will make use of a real-number encoding scheme supporting our required homomorphic operations as well as a reformulated Extended Kalman Filter which reduces the filter update step to use only these operations.
 
 % ENCODING
 
@@ -770,7 +764,7 @@ The reason for using a linear-combination aggregation scheme in this scenario is
 
 % INTRO
 
-Recalling the state definition \eqref{eqn:state_def} and two-dimensional measurement model \eqref{eqn:measurement_model}, we can see that $h_i$ \textit{cannot} be rearranged to a linear combination of elements private to the navigator. In addition, the Jacobian of $h_i$ at $\rvec{x}_{k|k-1}$,
+Recalling the state definition \eqref{eqn:state_definition} and two-dimensional measurement model \eqref{eqn:measurement_model}, we can see that $h_i$ \textit{cannot} be rearranged to a linear combination of elements private to the navigator. In addition, the Jacobian of $h_i$ at $\rvec{x}_{k|k-1}$,
 \begin{equation}
     \mat{H}_{k,i} = 
     \begin{bmatrix}
