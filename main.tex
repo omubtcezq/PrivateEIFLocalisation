@@ -427,7 +427,7 @@ with measurement noise variance $\mathsf{Var}[v_{k,i}] = r_i$ and measurement fu
     \end{split}
 \end{equation}
 
-Our aim is to provide a filter that estimates the navigator's state $\vec{x}_k$, at every timestep $k$, without learning sensor positions $\vec{s}_i$, measurements $z_{k,i}$ and measurement variances $r_i$ beyond information in the corresponding aggregation leakage function. Similarly, sensors should not learn any information about current state estimates or any other sensor information. Leakage will be further discussed in section \ref{subsec:leakage}, but we note that from any sequential state estimates, following known models, some sensor information leakage can be computed by the navigator. In the context of our leakage function, we will show that this corresponds to the global sums of private sensor information, while individual, or subsets of sensors', information remain private. Similarly, corrupted sensors with access to one or more measurements can produce state estimates of their own, leaking information about navigator state estimates, however, the most accurate estimates, requiring all measurements, will always remain private to the navigator.
+We aim to provide a filter that estimates the navigator's state $\vec{x}_k$, at every timestep $k$, without learning sensor positions $\vec{s}_i$, measurements $z_{k,i}$ and measurement variances $r_i$ beyond the information in the corresponding aggregation leakage function. Similarly, sensors should not learn any information about current state estimates or any other sensor information. Leakage will be further discussed in section \ref{subsec:leakage}, but we note that from any sequential state estimates, following known models, some sensor information leakage can be computed by the navigator. In the context of our leakage function, we will show that this corresponds to the global sums of private sensor information, while individual, or subsets of sensors', information remain private. Similarly, corrupted sensors with access to one or more measurements can produce state estimates of their own, leaking information about navigator state estimates, however, the most accurate estimates, requiring all measurements, will always remain private to the navigator.
 
 % 
 % 8888888b.  8888888b.  8888888888 888      8888888 888b     d888  .d8888b.  
@@ -444,24 +444,7 @@ Our aim is to provide a filter that estimates the navigator's state $\vec{x}_k$,
 % 
 
 \section{Preliminaries} \label{sec:preliminaries}
-When defining our aggregation security requirements and encryption scheme we will reference some existing cryptographic security notions, the additively homomorphic Paillier encryption scheme, and the Joye-Libert private aggregation scheme.
-
-
-% INTRO
-
-Our next goal is to apply the LCAO secure encryption scheme introduced to a Bayesian localization filter. The filter we introduce requires the use of real-valued inputs and functions, and relies on a non-linear measurement model. We will make use of a real-number encoding scheme supporting our required homomorphic operations as well as a reformulated Extended Kalman Filter which reduces the filter update step to use only these operations.
-
-% SECURITY NOTIONS
-
-The security of a cryptographic scheme is typically defined by a security \textit{game}, which captures both the desired privacy guarantees, as well as the capabilities of attackers \cite{katzIntroductionModernCryptography2008}. The typical security notion for a homomorphic encryption scheme is Indistinguishability under Chosen Plaintext Attack (IND-CPA) \cite{chaseSecurityHomomorphicEncryption2017}, while for private aggregation schemes, the notion is Aggregator Obliviousness (AO) \cite{shiPrivacyPreservingAggregationTimeSeries2011}. 
-\begin{definition}
-An encryption scheme meets IND-CPA security if an attacker who can choose plaintext messages to be encrypted at will, gains no additional information about an unknown plaintext message when they learn only its encryption. The formal security game and definition for IND-CPA has been given in Appendix .
-\end{definition}
-\begin{definition}
-An encryption scheme meets AO security if no colluding subset of participants \textit{excluding} the aggregator gains additional information about the remaining aggregation values given only their encryptions, while any colluding subset \textit{including} the aggregator learns only their sum. The formal security game and definition for AO has been given in Appendix .
-\end{definition}
-
-The Paillier encryption scheme and the Joye-Libert private aggregation scheme meet the IND-CPA and AO security notions respectively, and are given below.
+When proposing an encryption scheme meeting the LCAO notion, we will base our method on the additively homomorphic Paillier encryption scheme \cite{paillierPublicKeyCryptosystemsBased1999} and the Joye-Libert privacy-preserving aggregation scheme \cite{joyeScalableSchemePrivacyPreserving2013}. These schemes have been summarised below. Additionally, the estimation problem we consider uses real-valued inputs and functions, and will require encoding real numbers for use with the aforementioned encryption schemes. The method used for encoding has been summarised afterwards.
 
 % 
 % ########     ###    #### ##       ##       #### ######## ########  
@@ -474,13 +457,13 @@ The Paillier encryption scheme and the Joye-Libert private aggregation scheme me
 % 
 
 \subsection{Paillier Encryption Scheme} \label{subsec:paillier_scheme}
-The Paillier encryption scheme \cite{paillierPublicKeyCryptosystemsBased1999} is an additively homomorphic encryption scheme which bases its security on the decisional composite residuosity assumption (DCRA) and meets the security notion of IND-CPA. Key generation of the Paillier scheme is performed by choosing two sufficiently large primes $p$ and $q$, and computing $N=pq$. A generator $g$ is also required for encryption, which is often set to $g=N+1$ when $p$ and $q$ are of equal bit length \cite{katzIntroductionModernCryptography2008}. The public key is defined by $(N, g)$ and the secret key by $(p, q)$.
+The Paillier encryption scheme \cite{paillierPublicKeyCryptosystemsBased1999} is an additively homomorphic encryption scheme that bases its security on the decisional composite residuosity assumption (DCRA) and meets the security notion of IND-CPA. Key generation of the Paillier scheme is performed by choosing two sufficiently large primes $p$ and $q$, and computing $N=pq$. A generator $g$ is also required for encryption, which is often set to $g=N+1$ when $p$ and $q$ are of equal bit length \cite{katzIntroductionModernCryptography2008}. The public key is defined by $(N, g)$ and the secret key by $(p, q)$.
 
 Encryption of a plaintext message $a \in \mathbb{Z}_N$, producing ciphertext $c \in \mathbb{Z}^{*}_{N^2}$, is computed by
 \begin{equation}
     c = g^a \rho^N \pmod{N^2}
 \end{equation}
-for a randomly chosen $\rho \in \mathbb{Z}_{N}$. $\rho^N$ can be considered the noise term which hides the value $g^a \pmod{N^2}$, which due to the scheme construction, is an easily computable discrete logarithm. The decryption of a ciphertext is computed by
+for a randomly chosen $\rho \in \mathbb{Z}_{N}$. Here, $\rho^N$ can be considered the noise term which hides the value $g^a \pmod{N^2}$, which due to the scheme construction, is an easily computable discrete logarithm. The decryption of a ciphertext is computed by
 \begin{equation}
     a = \frac{L(c^\lambda\pmod{N^2})}{L(g^\lambda\pmod{N^2})} \pmod{N}
 \end{equation}
@@ -503,10 +486,10 @@ In addition to encryption and decryption, the following homomorphic functions ar
 %  ######             ##    
 % 
 
-\subsection{Joye-Libert Private Aggregation Scheme} \label{subsec:joye_libert_scheme}
-The Joye-Libert private aggregation scheme \cite{joyeScalableSchemePrivacyPreserving2013} is a scheme defined on time-series data, that we refer to as instances for consistency, and meets the security notion of AO. Similarly to the Paillier scheme, it bases its security on the DCRA. A notable difference to a public-key encryption scheme is the need for a trusted party to perform an initial key generation and distribution step.
+\subsection{Joye-Libert Privacy-preserving Aggregation Scheme} \label{subsec:joye_libert_scheme}
+The Joye-Libert privacy-preserving aggregation scheme \cite{joyeScalableSchemePrivacyPreserving2013} is a scheme defined on time-series data and meets the security notion of Aggregator Obliviousness (AO) \cite{shiPrivacyPreservingAggregationTimeSeries2011}. Similarly to the Paillier scheme, it bases its security on the DCRA. A notable difference to a public-key encryption scheme is its need for a trusted party to perform the initial key generation and distribution.
 
-Key generation is computed by choosing two equal length and sufficiently large primes $p$ and $q$, and computing $N=pq$. Additionally, hash function $H:\mathbb{Z} \rightarrow \mathbb{Z}_{N^2}^*$ is defined, and the public key is set to $(N, H)$. $n$ private keys are generated by choosing $sk_i,\,1\leq i\leq n$ uniformly from $\mathbb{Z}_{N^2}$ and distributing them to all $n$ users (whose values are to be aggregated), while the last key is set as
+Key generation is computed by first choosing two equal length and sufficiently large primes $p$ and $q$, and computing $N=pq$. A hash function $H:\mathbb{Z} \rightarrow \mathbb{Z}_{N^2}^*$ is defined and the public key is set to $(N, H)$. $n$ private keys are generated by choosing $sk_i,\,1\leq i\leq n$ uniformly from $\mathbb{Z}_{N^2}$ and distributing them to $n$ participants (whose values are to be aggregated), while the last key is set as
 \begin{equation}
     sk_0 = -\sum^{n}_{i=1}sk_i \pmod{N^2}\,,
 \end{equation}
@@ -514,13 +497,13 @@ and sent to the aggregator.
 
 Encryption of plaintext $a^{(t)}_{i} \in \mathbb{Z}_N$ to ciphertext $c^{(t)}_{i} \in \mathbb{Z}_{N^2}$ at instance $t$ is computed by user $i$ as
 \begin{equation}
-    c^{(t)}_{i} = (N+1)^{a^{(t)}_{i}} H(t)^{sk_i} \pmod{N^2}\,,
+    c^{(t)}_{i} = (N+1)^{a^{(t)}_{i}} H(t)^{sk_i} \pmod{N^2}\,.
 \end{equation}
-where $H(t)^{sk_i}$ can be considered the noise term which hides the again easily computable discrete logarithm $g^{a^{(t)}_{i}} \pmod{N^2}$, where $g=N+1$.
+Here, we can consider $H(t)^{sk_i}$ the noise term which hides the easily computable discrete logarithm $g^{a^{(t)}_{i}} \pmod{N^2}$, where $g=N+1$ (as with the Paillier scheme above).
 
 When all encryptions $c^{(t)}_{i},\,1\leq i \leq n$ are sent to the aggregator, summation and decryption are computed by the functions
 \begin{equation}
-    c^{(t)} = H(t)^{sk_0}\prod^{n}_{i=1}c^{(t)}_{i} \pmod{N^2}
+    c^{(t)} = H(t)^{sk_0}\prod^{n}_{i=1}c^{(t)}_{i} \pmod{N^2} \label{eqn:agg_summation}
 \end{equation}
 and
 \begin{equation}
@@ -532,7 +515,7 @@ Correctness follows from $\sum^{n}_{i=0}sk_i = 0$, and thus
         &H(t)^{sk_0}\prod^{n}_{i=1}c_{i,t} \pmod{N^2} \\
         \equiv &H(t)^{sk_0}\prod^{n}_{i=1}(N+1)^{a_{i,t}} H(t)^{sk_i} \pmod{N^2} \\
         \equiv &H(t)^{\sum^n_{j=0}sk_j} \prod^{n}_{i=1}g^{a_{i,t}} \pmod{N^2} \\
-        \equiv &(N+1)^{\sum^n_{i=1}a_{i,t}} \pmod{N^2}
+        \equiv &(N+1)^{\sum^n_{i=1}a_{i,t}} \pmod{N^2}\,,
     \end{split}
 \end{equation*}
 removing all noise terms.
@@ -548,19 +531,15 @@ removing all noise terms.
 % 
 
 \subsection{Integer Encoding for Real Numbers} \label{subsec:encoding}
+In both the Paillier and Joye-Libert schemes, as well as the one we introduce, meaningful inputs $a$ are bounded to $a \in \mathbb{Z}_N$. For this reason, real-valued estimation variables require quantisation and integer mapping for encryption and aggregation. We will rely on a generalised Q number encoding \cite{oberstarFixedPointRepresentationFractional2007} due to implementation simplicity and applicability.
 
-
-% ENCODING
-
-In the encryption scheme introduced, weights and values are restricted to integers and all operations are computed $\pmod{N}$, thus bounding meaningful inputs to $\{a \,|\, a \in \mathbb{Z}_N\}$. For this reason, a quantization and integer mapping method for real numbers is required for their encryption and homomorphic processing. We quantize with a generalized Q number format \cite{oberstarFixedPointRepresentationFractional2007} due to implementation simplicity and applicability.
-
-We define a subset of rational numbers in terms of a range $M \in \mathbb{N}$ and fractional precision $\phi \in \mathbb{N}$. This contrasts with the common definition given in terms of total bits and fractional bits \cite{oberstarFixedPointRepresentationFractional2007,schulzedarupEncryptedCooperativeControl2019,farokhiSecurePrivateControl2017}, but allows for a direct mapping to integer ranges which are not powers of two. Rational subset $\mathbb{Q}_{M,\phi}$ is given by
+We will consider a subset of rational numbers in terms of a range $M \in \mathbb{N}$ and fractional precision $\phi \in \mathbb{N}$. This contrasts with the common definition in terms of total and fractional bits \cite{oberstarFixedPointRepresentationFractional2007,schulzedarupEncryptedCooperativeControl2019,farokhiSecurePrivateControl2017}, but allows for a direct mapping to integer ranges which are not a power of two. A rational subset $\mathbb{Q}_{M,\phi}$ is then given by
 \begin{equation}
     \mathbb{Q}_{M,\phi} = \left\{q \,\middle|\, \phi q \in \mathbb{N} \wedge -\left\lfloor\frac{M}{2}\right\rfloor \leq \phi q < \left\lfloor\frac{M}{2}\right\rfloor \right\}\,,
 \end{equation}
-and we quantize any real number $a$ by taking the nearest rational $q \in \mathbb{Q}_{M,\phi}$. That is, $\argmin_{q\in\mathbb{Q}_{M,\phi}} |a-q|$. In this form, mapping rationals $\mathbb{Q}_{M,\phi}$ to the encryption scheme range $\mathbb{Z}_N$ is achieved by choosing $M=N$, and handling negatives with modulo arithmetic. In addition, we note that the Q number format requires a precision factor $\phi$ to be removed after each encoded multiplication, which is not supported by our encryption scheme. This is captured by a third parameter $d$; the number of multiplication factors to add or remove from encodings.
+and we can quantize any real number $a$ by taking the nearest rational $q \in \mathbb{Q}_{M,\phi}$, that is, $\argmin_{q\in\mathbb{Q}_{M,\phi}} |a-q|$. In this form, mapping rationals $\mathbb{Q}_{M,\phi}$ to an encryption range $\mathbb{Z}_N$ is achieved by choosing $M=N$ and the handling negatives by modulo arithmetic. Additionally, we note that the Q number format requires a precision factor $\phi$ to be removed after each encoded multiplication. This is captured by a third parameter $d$; the number of multiplication factors to add or remove from encodings.
 
-The function for \textit{combined} quantization and encoding $\mathsf{E}_{M,\phi,d}(a)$, of a given real number $a \in \mathbb{R}$, integer range $\mathbb{Z}_M$, and the desired scaling for $d$ prior encoded multiplications, is given by
+The function for \textit{combined} quantization and encoding, $\mathsf{E}_{M,\phi,d}(a)$, of a given number $a \in \mathbb{R}$, for an integer range $\mathbb{Z}_M$, precision $\phi$ and scaling for $d$ prior encoded multiplications, is given by
 \begin{equation}
     \mathsf{E}_{M,\phi,d}(a) = \left\lfloor \phi^{d+1} a \right\rceil \pmod{M}\,. \label{eqn:encode}
 \end{equation}
@@ -572,6 +551,8 @@ Decoding of an integer $u \in \mathbb{Z}_M$, is given by
         -\frac{M - u\hspace{-8pt}\pmod{M}}{\phi^{d+1}}, &\text{otherwise} \\
     \end{dcases}.\label{eqn:decode}
 \end{equation}
+
+% TODO up to here
 
 This encoding scheme provides the following homomorphic operations,
 \begin{equation}
@@ -588,6 +569,8 @@ and
     \end{split}
 \end{equation}
 noting that when $M=N$, the modulus corresponds with the encrypted homomorphic operations in \eqref{eqn:paillier_hom_plain_add}, \eqref{eqn:paillier_hom_mult} and therefore \eqref{eqn:our_scheme_lin_comb}.
+
+%should also reference the modulo sum in the J-L scheme (which is missing in Eq. 14!!)
 
 The choice of a high fractional precision $\phi$ may reduce quantization errors introduced in \eqref{eqn:encode}, however, risks an overflow following too many multiplications. Given the largest number of expected multiplications $d_{max}$, and the largest expected decoded value $a_{max}$, the parameter should be chosen such that the following condition holds
 \begin{equation}
