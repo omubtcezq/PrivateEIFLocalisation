@@ -415,7 +415,7 @@ and is given by
 \begin{equation}
     z_{k,i} = h_i(\vec{x}_k)+v_{k,i}\,, \label{eqn:measurement_model}
 \end{equation}
-with measurement noise variance $\mathsf{Var}[v_{k,i}] = r_i$ and measurement function $h_i$, for sensor $i$, as
+with Gaussian measurement noise $v_{k,i} \sim \mathcal{N}(0,r_i)$ and measurement function $h_i$, for sensor $i$, as
 \begin{equation}
     \begin{split}
         h_i(\vec{x}) &= \left\lVert
@@ -507,7 +507,7 @@ When all encryptions $c^{(t)}_{i},\,1\leq i \leq n$ are sent to the aggregator, 
 \end{equation}
 and
 \begin{equation}
-    \sum^{n}_{i=1}a^{(t)}_{i} = \frac{c^{(t)}-1}{N}\,. \label{eqn:agg_decryption}
+    \sum^{n}_{i=1}a^{(t)}_{i} = \frac{c^{(t)}-1}{N} \pmod{N}\,. \label{eqn:agg_decryption}
 \end{equation}
 Correctness follows from $\sum^{n}_{i=0}sk_i = 0$, and thus
 \begin{equation*}
@@ -537,7 +537,7 @@ We will consider a subset of rational numbers in terms of a range $M \in \mathbb
 \begin{equation}
     \mathbb{Q}_{M,\phi} = \left\{q \,\middle|\, \phi q \in \mathbb{N} \wedge -\left\lfloor\frac{M}{2}\right\rfloor \leq \phi q < \left\lfloor\frac{M}{2}\right\rfloor \right\}\,,
 \end{equation}
-and we can quantize any real number $a$ by taking the nearest rational $q \in \mathbb{Q}_{M,\phi}$, that is, $\argmin_{q\in\mathbb{Q}_{M,\phi}} |a-q|$. In this form, mapping rationals $\mathbb{Q}_{M,\phi}$ to an encryption range $\mathbb{Z}_N$ is achieved by choosing $M=N$ and the handling negatives by modulo arithmetic. Additionally, we note that the Q number format requires a precision factor $\phi$ to be removed after each encoded multiplication. This is captured by a third parameter $d$; the number of multiplication factors to add or remove from encodings.
+and we can quantize any real number $a$ by taking the nearest rational $q \in \mathbb{Q}_{M,\phi}$, that is, $\argmin_{q\in\mathbb{Q}_{M,\phi}} |a-q|$. In this form, mapping rationals $\mathbb{Q}_{M,\phi}$ to an encryption range $\mathbb{Z}_N$ is achieved by choosing $M=N$ and handling negatives by modulo arithmetic. Additionally, we note that the Q number format requires a precision factor $\phi$ to be removed after each encoded multiplication. This is captured by a third parameter $d$; the number of multiplication factors to add or remove from encodings.
 
 The function for \textit{combined} quantization and encoding, $\mathsf{E}_{M,\phi,d}(a)$, of a given number $a \in \mathbb{R}$, for an integer range $\mathbb{Z}_M$, precision $\phi$ and scaling for $d$ prior encoded multiplications, is given by
 \begin{equation}
@@ -551,8 +551,6 @@ Decoding of an integer $u \in \mathbb{Z}_M$, is given by
         -\frac{M - u\hspace{-8pt}\pmod{M}}{\phi^{d+1}}, &\text{otherwise} \\
     \end{dcases}.\label{eqn:decode}
 \end{equation}
-
-% TODO up to here
 
 This encoding scheme provides the following homomorphic operations,
 \begin{equation}
@@ -568,11 +566,9 @@ and
         &\mathsf{E}_{M,\phi,d+1}(a_1a_2)\,,
     \end{split}
 \end{equation}
-noting that when $M=N$, the modulus corresponds with the encrypted homomorphic operations in \eqref{eqn:paillier_hom_plain_add}, \eqref{eqn:paillier_hom_mult} and therefore \eqref{eqn:our_scheme_lin_comb}.
+noting that when $M=N$, the modulus corresponds with those in the Paillier homomorphic operations \eqref{eqn:paillier_hom_plain_add}, \eqref{eqn:paillier_hom_mult} and the Joye-Libert sum \eqref{eqn:agg_decryption}.
 
-%should also reference the modulo sum in the J-L scheme (which is missing in Eq. 14!!)
-
-The choice of a high fractional precision $\phi$ may reduce quantization errors introduced in \eqref{eqn:encode}, however, risks an overflow following too many multiplications. Given the largest number of expected multiplications $d_{max}$, and the largest expected decoded value $a_{max}$, the parameter should be chosen such that the following condition holds
+In general, the choice of a large precision parameter $\phi$ may reduce quantization errors introduced in \eqref{eqn:encode}, but risks overflow after too many multiplications. Given the largest number of encoded multiplications, $d_{max}$, and the largest value to be encoded $a_{max}$, the parameter should be chosen such that
 \begin{equation}
     \left|\phi^{d_{max}+1}a_{max}\right| < \left\lfloor \frac{M}{2} \right\rfloor\,.
 \end{equation}
@@ -593,27 +589,17 @@ In practice, $N$ is typically very large ($N>2^{1024}$) and this condition can b
 % 
 
 \section{Private Linear-Combination Aggregation Scheme} \label{sec:lcao_scheme}
-
-% From the crypto problem statement section - better suited here somewhere as IND-CPA and AO have not been introduced there yet
-From the informal definitions above, it is clear that weights encrypted by an IND-CPA secure encryption scheme are sufficient for the first requirement, while a scheme satisfying AO is not sufficient for the second. To formalize the second requirement, we define a novel encryption type ``Linear-Combination Aggregator Oblivious Encryption'' and an accompanying security game, which capture the additional weights and modified leakage of AO.
-
-In the next section, we will give a solution to an encryption scheme meeting LCAO security, with IND-CPA secure weight encryption, and give a cryptographic proof for its security.
-
-% OUR SCHEME MEETING LCAO SECURITY 
-
-\label{subsec:our_scheme}
-Our scheme is based on the Paillier and Joye-Libert schemes introduced in Sections \ref{subsec:paillier_scheme} and \ref{subsec:joye_libert_scheme}, and similarly bases its security on the DCRA. As with Joye-Libert's private aggregation scheme, a trusted party is required for the initial distribution of user secret keys. Below, we give definitions for the four algorithms comprising the linear-combination aggregation encryption scheme.
-
+In this section, we introduce an encryption scheme meeting the desired security properties in section \ref{subsec:crypto_problem}. The scheme is a combination of the Paillier and Joye-Libert schemes and provides encrypted weights meeting IND-CPA and encrypted aggregation meeting LCAO. Similarly to its constituents, the scheme bases its security on the DCRA and, as with the Joye-Libert scheme, requires a trusted party for initial key generation and distribution. The four algorithms defining our scheme are given as follows.
 \begin{LaTeXdescription}
-    \item[$\mathsf{Setup}(\kappa)$] On input parameter $\kappa$, generate two equal length, sufficiently large, primes $p$ and $q$, and compute $N=pq$. Define a hash function $H:\mathbb{Z} \rightarrow \mathbb{Z}_{N^2}^*$, choose an $m>1$ as the number of weights to combine, and set public parameter $\mathsf{pub}=H$, aggregator public key $pk_0 = N$ and aggregator private key $sk_0=(p,q)$. The remaining user secret keys are generated by choosing $sk_i,\,1\leq i\leq n-1$ uniformly from $\mathbb{Z}_{N^2}$ and setting the last key as $sk_n = -\sum^{n-1}_{i=1}sk_i \pmod{N^2}$.
+    \item[$\mathsf{Setup}(\kappa)$] On input parameter $\kappa$, generate two equal length, sufficiently large, primes $p$ and $q$, and compute $N=pq$. Define a hash function $H:\mathbb{Z} \rightarrow \mathbb{Z}_{N^2}^*$, choose a the number of weights to combine $m>1$ and set public parameter $\mathsf{pub}=H$, navigator public key $pk_0 = N$ and navigator private key $sk_0=(p,q)$. Sensor secret keys are generated by choosing $sk_i,\,1\leq i\leq n-1$ uniformly from $\mathbb{Z}_{N^2}$ and setting the last key as $sk_n = -\sum^{n-1}_{i=1}sk_i \pmod{N^2}$.
  
-    \item[$\mathsf{Enc}(pk_0, x)$] Encryption of values is computed as a Paillier encryption with implicit generator $g=N+1$. This is given by
+    \item[$\mathsf{Enc}(pk_0, x)$] Public-key encryption is computed by the Paillier encryption scheme with implicit generator $g=N+1$. This is given by
     \begin{equation}
         \mathcal{E}_{pk_0}(x) = (N+1)^{x}\rho^N \pmod{N^2}\,, \label{eqn:our_scheme_encrypt}
     \end{equation}
     for a randomly chosen $\rho \in \mathbb{Z}_N$.
 
-    \item[$\mathsf{CombEnc}(t, pk_0, sk_i, \mathcal{E}_{pk_0}(\omega_1^{(t)}),\shrtdots,\mathcal{E}_{pk_0}(\omega_m^{(t)}), a^{(t)}_{i,1},\shrtdots,a^{(t)}_{i,m})$] The linear combination encryption step at instance $t$ is computed as 
+    \item[$\mathsf{CombEnc}(t, pk_0, sk_i, \mathcal{E}_{pk_0}(\omega_1^{(t)}),\shrtdots,\mathcal{E}_{pk_0}(\omega_m^{(t)}), a^{(t)}_{i,1},\shrtdots,a^{(t)}_{i,m})$] Encrypted linear combination at instance $t$ is computed as 
     \begin{equation}
         l^{(t)}_i = H(t)^{sk_i}\prod^{m}_{j=1}\mathcal{E}_{pk_0}(\omega^{(t)}_j)^{a^{(t)}_{i,j}} \pmod{N^2}\,,\label{eqn:our_scheme_lin_comb}
     \end{equation}
@@ -628,14 +614,14 @@ Our scheme is based on the Paillier and Joye-Libert schemes introduced in Sectio
     \end{equation*}
     for some values $\rho_i,\rho_j \in \mathbb{Z}_N\,,1\leq j \leq m$. Here, $\rho_i^N$ and $H(t)^{sk_i}$ can be considered the noise terms corresponding to the two levels of encryption from $pk_0$ and $sk_i$, respectively.
 
-    \item[$\mathsf{AggDec}(t, pk_0, sk_0, l^{(t)}_1,\shrtdots,l^{(t)}_n)$] Aggregation is computed as $l^{(t)} = \prod^n_{i=1}l^{(t)}_i \pmod{N^2}$, removing aggregation noise terms, and is followed by Paillier decryption
+    \item[$\mathsf{AggDec}(t, pk_0, sk_0, l^{(t)}_1,\shrtdots,l^{(t)}_n)$] Aggregation is computed as $l^{(t)} = \prod^n_{i=1}l^{(t)}_i \pmod{N^2}$, removing the aggregation noise terms, and is followed by Paillier scheme decryption
     \begin{equation}
         \begin{split}
             \sum^{n}_{i=1}\sum^{m}_{j=1}&a^{(t)}_{i,j}\omega^{(t)}_j =\\
             &\frac{L((l^{(t)})^\lambda\pmod{N^2})}{L((N+1)^\lambda\pmod{N^2})} \pmod{N}\,,
         \end{split} \label{eqn:our_scheme_decrypt}
     \end{equation}
-    with $\lambda = \mathsf{lcm}(p-1, q-1)$ and $L(u) = \frac{u-1}{N}$. The correctness of aggregation can be seen from
+    with $\lambda = \mathsf{lcm}(p-1, q-1)$ and $L(u) = \frac{u-1}{N}$. The correctness of the aggregation can be seen from
     \begin{align*}
         l^{(t)} &= \prod^n_{i=1}H(t)^{sk_i}(N+1)^{\sum^{m}_{j=1}a_{i,j}\omega_j}\rho_i^N \pmod{N^2} \\
         \begin{split}
@@ -646,65 +632,22 @@ Our scheme is based on the Paillier and Joye-Libert schemes introduced in Sectio
     \end{align*}
     for some values $\rho_i,\rho' \in \mathbb{Z}_N,\,1\leq i \leq n$.
 \end{LaTeXdescription}
+Additionally, we note that in the above construction, all weights $\omega^{(t)}_j$ and values $a^{(t)}_{i,j}$ are integers and the resulting linear combinations and aggregation are computed $\pmod{N}$. 
 
-Additionally, we note that in the above construction, all weights $\omega^{(t)}_j$ and values $a^{(t)}_{i,j}$ are integers, and that resulting linear combinations and summations are computed $\pmod{N}$.
+The security proof of this scheme must show that both encrypted weights meet IND-CPA and encrypted aggregation meets LCAO. As weights are encrypted with the Paillier encryption scheme, the first requirement is already met. To show that aggregation meets LCAO, a reduction proof is given in appendix \ref{app:proof}.
 
+Lastly, we make the following remark about a possible implicit weight.
 \begin{remark} \label{rem:lcao_implicit_weight}
-    The construction of this scheme additionally supports the linear combination of the implicit weight, $\omega^{(t)}_j = 1$, by replacing
+    The construction of the above scheme supports linearly combining the implicit weight $\omega^{(t)}_j = 1$, by replacing
     \begin{equation}
         \mathcal{E}_{pk_0}(1)^{a^{(t)}_{i,j}} = (N+1)^{1}\rho_j^N \pmod{N^2}
     \end{equation}
-    in \eqref{eqn:our_scheme_lin_comb} by
+    in \eqref{eqn:our_scheme_lin_comb}, by
     \begin{equation}
-        (N+1)^{a^{(t)}_{i,j}} \pmod{N^2}\,,
+        (N+1)^{a^{(t)}_{i,j}} \pmod{N^2}\,.
     \end{equation}
-    due to the removal of $\rho_j^N$ terms during decryption. This can be used to reduce the broadcast communication cost by one weight.
+    This is due to the removal of $\rho_j^N$ terms during decryption and can be used to reduce the navigator's broadcast communication cost by a single weight when it is known that $\omega^{(t)}_j=1$.
 \end{remark}
-
-% PROOF
-
-To prove the security of our introduced scheme, we recall the desired security properties of an LCAO secure scheme with IND-CPA secure encrypted weights. From the definition above, weights encrypted with public key $pk_0$ are identical to encryptions of the Paillier scheme and therefore meet security notion IND-CPA. We omit this proof here and refer readers to the security proof of the Paillier encryption scheme \cite{paillierPublicKeyCryptosystemsBased1999} instead.
-
-To show our scheme meets the security notion of LCAO, we prove by contrapositive that for an adversary $\mathcal{A}$ playing against a challenger using \textit{our scheme}, we can create an adversary $\mathcal{A}'$ playing against a challenger $\mathcal{C}$ using the \textit{Joye-Libert scheme}, such that
-\begin{equation*}
-    \mathsf{Adv}^{LCAO}(\mathcal{A}) > \eta_1(\kappa) \implies \mathsf{Adv}^{AO}(\mathcal{A}') > \eta_2(\kappa)\,,
-\end{equation*}
-for some negligible functions $\eta_1$, $\eta_2$ and security parameter $\kappa$. (\textit{i.e.}, if we assume our scheme is not LCAO secure, then the Joye-Libert scheme is not AO secure.) Given the Joye-Libert AO proof in \cite{joyeScalableSchemePrivacyPreserving2013}, we know our scheme must be LCAO secure and will thus conclude our proof. The proof overview has been given in Figure \ref{fig:proof_summary}. Additionally, the function $H$ used by our scheme is treated as a \textit{random oracle} in the Joye-Libert AO proof and will, therefore, prove our scheme secure in the random oracle model as well.
-
-\begin{figure}[htbp]
-\centering
-\vspace{\baselineskip}
-\begin{tikzpicture}[font=\footnotesize,scale=0.95]
-    % Bounding box
-    \draw [gray] (0,0) rectangle (6.5,6.5);
-
-    % Outer adversary rectangle
-    \draw[rounded corners=15pt, fill=gray!30] (0.25,6.25) rectangle (6.25,2.5);
-    % Inner adversary rectangle
-    \draw[rounded corners=15pt, fill=gray!60] (0.5,6) rectangle (6,5);
-
-    % Adversaries and challenger
-    \node at (3.25,3) {\Large$\mathcal{A}'$};
-    \node at (3.25,5.5) {\Large$\mathcal{A}$};
-    \node at (3.25,0.5) {\Large$\mathcal{C}$};
-
-    % Arrows
-    \node[text width=3cm, align=center] at (2,1) {Joye-Libert\\AO secure\\scheme};
-    \draw [-latex] (2,1.75) -- (2,2.5);
-
-    \node[text width=3cm, align=center] at (2,3.75) {Our\\LCAO secure\\scheme};
-    \draw [-latex] (2,4.5) --(2,5);
-
-    \node[text width=3cm, align=center] at (4.5,3.75) {``Break''\\Our scheme};
-    \draw [-latex] (4.5,5) -- (4.5,4.5);
-
-    \node[text width=3cm, align=center] at (4.5,1) {``Break''\\Joye-Libert\\scheme};
-    \draw [-latex] (4.5,2.5) -- (4.5,1.75);
-\end{tikzpicture}
-\caption{High-level overview of our scheme's LCAO security proof.}
-\vspace{-\baselineskip}
-\label{fig:proof_summary}
-\end{figure}
 
 % 
 % 8888888b.  8888888b.  8888888 888     888      888      .d88888b.   .d8888b.  
@@ -1241,6 +1184,7 @@ To develop a Bayesian localization algorithm which preserves navigator and senso
 
 \appendices
 \section{Linear-Combination Aggregator Oblivousness (LCAO)} \label{app:lcao}
+The following game between attacker and challenger defines the security notion of LCAO.
 \begin{LaTeXdescription}
     \item[Setup] The challenger chooses security parameter $\kappa$, runs the $\mathsf{Setup}(\kappa)$ algorithm and gives $\mathsf{pub}$, $m$ and $pk_0$ to the attacker
     \item[Queries] The attacker can now perform encryptions or submit queries that are answered by the challenger. The types of actions are:
@@ -1281,9 +1225,48 @@ To develop a Bayesian localization algorithm which preserves navigator and senso
     An encryption scheme meets LCAO security if no adversary, running in probabilistic-time with respect to security parameter $\kappa$, has more than a negligible advantage in winning the above security game. Probabilities are taken over randomness introduced by $\mathcal{A}$, and in $\mathsf{Setup}$, $\mathsf{Enc}$ and $\mathsf{CombEnc}$.
 \end{definition}
 
-\section{Proof of our scheme security} \label{app:proof}
+\section{LCAO Scheme Proof} \label{app:proof}
+The scheme in section \ref{sec:lcao_scheme} will be shown to meet LCAO by contrapositive. We show that for an adversary $\mathcal{A}$ playing against a challenger using the scheme, we can always create an adversary $\mathcal{A}'$ playing against a challenger $\mathcal{C}$ using the Joye-Libert scheme, such that
+\begin{equation*}
+    \mathsf{Adv}^{LCAO}(\mathcal{A}) > \eta_1(\kappa) \implies \mathsf{Adv}^{AO}(\mathcal{A}') > \eta_2(\kappa)\,,
+\end{equation*}
+for some negligible functions $\eta_1$, $\eta_2$ and security parameter $\kappa$. That is, if we assume our scheme is not LCAO secure, then the Joye-Libert scheme is not AO secure (which is not the case \cite{joyeScalableSchemePrivacyPreserving2013}). The reduction has been summarised visually in figure \ref{fig:proof_summary}.
+\begin{figure}[htbp]
+\centering
+\vspace{\baselineskip}
+\begin{tikzpicture}[font=\footnotesize,scale=0.95]
+    % Bounding box
+    \draw [gray] (0,0) rectangle (6.5,6.5);
+
+    % Outer adversary rectangle
+    \draw[rounded corners=15pt, fill=gray!30] (0.25,6.25) rectangle (6.25,2.5);
+    % Inner adversary rectangle
+    \draw[rounded corners=15pt, fill=gray!60] (0.5,6) rectangle (6,5);
+
+    % Adversaries and challenger
+    \node at (3.25,3) {\Large$\mathcal{A}'$};
+    \node at (3.25,5.5) {\Large$\mathcal{A}$};
+    \node at (3.25,0.5) {\Large$\mathcal{C}$};
+
+    % Arrows
+    \node[text width=3cm, align=center] at (2,1) {Joye-Libert\\AO secure\\scheme};
+    \draw [-latex] (2,1.75) -- (2,2.5);
+
+    \node[text width=3cm, align=center] at (2,3.75) {Our\\LCAO secure\\scheme};
+    \draw [-latex] (2,4.5) --(2,5);
+
+    \node[text width=3cm, align=center] at (4.5,3.75) {``Break''\\Our scheme};
+    \draw [-latex] (4.5,5) -- (4.5,4.5);
+
+    \node[text width=3cm, align=center] at (4.5,1) {``Break''\\Joye-Libert\\scheme};
+    \draw [-latex] (4.5,2.5) -- (4.5,1.75);
+\end{tikzpicture}
+\caption{Summary of our LCAO security proof.}
+\vspace{-\baselineskip}
+\label{fig:proof_summary}
+\end{figure}
 \begin{proof}
-    Consider adversary $\mathcal{A}$ playing the LCAO game defined in Section . The following is a construction of an adversary $\mathcal{A}'$ playing the AO game in Appendix  against a challenger $\mathcal{C}$ using the Joye-Libert aggregation scheme from Section \ref{subsec:joye_libert_scheme}.
+    Consider adversary $\mathcal{A}$ playing the LCAO game. The following is a construction of an adversary $\mathcal{A}'$ playing the AO game \cite{shiPrivacyPreservingAggregationTimeSeries2011} against a challenger $\mathcal{C}$ using the Joye-Libert aggregation scheme.
     \begin{LaTeXdescription}
         \item[Setup] When receiving $N$ and $H$ as public parameters from $\mathcal{C}$, choose an $m>1$ and give public parameter $H$, number of weights $m$, and $pk_0=N$ to $\mathcal{A}$.
         \item[Queries] Handle queries from $\mathcal{A}$:
@@ -1328,11 +1311,11 @@ To develop a Bayesian localization algorithm which preserves navigator and senso
         \item[Guess] When $\mathcal{A}$ makes guess $b'$, make the same guess $b'$ to~$\mathcal{C}$.
     \end{LaTeXdescription}
 
-    In the above construction, $\mathcal{C}$ follows the Joye-Libert scheme from Section \ref{subsec:joye_libert_scheme} exactly, and to $\mathcal{A}$, $\mathcal{A}'$ follows our scheme in Section  exactly. Since $\mathcal{A}'$ runs in polynomial-time to security parameter when $\mathcal{A}$ does, and no non-neglibile advantage adversary to $\mathcal{C}$ exists \cite{joyeScalableSchemePrivacyPreserving2013}, we conclude that no non-negligible advantage adversary $\mathcal{A}$ exists. That is, there exists a negligible function $\eta$, such that
+    In the above construction, $\mathcal{C}$ follows the Joye-Libert scheme exactly, and to $\mathcal{A}$, $\mathcal{A}'$ follows the scheme in section \ref{sec:lcao_scheme} exactly. Since $\mathcal{A}'$ runs in polynomial-time to security parameter when $\mathcal{A}$ does, and no non-negligible advantage adversary to $\mathcal{C}$ exists, we conclude that no non-negligible advantage adversary $\mathcal{A}$ exists. That is, there exists a negligible function $\eta$, such that
     \begin{equation*}
         \mathsf{Adv}^{LCAO}(\mathcal{A}) \leq \eta(\kappa)
     \end{equation*}
-    for security parameter $\kappa$.
+    for security parameter $\kappa$. Lastly, the function $H$ used by our scheme is treated as a random oracle in the Joye-Libert AO proof and will, therefore, prove our scheme secure in the random oracle model as well.
 \end{proof}
 
 
