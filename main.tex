@@ -1230,41 +1230,7 @@ The scheme in section \ref{sec:lcao_scheme} will be shown to meet LCAO by contra
 \begin{equation*}
     \mathsf{Adv}^{LCAO}(\mathcal{A}) > \eta_1(\kappa) \implies \mathsf{Adv}^{AO}(\mathcal{A}') > \eta_2(\kappa)\,,
 \end{equation*}
-for some negligible functions $\eta_1$, $\eta_2$ and security parameter $\kappa$. That is, if we assume our scheme is not LCAO secure, then the Joye-Libert scheme is not AO secure (which is not the case \cite{joyeScalableSchemePrivacyPreserving2013}). The reduction has been summarised visually in figure \ref{fig:proof_summary}.
-\begin{figure}[htbp]
-\centering
-\vspace{\baselineskip}
-\begin{tikzpicture}[font=\footnotesize,scale=0.95]
-    % Bounding box
-    \draw [gray] (0,0) rectangle (6.5,6.5);
-
-    % Outer adversary rectangle
-    \draw[rounded corners=15pt, fill=gray!30] (0.25,6.25) rectangle (6.25,2.5);
-    % Inner adversary rectangle
-    \draw[rounded corners=15pt, fill=gray!60] (0.5,6) rectangle (6,5);
-
-    % Adversaries and challenger
-    \node at (3.25,3) {\Large$\mathcal{A}'$};
-    \node at (3.25,5.5) {\Large$\mathcal{A}$};
-    \node at (3.25,0.5) {\Large$\mathcal{C}$};
-
-    % Arrows
-    \node[text width=3cm, align=center] at (2,1) {Joye-Libert\\AO secure\\scheme};
-    \draw [-latex] (2,1.75) -- (2,2.5);
-
-    \node[text width=3cm, align=center] at (2,3.75) {Our\\LCAO secure\\scheme};
-    \draw [-latex] (2,4.5) --(2,5);
-
-    \node[text width=3cm, align=center] at (4.5,3.75) {``Break''\\Our scheme};
-    \draw [-latex] (4.5,5) -- (4.5,4.5);
-
-    \node[text width=3cm, align=center] at (4.5,1) {``Break''\\Joye-Libert\\scheme};
-    \draw [-latex] (4.5,2.5) -- (4.5,1.75);
-\end{tikzpicture}
-\caption{Summary of our LCAO security proof.}
-\vspace{-\baselineskip}
-\label{fig:proof_summary}
-\end{figure}
+for some negligible functions $\eta_1$, $\eta_2$ and security parameter $\kappa$. That is, if we assume our scheme is not LCAO secure, then the Joye-Libert scheme is not AO secure (which is not the case \cite{joyeScalableSchemePrivacyPreserving2013}).
 \begin{proof}
     Consider adversary $\mathcal{A}$ playing the LCAO game. The following is a construction of an adversary $\mathcal{A}'$ playing the AO game \cite{shiPrivacyPreservingAggregationTimeSeries2011} against a challenger $\mathcal{C}$ using the Joye-Libert aggregation scheme.
     \begin{LaTeXdescription}
