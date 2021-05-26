@@ -267,7 +267,7 @@ While some aspects of privacy-preserving localization are solved in the above me
 % 
 
 \subsection{Notation}
-Throughout this work, we will use the following notation. Lowercase underlined characters are vectors, $\vec{a}$, and random variables are bold, $\rv{a}$. Uppercase bold characters are matrices, $\mat{A}$, with $\mat{A}^{-1}$ denoting the inverse and $\mat{A}^\top$ the transpose. $|a|$ is the absolute value of $a$ and $\lVert\vec{a}\rVert$ the vector norm. Subscripts of the form $\rv{x}_{k|j}$ will denote an estimate of $\rv{x}_k$ using measurements from times up to and including $j$. $\E{\cdot}$ and $\Var{\cdot}$ are used for the expected value and variance, respectively, and encryption and decryption with key $k$ are denoted $\mathcal{E}_{k}(\cdot)$ and $\mathcal{D}_{k}(\cdot)$. Additionally, key $k$ may be ommited when inferrable from context. $\lfloor\cdot\rceil$ rounds to the nearest integer, $a\|b$ stands for a bitwise concatenation of $a$ and $b$ and sets will be written as $\{\dots\}$ while ordered sequences as $\langle\dots\rangle$.
+Throughout this work, we will use the following notation. Lowercase underlined characters are vectors, $\vec{a}$, and random variables are bold, $\rv{a}$. Uppercase bold characters are matrices, $\mat{A}$, with $\mat{A}^{-1}$ denoting the inverse and $\mat{A}^\top$ the transpose. $|a|$ is the absolute value of $a$ and $\lVert\vec{a}\rVert$ the vector norm. Subscripts of the form $\rv{x}_{k|j}$ will denote an estimate of $\rv{x}_k$ using measurements from times up to and including $j$. $\mathsf{E}[\cdot]$ and $\mathsf{Var}[\cdot]$ are used for the expected value and variance, respectively, and encryption and decryption with key $k$ are denoted $\mathcal{E}_{k}(\cdot)$ and $\mathcal{D}_{k}(\cdot)$. Additionally, key $k$ may be ommited when inferrable from context. $\lfloor\cdot\rceil$ rounds to the nearest integer, $a\|b$ stands for a bitwise concatenation of $a$ and $b$ and sets will be written as $\{\dots\}$ while ordered sequences as $\langle\dots\rangle$.
 
 % 
 % 8888888b.  8888888b.   .d88888b.  888888b.   888      8888888888 888b     d888 
@@ -664,17 +664,47 @@ Lastly, we make the following remark about a possible implicit weight.
 % 
 
 \section{Privacy-Preserving Localization} \label{sec:priv_localization}
-With the relevant preliminaries, we now apply the LCAO secure scheme to our original localization problem. Recall we are considering a navigator in the presence of $n$ range sensors. The navigator runs a local filter, computing its update step with equations  and , where received information from each sensor $i$ consists of the measurement vector
+To produce an estimate of the state $\vec{x}_k$ such that communication between $n$ range sensors and the navigator is reducible to the linear-combination aggregation protocol, we make use of an algebraic reformulation of the Extended Kalman Filter (EKF), the Extended Information Filter (EIF) \cite{maybeckStochasticModelsEstimation1982}, which reduces the filter update step to a single summation. The EIF update step requires the predicted state estimate $\vec{x}_{k|k-1}$ and estimate covariance $\mat{P}_{k|k-1}$ in the information vector and matrix forms
 \begin{equation}
-    \rvec{i}_{k,i} = \mat{H}^\top_{k,i} r^{-1}_i (\rv{z}_{k,i} - h_i(\rvec{x}_{k|k-1}) + \mat{H}_{k,i}\rvec{x}_{k|k-1}) \label{eqn:measurement_vec}
+    \vec{y}_{k|k-1} = \mat{P}_{k|k-1}^{-1}\vec{x}_{k|k-1} \quad\textrm{and}\quad \mat{Y}_{k|k-1} = \mat{P}_{k|k-1}^{-1}\,,
+\end{equation}
+respectively. In this form, the update equations for $n$ sensor measurements at time $k$, given process and measurement models \eqref{eqn:system_model} and \eqref{eqn:measurement_model}, are given by
+\begin{equation}
+    \begin{split}
+        &\vec{y}_{k|k} = \vec{y}_{k|k-1} + \\
+        &\quad \sum^n_{i=1}\mat{H}^\top_{k,i} r^{-1}_i (z_{k,i} - h_i(\vec{x}_{k|k-1}) + \mat{H}_{k,i}\vec{x}_{k|k-1})
+    \end{split} \label{eqn:eif_info_vec_update}
+\end{equation}
+and
+\begin{equation}
+    \mat{Y}_{k|k} = \mat{Y}_{k|k-1} + \sum^n_{i=1}\mat{H}^\top_{k,i} r^{-1}_i \mat{H}_{k,i}\,, \label{eqn:eif_info_mat_update}
+\end{equation}
+with Jacobians
+\begin{equation}
+    \mat{H}_{k,i} = \left.\frac{\partial h_i}{\partial \vec{x}}\right|_{\rvec{x}_{k|k-1}} \label{eqn:measurement_jacobian}
+\end{equation}
+for sensors $1 \leq i \leq n$. The filter's prediction step can be computed by converting information vector $\vec{y}_{k|k}$ and matrix $\mat{Y}_{k|k}$ back to state estimate and covariance 
+\begin{equation}
+    \vec{x}_{k|k} = \mat{Y}_{k|k}^{-1}\vec{y}_{k|k} \quad\textrm{and}\quad \mat{P}_{k|k} = \mat{Y}_{k|k}^{-1}\,,
+\end{equation}
+before using the normal EKF prediction equations
+\begin{equation}
+    \vec{x}_{k+1|k} = \vec{f}(\vec{x}_{k|k}) \quad\textrm{and}\quad \mat{P}_{k+1|k} = \mat{F}_k\mat{P}_{k|k}\mat{F}_k^\top + \mat{Q}_k\,,
+\end{equation}
+with Jacobian
+\begin{equation}
+    \mat{F}_{k} = \left.\frac{\partial \vec{f}}{\partial \vec{x}}\right|_{\vec{x}_{k|k}}\,. \label{eqn:jacobian_f}
+\end{equation}
+
+In the form above, at every timestep $k$, all sensitive sensor information required for state estimation is captured in the measurement vector
+\begin{equation}
+    \vec{i}_{k,i} = \mat{H}^\top_{k,i} r^{-1}_i (z_{k,i} - h_i(\vec{x}_{k|k-1}) + \mat{H}_{k,i}\vec{x}_{k|k-1}) \label{eqn:measurement_vec}
 \end{equation}
 and the measurement matrix
 \begin{equation}
     \mat{I}_{k,i} = \mat{H}^\top_{k,i} r^{-1}_i \mat{H}_{k,i}\,, \label{eqn:measurement_mat}
 \end{equation}
-at each time-step $k$. In this form, all sensitive sensor information is exclusively found in $\rvec{i}_{k,i}$ and $\mat{I}_{k,i}$. Namely, their measurements $\rv{z}_{k,i}$, measurement variances $r_i$ and locations $\vec{s}_i$; captured in measurement functions $h_i$ and Jacobians $\mat{H}_{k,i}$. 
-
-The reason for using a linear-combination aggregation scheme in this scenario is due to wanting to compute $\rvec{i}_{k,i}$ and $\mat{I}_{k,i}$ at the sensors, which would require the navigator to disclose some information in $\rvec{x}_{k|k-1}$ for the computing of Jacobians $\mat{H}_{k,i}$. We want to reformulate $\rvec{i}_{k,i}$ and $\mat{I}_{k,i}$ such that the sensors can use the LCAO secure scheme, with location information in $\rvec{x}_{k|k-1}$ as the weights from the navigator. As was shown in Section , this will guarantee that sensors cannot learn navigator location information $\rvec{x}_{k|k-1}$, and that the navigator cannot learn individual sensor values required for computing $\rvec{i}_{k,i}$ and $\mat{I}_{k,i}$. From \eqref{eqn:measurement_vec} and \eqref{eqn:measurement_mat} we see that such a linear reformulation will set requirements on the possible measurement functions $h_i$. 
+namely, their measurements $z_{k,i}$, measurement variances $r_i$ and locations $\vec{s}_i$; captured in measurement functions $h_i$ and Jacobians $\mat{H}_{k,i}$. $\vec{i}_{k,i}$ and $\mat{I}_{k,i}$, however, also require the current predicted state estimate $\vec{x}_{k|k-1}$ to be computed (in $h_i$ and $\mat{H}_{k,i}$). For this reason, our goal is to reformulate \eqref{eqn:measurement_vec} and \eqref{eqn:measurement_mat} to be computable at each sensor $i$ as a linear combination of functions of the navigator state estimate (weights), and subsequently aggregated at the navigator. Application of the linear-combination aggregation scheme proposed would in turn guarantee that sensors do not learn the navigator state, and that the navigator learns only the aggregation required for updating its state estimate in \eqref{eqn:eif_info_vec_update} and \eqref{eqn:eif_info_mat_update}.
 
 % 
 % ########     ###    ##    ##  ######   ########    ##     ##  #######  ########  
@@ -688,21 +718,19 @@ The reason for using a linear-combination aggregation scheme in this scenario is
 
 \subsection{Range Measurement Modification} \label{subsec:range_measurement_mod}
 
-% INTRO
-
-Recalling the state definition \eqref{eqn:state_definition} and two-dimensional measurement model \eqref{eqn:measurement_model}, we can see that $h_i$ \textit{cannot} be rearranged to a linear combination of elements private to the navigator. In addition, the Jacobian of $h_i$ at $\rvec{x}_{k|k-1}$,
+The first thing we note when wanting to decompose $\vec{i}_{k,i}$ and $\mat{I}_{k,i}$ to a linear combination of functions of $\vec{x}_{k|k-1}$, is that $h_i$ cannot be rearranged in this way due to the present square-root. Similarly, the Jacobian of $h_i$ at $\vec{x}_{k|k-1}$,
 \begin{equation}
     \mat{H}_{k,i} = 
     \begin{bmatrix}
-        \frac{\rv{x}_{k|k-1} - s_{x,i}}{\sqrt{(\rv{x}_{k|k-1} - s_{x,i})^2 + (\rv{y}_{k|k-1} - s_{y,i})^2}} \\
-        \frac{\rv{y}_{k|k-1} - s_{y,i}}{\sqrt{(\rv{x}_{k|k-1} - s_{x,i})^2 + (\rv{y}_{k|k-1} - s_{y,i})^2}} 
+        \frac{x_{k|k-1} - s_{x,i}}{\sqrt{(x_{k|k-1} - s_{x,i})^2 + (y_{k|k-1} - s_{y,i})^2}} \\
+        \frac{y_{k|k-1} - s_{y,i}}{\sqrt{(x_{k|k-1} - s_{x,i})^2 + (y_{k|k-1} - s_{y,i})^2}} 
     \end{bmatrix}\,,
 \end{equation}
-cannot be either. Therefore, we consider the modified measurement functions
+cannot be either. We, therefore, consider the modified measurement functions
 \begin{equation}
     h'_i(\vec{x}) = h_i(\vec{x})^2\,. \label{eqn:modified_measurement_func}
 \end{equation}
-A measurement function in this form allows rearrangement to a linear combination of navigator information, and thus of the corresponding modified measurement vector $\rvec{i}'_{k,i}$ and measurement matrix $\mat{I}'_{k,i}$ as well. The modified measurement functions $h'_i$ can be written as
+A measurement function in this form allows rearrangement of $h'_i$ and the corresponding Jacobian $\mat{H}'_{k,i}$ to a linear combination of powers of location elements in $\vec{x}_{k|k-1}$, as
 \begin{equation}
     \begin{split}
         h'_i(\vec{x}) &= \left\lVert
@@ -713,85 +741,60 @@ A measurement function in this form allows rearrangement to a linear combination
         &= x^2 + y^2 -2s_{x,i}x -2s_{y,i}y +s_{x,i}^2 +s_{y,i}^2
     \end{split}\,,
 \end{equation}
-and the corresponding Jacobians $\mat{H}'_{k,i}$ as
+and
 \begin{equation}
     \mat{H}'_{k,i} = 
     \begin{bmatrix}
-        2\rv{x}_{k|k-1} - 2s_{x,i} \\
-        2\rv{y}_{k|k-1} - 2s_{y,i}
+        2x_{k|k-1} - 2s_{x,i} \\
+        2y_{k|k-1} - 2s_{y,i}
     \end{bmatrix}\,. \label{eqn:modified_jacobian}
 \end{equation}
-From the above we see that $h'_i(\rvec{x}_{k|k-1})$ and $\mat{H}'_{k,i}$ can be rearranged as linear combinations of the weights $\rv{x}_{k|k-1}^2$, $\rv{y}_{k|k-1}^2$, $\rv{x}_{k|k-1}$ and $\rv{y}_{k|k-1}$, which capture all the required information that is private to the navigator. 
-
-To show how $\rvec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ can be formulated in a similar manner using , we require the existance of a modified measurement model of the form
+Here, $h'_i$ and $\mat{H}'_{k,i}$ are linear combinations of $x_{k|k-1}^2$, $y_{k|k-1}^2$, $x_{k|k-1}$ and $y_{k|k-1}$. To show how $\rvec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ can be similarly rearranged, we also require the existence of measurements following a modified measurement model of the form
 \begin{equation}
-    \rv{z}'_{k,i} = h'_i(\rvec{x}_k)+\rv{v}'_{k,i}\,, \label{eqn:modified_measurement_model}
+    z'_{k,i} = h'_i(\vec{x}_k)+v'_{k,i}\,, \label{eqn:modified_measurement_model}
 \end{equation}
-where $\rv{z}'_{k,i}$ is the modified measurement, and noise $\rv{v}'_{k,i}$ is zero-mean with known variance. The approximation of $\rv{z}'_{k,i}$ and its noise variance $\rv{r}_{k,i}$ from original measurements and variances $\rv{z}_{k,i}$ and $r_i$ will be shown in Section \ref{subsec:range_measurement_mod}. 
+where $z'_{k,i}$ is the modified measurement, and noise term $v'_{k,i}$ is zero-mean and has a known variance $r_{k,i}$.
 
-% REST
-
-In Section , we assumed the existance of a measurement model \eqref{eqn:modified_measurement_model} where modified sensor measurements $\rv{z}'_{k,i}$ had zero-mean noises with variances $\rv{r}_{k,i}$. In practice, conversion of range measurements $\rv{z}_{k,i}$ to $\rv{z}'_{k,i}$ is complicated by the noise term $\rv{v}_{k,i} \sim \mathcal{N}(0, r_i)$ in \eqref{eqn:measurement_model}. Squaring the range measurement produces
+The approximation of $z'_{k,i}$ and its variance $\mathsf{Var}[v'_{k,i}]$ from the original measurements $z_{k,i}$ are complicated by the noise term $v_{k,i} \sim \mathcal{N}(0, r_i)$ in \eqref{eqn:measurement_model}. Squaring the original range measurements produces
 \begin{equation}
     \begin{split}
-        \rv{z}_{k,i}^2 &= (h_i(\rvec{x}_k) + \rv{v}_{k,i})^2 \\
-        &= h_i(\rvec{x}_k)^2 + 2h_i(\rvec{x}_k)\rv{v}_{k,i} + \rv{v}_{k,i}^2 \\
-        &= h'_i(\rvec{x}_k) + 2h_i(\rvec{x}_k)\rv{v}_{k,i} + \rv{v}_{k,i}^2\,,
+        z_{k,i}^2 &= (h_i(\vec{x}_k) + v_{k,i})^2 \\
+        &= h'_i(\vec{x}_k) + 2h_i(\vec{x}_k)v_{k,i} + v_{k,i}^2\,,
     \end{split}
 \end{equation}
-with new noise term, $2h_i(\rvec{x}_k)\rv{v}_{k,i} + \rv{v}_{k,i}^2$, now dependent on the measurement function $h_i$ and no longer zero-mean or Gaussian. We can compute the mean of the new noise term (a function of the Gaussian term $\rv{v}_{k,i}$) as
+with a new noise term $2h_i(\vec{x}_k)v_{k,i} + v_{k,i}^2$, now dependent on the measurement function $h_i$, and no longer zero-mean or Gaussian. We can compute the mean of this new noise term (a function of the Gaussian term $v_{k,i}$) as
 \begin{equation}
-    \E{2h_i(\rvec{x}_k)\rv{v}_{k,i} + \rv{v}_{k,i}^2} = r_i\, \label{eqn:modified_noise_mean}
+    \mathsf{E}[2h_i(\vec{x}_k)v_{k,i} + v_{k,i}^2] = r_i\, \label{eqn:modified_noise_mean}
 \end{equation}
-and define modified measurements as
+and mean-adjust modified measurements as
 \begin{equation} \label{eqn:modified_measurement}
     \begin{split}
-        \rv{z}'_{k,i} &= \rv{z}_{k,i}^2 - r_i \\
-        &= h_i(\rvec{x}_k)^2 + 2h_i(\rvec{x}_k)\rv{v}_{k,i} + \rv{v}_{k,i}^2 - r_i \\
-        &= h'_i(\rvec{x}_k) + \rv{v}'_{k,i}\,,
+        z'_{k,i} &= z_{k,i}^2 - r_i \\
+        &= h_i(\vec{x}_k)^2 + 2h_i(\vec{x}_k)v_{k,i} + v_{k,i}^2 - r_i \\
+        &= h'_i(\vec{x}_k) + v'_{k,i}\,,
     \end{split}
 \end{equation}
-with now zero-mean noise $\rv{v}'_{k,i} = 2h_i(\rvec{x}_k)\rv{v}_{k,i} + \rv{v}_{k,i}^2 - r_i$. The noise in this case (again a function of white Gaussian term $\rv{v}_{k,i}$) has variance 
+with now zero-mean noise $v'_{k,i} = 2h_i(\vec{x}_k)v_{k,i} + v_{k,i}^2 - r_i$. The noise in this case (again a function of Gaussian term $v_{k,i}$) has variance 
 \begin{equation}
-    \Var{\rv{v}'_{k,i}} = 4h_i(\rvec{x}_k)^2r_i + 2r_i^2
+    \mathsf{Var}[v'_{k,i}] = 4h_i(\vec{x}_k)^2r_i + 2r_i^2
 \end{equation}
-and is dependent on $h_i(\rvec{x}_k)$. To use the modified measurement function \eqref{eqn:modified_measurement} with an EIF, we require an estimate of its noise variance using only the values available to the sensor, $\rv{z}_{k,i}$ and $r_i$. A conservative estimate of the variance (\textit{i.e.}, a larger estimate resulting in less confidence in measurements) is desirable to avoid increasing the likeliness of filter divergence. While replacing $h_i(\rvec{x}_k)$ with $\rv{z}_{k,i}$ only provides a conservative estimate when
+and is also dependent on $h_i(\vec{x}_k)$. To use the modified measurement \eqref{eqn:modified_measurement} with the EIF, we require an estimate for $\mathsf{Var}[v'_{k,i}]$ at the sensor as well. Additionally, a conservative estimate (\textit{i.e.}, a larger variance resulting in less confidence in measurements) is desirable to reduce filter divergence. The naive approach, replacing $h_i(\vec{x}_k)$ with $z_{k,i}$, only provides a conservative estimate when
 \begin{equation}
     \begin{split}
-        &\rv{z}_{k,i} > h_i(\rvec{x}_k) \\
-        \implies &\rv{z}_{k,i} - h_i(\rvec{x}_k) > 0 \\
-        \implies &\rv{v}_{k,i} > 0\,,
+        &z_{k,i} > h_i(\vec{x}_k) \\
+        \implies &v_{k,i} > 0\,,
     \end{split}
 \end{equation}
-and cannot be guaranteed, we can instead provide a conservative estimate with $95\%$ confidence, by shifting measurement $\rv{z}_{k,i}$ by two standard deviations $\sqrt{r_i}$. Thus, the modified measurement variance for sensor $i$ at time $k$ is conservatively approximated by
+which cannot be guaranteed. Instead, we provide a conservative estimate with $95\%$ confidence due to the Gaussianity of $v_{k,i}$, by adjusting the replacement term $z_{k,i}$ by two of its standard deviations $\sqrt{r_i}$. The modified measurement's variance at time $k$ is therefore conservatively approximated by
 \begin{equation}
     \begin{split}
-        \rv{r}_{k, i} &= 4(\rv{z}_{k,i} + 2\sqrt{r_i})^2r_i + 2r_i^2 \\
-        &\gtrapprox \Var{\rv{v}'_{k,i}}
+        r_{k, i} &= 4(z_{k,i} + 2\sqrt{r_i})^2r_i + 2r_i^2 \\
+        &\gtrapprox \Var{v'_{k,i}}
     \end{split}\,. \label{eqn:modified_measurement_variance_estimate}
 \end{equation}
-Together, the model and variance, \eqref{eqn:modified_measurement} and \eqref{eqn:modified_measurement_variance_estimate}, provide a suitable substitute for the required measurement model \eqref{eqn:modified_measurement_model} and can be used to achieve the desired linear properties using only the available range sensors.
+for each sensor $i$.
 
-% % 
-% % ##     ##   ### ##     ## ###      ########  ########  #######   ######  
-% % ##     ##  ##    ##   ##    ##     ##     ## ##       ##     ## ##    ## 
-% % ##     ## ##      ## ##      ##    ##     ## ##       ##     ## ##       
-% % ######### ##       ###       ##    ########  ######   ##     ##  ######  
-% % ##     ## ##      ## ##      ##    ##   ##   ##       ##  ## ##       ## 
-% % ##     ##  ##    ##   ##    ##     ##    ##  ##       ##    ##  ##    ## 
-% % ##     ##   ### ##     ## ###      ##     ## ########  ##### ##  ######  
-% % 
-
-% \subsection{Measurement Model Requirements}
-% From the definition of matrix multiplication, we know that matrices whose elements are linear combinations of weights can be multiplied to produce elements of new linear combinations, with new weights as functions dependent only on weights from the original matrices. For example, consider dimension $D\times D$ matrices $\mat{A}$ and $\mat{B}$, where element $(v,w)$ in matrix $\mat{A}$ is of the form $\sum_{i=0}^W a_{i,v,w}x_{i,v,w}$ and similarly for matrix $\mat{B}$, the form $\sum_{i=0}^W b_{i,v,w}y_{i,v,w}$. If we consider $a_{i,v,w}$ and $b_{i,v,w}$ as the weight terms, we can write element $(v,w)$ of a product matrix $\mat{A}\mat{B}$, as a linear combination of functions dependent only on these weights, as
-% \begin{equation}
-%     \begin{split}
-%         \sum_{d=0}^D&\left(\left(\sum_{i=0}^W a_{i,v,d}x_{i,v,d}\right)\left(\sum_{i=0}^W b_{i,d,w}y_{i,d,w}\right)\right) \\
-%         &=\sum_{d=0}^N\left(\sum_{i=0}^W\sum_{j=0}^W a_{i,v,d}x_{i,v,d}b_{j,d,w}y_{j,d,w}\right) \\
-%         &=\sum_{d=0}^N\sum_{i=0}^W\sum_{j=0}^W (a_{i,v,d}b_{j,d,w})x_{i,v,d}y_{j,d,w}\,.
-%     \end{split} \label{eqn:matrix_mult_weights}
-% \end{equation}
-% Similarly, scalar multiplication also holds this property. It is, therefore, sufficient for $h_i$ and $\mat{H}_{k,i}$ to be linear combinations of information private to the navigator, for $\rvec{i}_{k,i}$ and $\mat{I}_{k,i}$ to be as well. Next, we will show how this can be achieved for the specific case of two-dimensional range-only localization.
+The existence of modified measurements $z'_{k,i}$ and their estimated variances $r_{k, i}$ are sufficient for sensors to compute measurement vector $\vec{i}_{k,i}$ and matrix $\mat{I}_{k,i}$ in the required form for linear-combination aggregation.
 
 % 
 % ##        #######   ######  
@@ -804,7 +807,13 @@ Together, the model and variance, \eqref{eqn:modified_measurement} and \eqref{eq
 % 
 
 \subsection{Localization} \label{subsec:localization}
-With the existence of \eqref{eqn:modified_measurement_model}, measurement vector and measurement matrix linear combinations can be given in the same form as , by
+As $h'_i$ and $\mat{H}'_{k,i}$ can be written as linear combinations of powers of location elements in $\vec{x}_{k|k-1}$, $\vec{i}_{k,i}$ and $\mat{I}_{k,i}$ can too. 
+
+
+
+After modifying measurements by . to produce modified measurement functions and Jacobians . and ., 
+
+With the existence of \eqref{eqn:modified_measurement_model}, measurement vector and measurement matrix linear combinations can be given in a similar form by
 \begin{equation}
     \begin{split}
         \rvec{i}'_{k,i} &= \mat{H}_{k,i}^{\prime\top} \rv{r}_{k,i}^{-1}(\rv{z}'_{k,i} - h'_i(\rvec{x}_{k|k-1}) + \mat{H}'_{k,i}\rvec{x}_{k|k-1}) \\
