@@ -378,7 +378,7 @@ The security notions we want the above algorithms to meet reflect the previously
     \item[Linear-Combination Aggregator Obliviousness] No colluding subset \textit{excluding} the navigator gains additional information about the remaining sensor values to be weighted, $a^{(t)}_{i,j},\,1\leq j\leq m$, where sensor $i$ is not colluding, given only encryptions of their linear combinations $l_i$ from the current and previous instances. Any colluding subset \textit{including} the navigator learns only the sum of all linear combinations weighted by weights of their choice, $\sum^{n}_{i=1}l_i^{(t)}=\sum^{n}_{i=1}\sum^{m}_{j=1} a^{(t)}_{i,j}\omega^{(t)}_j$.
 \end{LaTeXdescription}
 While indistinguishable weights can be achieved by encrypting weights with an encryption scheme meeting the notion of Indistinguishability under the Chosen Ciphertext Attack (IND-CPA) \cite{katzIntroductionModernCryptography2008}, the novel notion of Linear-Combination Aggregator Obliviousness (LCAO) has been formalised as a typical cryptographic game between attacker and challenger in appendix \ref{app:lcao}. Lastly, we conclude the cryptographic problem definition with the following important remark.
-\begin{remark} \label{rem:lcao_leakage}
+\begin{remark}
     A leakage function including weights from the navigator requires extra care to be taken when giving its definition. If an attacker compromises the navigator (which need not follow the estimation protocol), they have control over the weights, and therefore the leakage function. We note that in the leakage function above, $\sum^n_{i=1}\sum^m_{j=1}a^{(t)}_{i,j}\omega^{(t)}_j$, an individual sum weighted by the same weight may be learned by an attacker, \textit{e.g.}, $\sum^n_{i=1}a^{(t)}_{i,1}$ given weights $(1,0,\dots,0)$, but that individual sensor values $a^{(t)}_{i,j}$ remain private due to the assumption of a consistent broadcast.
 \end{remark}
 
@@ -637,7 +637,7 @@ Additionally, we note that in the above construction, all weights $\omega^{(t)}_
 The security proof of this scheme must show that both encrypted weights meet IND-CPA and encrypted aggregation meets LCAO. As weights are encrypted with the Paillier encryption scheme, the first requirement is already met. To show that aggregation meets LCAO, a reduction proof is given in appendix \ref{app:proof}.
 
 Lastly, we make the following remark about a possible implicit weight.
-\begin{remark} \label{rem:lcao_implicit_weight}
+\begin{remark}
     The construction of the above scheme supports linearly combining the implicit weight $\omega^{(t)}_j = 1$, by replacing
     \begin{equation}
         \mathcal{E}_{pk_0}(1)^{a^{(t)}_{i,j}} = (N+1)^{1}\rho_j^N \pmod{N^2}
@@ -947,7 +947,7 @@ Measurement modification, real number encoding and linear combination aggregatio
     (N+1)^{\mathsf{E}_{1}(2r_{k,i}^{-1}s_{x,i}s_{y,i}^2)}\cdot$\par
     \ $(N+1)^{\mathsf{E}_{1}(-2r_{k, i}^{-1}s_{x,i}z_{k,i}')}
     H(k\mathbin\|1\mathbin\|1\mathbin\|0)\pmod{N^2}$
-    \State Compute $\alpha_{2}^{(i)}$ using \eqref{eqn:hrz_linear_comb}, \eqref{eqn:our_scheme_lin_comb} and remark \ref{rem:lcao_implicit_weight} in the form above
+    \State Compute $\alpha_{2}^{(i)}$ using \eqref{eqn:hrz_linear_comb}, \eqref{eqn:our_scheme_lin_comb} and the remark from section \ref{sec:lcao_scheme} in the form above
     \For{$v \gets 1$ to $2$}
         \State Send $\alpha_{v}^{(i)}$ to the navigator
     \EndFor
@@ -957,7 +957,7 @@ Measurement modification, real number encoding and linear combination aggregatio
     \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(x_{k|k-1}))^{\mathsf{E}_{0}(-8r_{k, i}^{-1}s_{x,i})}\cdot$\par
     \ $(N+1)^{\mathsf{E}_{1}(4r_{k,i}^{-1}s_{x,i}^2)}\cdot$\par
     \ $H(k\mathbin\|1\mathbin\|1\mathbin\|1)\pmod{N^2}$
-    \State Compute remaining $\beta_{vw}^{(i)}$ using \eqref{eqn:hrh_linear_comb}, \eqref{eqn:our_scheme_lin_comb} and remark \ref{rem:lcao_implicit_weight} in the form above
+    \State Compute remaining $\beta_{vw}^{(i)}$ using \eqref{eqn:hrh_linear_comb}, \eqref{eqn:our_scheme_lin_comb} and the remark from section \ref{sec:lcao_scheme} in the form above
     \For{$v \gets 1$ to $2$}
         \For{$w \gets 1$ to $2$} 
             \State Send $\beta_{vw}^{(i)}$ to the navigator
@@ -1096,18 +1096,11 @@ Algorithms \ref{alg:nav_prediction}, \ref{alg:measurement_info} and \ref{alg:nav
 % 
 
 \subsection{Leakage} \label{subsec:leakage}
-With the algorithm defined, we can analyze the localization leakage when the strictly defined LCAO leakage is taken into account. We recall the assumptions on participant capabilities made in Section . Global and consistent broadcasting is in line with the LCAO definition and required to guarantee the scheme's leakage. Honest-but-curious sensors are not required for scheme privacy, but avoid the possibility of malicious sensors gaining knowledge about other sensors' measurements when navigator behavior is dependent on its estimate. This may be achievable by detecting changes in measurements after reporting false ones. As misbehaving sensors are also a known problem which complicates homomorphic operations, active malicious sensors are not considered in the scope of this work.
-
-The aggregation operation of our encryption scheme leaks the sums of sensor measurement vectors and matrices $\sum_{i=1}^n\rvec{i}'_{k,i}$ and $\sum_{i=1}^n\mat{I}'_{k,i}$, however, as stated in Remark \ref{rem:lcao_leakage}, weights chosen by a corrupted navigator mean that individual sums of coefficients can be leaked as well. That is, sums of coefficients in \eqref{eqn:hrz_linear_comb} and \eqref{eqn:hrh_linear_comb} (\textit{i.e.}, $\sum_{i=1}^n2\rv{r}^{-1}_{k,i}$, $\sum_{i=1}^n-\rv{r}^{-1}_{k,i}s_{x,i}$, $\sum_{i=1}^n-2\rv{r}^{-1}_{k,i}s_{x,i}$, $\sum_{i=1}^n2\rv{r}^{-1}_{k,i}\rv{z}'_{k,i}$, \dots) are leaked to a corrupted navigator.
-
-From the leaked sums of coefficients, we see that all information private to the sensors and broadcast to the navigator, namely their modified measurements $\rv{z}'_{k,i}$, variance estimates $\rv{r}_{k,i}$ and locations $\vec{s}_i$, are present only in the sums
+With the privacy-preserving EIF defined in the previous section, we can now interpret the aggregation leakage of an LCAO scheme in the context of range sensor localisation. The leakage function from the $\mathsf{AggDec}$ algorithm corresponds to the information vector and matrix sums $\sum_{i=1}^n\vec{i}'_{k,i}$ and $\sum_{i=1}^n\mat{I}'_{k,i}$, respectively. However, recalling the remark in section \ref{subsec:crypto_problem}, a compromised navigator can also learn the individual sums weighted by the same weight, which in this case means the leakage of $\{\sum_{i=1}^n2r^{-1}_{k,i},\ \sum_{i=1}^n-r^{-1}_{k,i}s_{x,i},\ \sum_{i=1}^n-2r^{-1}_{k,i}s_{x,i},\ \dots\}$. From these leaked sums, we can see that private sensor information, $z'_{k,i}$, $r_{k,i}$ and $\vec{s}_i$, is present only in their complete sums
 \begin{equation}
-    \sum_{i=1}^n\rv{z}'_{k,i}\,,\ \sum_{i=1}^n\rv{r}_{k,i}\,,\ \sum_{i=1}^ns_{x,i}\ \textrm{and}\ \sum_{i=1}^ns_{y,i}\,.\label{eqn:localization_leakage}
+    \sum_{i=1}^nz'_{k,i}\,,\ \sum_{i=1}^nr_{k,i}\,,\ \sum_{i=1}^ns_{x,i}\ \textrm{and}\ \sum_{i=1}^ns_{y,i}\,,\label{eqn:localisation_leakage}
 \end{equation}
-From these sums and the definitions \eqref{eqn:modified_measurement} and \eqref{eqn:modified_measurement_variance_estimate}, we conclude that the navigator can \textit{at most} learn the sums of sensor private data, which in practice corresponds to the average sensor modified measurements, estimated variances and locations.
-\begin{theorem}
-    In the context of our localization scheme, leakage of the incorporated LCAO secure encryption scheme corresponds to the leakage of average sensor private information, given by the sums in \eqref{eqn:localization_leakage}.
-\end{theorem}
+which in practice may correspond to their averages. We can therefore say, in the context of our proposed localisation method, LCAO leakage corresponds to the averages of sensor private information, while individual sensor information remains private. This is in line with intuition given an aggregation leakage function.
 
 % 
 %  .d8888b. 8888888 888b     d888 
