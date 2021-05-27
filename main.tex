@@ -690,7 +690,7 @@ for sensors $1 \leq i \leq n$. The filter's prediction step can be computed by c
 before using the normal EKF prediction equations
 \begin{equation}
     \vec{x}_{k+1|k} = \vec{f}(\vec{x}_{k|k}) \quad\textrm{and}\quad \mat{P}_{k+1|k} = \mat{F}_k\mat{P}_{k|k}\mat{F}_k^\top + \mat{Q}_k\,,
-\end{equation}
+\end{equation} \label{eqn:ekf_prediction}
 with Jacobian
 \begin{equation}
     \mat{F}_{k} = \left.\frac{\partial \vec{f}}{\partial \vec{x}}\right|_{\vec{x}_{k|k}}\,. \label{eqn:jacobian_f}
@@ -767,12 +767,12 @@ with a new noise term $2h_i(\vec{x}_k)v_{k,i} + v_{k,i}^2$, now dependent on the
     \mathsf{E}[2h_i(\vec{x}_k)v_{k,i} + v_{k,i}^2] = r_i\, \label{eqn:modified_noise_mean}
 \end{equation}
 and mean-adjust modified measurements as
-\begin{equation} \label{eqn:modified_measurement}
+\begin{equation}
     \begin{split}
         z'_{k,i} &= z_{k,i}^2 - r_i \\
         &= h_i(\vec{x}_k)^2 + 2h_i(\vec{x}_k)v_{k,i} + v_{k,i}^2 - r_i \\
         &= h'_i(\vec{x}_k) + v'_{k,i}\,,
-    \end{split}
+    \end{split} \label{eqn:modified_measurement}
 \end{equation}
 with now zero-mean noise $v'_{k,i} = 2h_i(\vec{x}_k)v_{k,i} + v_{k,i}^2 - r_i$. The noise in this case (again a function of Gaussian term $v_{k,i}$) has variance 
 \begin{equation}
@@ -879,6 +879,213 @@ The final step required for computing \eqref{eqn:hrz_linear_comb} and \eqref{eqn
 for elements in row $v$ and column $w$, with $\tau=0$ for those in $\rvec{i}'_{k,i}$ and $\tau=1$ otherwise.
 
 % 
+%    ###    ##        ######   
+%   ## ##   ##       ##    ##  
+%  ##   ##  ##       ##        
+% ##     ## ##       ##   #### 
+% ######### ##       ##    ##  
+% ##     ## ##       ##    ##  
+% ##     ## ########  ######   
+% 
+
+\subsection{Pseudocode} \label{subsec:pseudocode}
+Measurement modification, real number encoding and linear combination aggregation are all required to compute the modified EIF from the previous section in a privacy-preserving manner. In this section, we summarise this entire localisation process and give the pseudocode for its execution. For brevity, we will assume $\phi$ and $M=N$ from section \ref{subsec:encoding} to be public information, and simplify the encoding notation $\mathsf{E}_{N,\phi,d}(\cdot)$ to $\mathsf{E}_{d}(\cdot)$. The privacy-preserving localization filter consists of the following steps.
+\begin{LaTeXdescription}
+    \item[Setup] Run only once, the $\mathsf{Setup}$ algorithm from section \ref{sec:lcao_scheme} is run by a trusted third party, $N$ and $H$ are made public, and the navigator and sensor secret keys, $sk_0=\lambda=\mathsf{lcm}(p-1, q-1)$ and $sk_i$, $1 \leq i \leq n$, are distributed accordingly. 
+
+    \item[Prediction] At each timestep $k$, the navigator computes the typical EKF prediction equations \eqref{eqn:ekf_prediction} before encrypting weights \eqref{eqn:weights_to_broadcast} with algorithm $\mathsf{Enc}$ and broadcasting them to the sensors. This is given by algorithm \ref{alg:nav_prediction}.
+
+    \item[Measurement] At each timestep $k$, sensors modify their measurements with \eqref{eqn:modified_measurement} and \eqref{eqn:modified_measurement_variance_estimate} before computing $\vec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ using algorithm $\mathsf{CombEnc}$ elementwise and sending them back to the navigator. This is given by algorithm \ref{alg:measurement_info}.
+
+    \item[Update] At each timestep $k$, the navigator aggregates and decrypts recieved measurement vectors and matrices with algorithm $\mathsf{AggDec}$, before computing the modified EIF update equations \eqref{eqn:eif_modified_vec_update} and \eqref{eqn:eif_modified_mat_update}. This is given by algorithm \ref{alg:nav_update}.
+\end{LaTeXdescription}
+
+\begin{algorithm}[htbp]
+\caption{Navigator Prediction}\label{alg:nav_prediction}
+\begin{algorithmic}[1]
+    \Procedure{Prediction}{$\vec{x}_{k-1|k-1}$, $\mat{P}_{k-1|k-1}$, $\vec{f}$, $\mat{Q}$, $N$}
+
+    \State Compute $\mat{F}_k$ by \eqref{eqn:jacobian_f}
+    \State $\vec{x}_{k|k-1} \gets \vec{f}(\vec{x}_{k-1|k-1})$
+    \State $\mat{P}_{k|k-1} \gets \mat{F}_k\mat{P}_{k-1|k-1}\mat{F}_k^\top + \mat{Q}_k$
+
+    \State Compute $\mathsf{E}_{0}(x^3_{k|k-1})$ by \eqref{eqn:encode}
+    \State Compute $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(x^3_{k|k-1}))$ by \eqref{eqn:our_scheme_encrypt}
+    \State Broadcast $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(x^3_{k|k-1}))$ to sensors
+    \For{Remaining weights in \eqref{eqn:weights_to_broadcast}} 
+        \State Broadcast weight in the form above
+    \EndFor
+
+    \State \Return $\vec{x}_{k|k-1}, \mat{P}_{k|k-1}$
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[htbp]
+\caption{Measurement at Sensor $i$}\label{alg:measurement_info}
+\begin{algorithmic}[1]
+    \Procedure{Measurement}{$i$, $s_{x,i}$, $s_{y,i}$, $r_i$, $N$, $H$}
+
+    \State Measure $z_{k,i}$
+    \State Compute $z'_{k,i}$ by \eqref{eqn:modified_measurement}
+    \State Compute $r_{k,i}$ by \eqref{eqn:modified_measurement_variance_estimate}
+
+    \State Recieve $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(x^3_{k|k-1}))$
+    \For{Remaining weights in \eqref{eqn:weights_to_broadcast}}
+        \State Recieve weight in the form above
+    \EndFor
+
+    \State Let $\alpha_{v}^{(i)}$ represent an encryption of element $v$ in $\vec{i}'_{k,i}$ from \eqref{eqn:hrz_linear_comb}
+    \State $\alpha_{1}^{(i)} \gets \mathcal{E}_{pk_0}(\mathsf{E}_{0}(x^3_{k|k-1}))^{\mathsf{E}_{0}(2r_{k,i}^{-1})}\cdot$\par
+    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(x_{k|k-1}y^2_{k|k-1}))^{\mathsf{E}_{0}(2r_{k,i}^{-1})}\cdot$\par
+    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(x^2_{k|k-1}))^{\mathsf{E}_{0}(-r_{k, i}^{-1}s_{x,i})}\cdot$\par
+    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(y^2_{k|k-1}))^{\mathsf{E}_{0}(-2r_{k, i}^{-1}s_{x,i})}\cdot$\par
+    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(x_{k|k-1}))^{\mathsf{E}_{0}(2r_{k,i}^{-1}z_{k,i}')}\cdot$\par
+    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(x_{k|k-1}))^{\mathsf{E}_{0}(-2r_{k,i}^{-1}s_{x,i}^2)}\cdot$\par
+    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(x_{k|k-1}))^{\mathsf{E}_{0}(-2r_{k,i}^{-1}s_{y,i}^2)}\cdot$\par
+    \ $(N+1)^{\mathsf{E}_{1}(2r_{k,i}^{-1}s_{x,i}^3)}
+    (N+1)^{\mathsf{E}_{1}(2r_{k,i}^{-1}s_{x,i}s_{y,i}^2)}\cdot$\par
+    \ $(N+1)^{\mathsf{E}_{1}(-2r_{k, i}^{-1}s_{x,i}z_{k,i}')}
+    H(k\mathbin\|1\mathbin\|1\mathbin\|0)\pmod{N^2}$
+    \State Compute $\alpha_{2}^{(i)}$ using \eqref{eqn:hrz_linear_comb}, \eqref{eqn:our_scheme_lin_comb} and remark \ref{rem:lcao_implicit_weight} in the form above
+    \For{$v \gets 1$ to $2$}
+        \State Send $\alpha_{v}^{(i)}$ to the navigator
+    \EndFor
+
+    \State Let $\beta_{vw}^{(i)}$ represent an encryption of element $(v,w)$ in $\mat{I}'_{k,i}$ from \eqref{eqn:hrh_linear_comb}
+    \State $\beta_{11}^{(i)} \gets \mathcal{E}_{pk_0}(\mathsf{E}_{0}(x^2_{k|k-1}))^{\mathsf{E}_{0}(4r_{k,i}^{-1})}\cdot$\par
+    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(x_{k|k-1}))^{\mathsf{E}_{0}(-8r_{k, i}^{-1}s_{x,i})}\cdot$\par
+    \ $(N+1)^{\mathsf{E}_{1}(4r_{k,i}^{-1}s_{x,i}^2)}\cdot$\par
+    \ $H(k\mathbin\|1\mathbin\|1\mathbin\|1)\pmod{N^2}$
+    \State Compute remaining $\beta_{vw}^{(i)}$ using \eqref{eqn:hrh_linear_comb}, \eqref{eqn:our_scheme_lin_comb} and remark \ref{rem:lcao_implicit_weight} in the form above
+    \For{$v \gets 1$ to $2$}
+        \For{$w \gets 1$ to $2$} 
+            \State Send $\beta_{vw}^{(i)}$ to the navigator
+        \EndFor
+    \EndFor
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[htbp]
+\caption{Navigator Update}\label{alg:nav_update}
+\begin{algorithmic}[1]
+    \Procedure{Update}{$\vec{x}_{k|k-1}$, $\mat{P}_{k|k-1}$, $N$, $\lambda$}
+    
+    \For{$v \gets 1$ to $2$}
+        \State Receive $\alpha_{v}^{(i)}$ from each sensor $1\leq i \leq n$
+    \EndFor
+
+    \For{$v \gets 1$ to $2$}
+        \For{$w \gets 1$ to $2$}
+        \State Receive $\beta_{vw}^{(i)}$ from each sensor $1\leq i \leq n$
+        \EndFor
+    \EndFor
+
+    \State Let $\alpha_{v}$ represent an encryption of element $v$ in $\sum_{i=1}^n\vec{i}'_{k,i}$
+    \For{$v \gets 1$ to $2$}
+        \State $\alpha_{v} \gets \prod_{i=1}^n\alpha_{v}^{(i)}$
+        \State Compute $\mathcal{D}_{sk_0}(\alpha_{v})$ with $\lambda$ by \eqref{eqn:our_scheme_decrypt}
+        \State Compute $\mathsf{E}^{-1}_{1}(\mathcal{D}_{sk_0}(\alpha_{v}))$ by \eqref{eqn:decode}
+    \EndFor
+    \State Construct $\sum_{i=1}^n\vec{i}'_{k,i}$ from decoded decryptions above
+
+    \State Let $\beta_{vw}$ represent an encryption of element $(v,w)$ in $\sum_{i=1}^n\mat{I}'_{k,i}$
+    \For{$v \gets 1$ to $2$}
+        \For{$w \gets 1$ to $2$}
+            \State $\beta_{vw} \gets \prod_{i=1}^n\beta_{vw}^{(i)}$
+            \State Compute $\mathcal{D}_{sk_0}(\beta_{vw})$ with $\lambda$ by \eqref{eqn:our_scheme_decrypt}
+            \State Compute $\mathsf{E}^{-1}_{1}(\mathcal{D}_{sk_0}(\beta_{vw}))$ by \eqref{eqn:decode}
+        \EndFor
+    \EndFor
+    \State Construct $\sum_{i=1}^n\mat{I}'_{k,i}$ from decoded decryptions above
+
+    \State $\vec{y}_{k|k} \gets \mat{P}_{k|k-1}^{-1}\vec{x}_{k|k-1} + \sum_{i=1}^n\vec{i}'_{k,i}$
+    \State $\mat{Y}_{k|k} \gets \mat{P}_{k|k-1}^{-1} + \sum_{i=1}^n\mat{I}'_{k,i}$
+    \State $\vec{x}_{k|k} \gets \mat{Y}_{k|k}^{-1}\vec{y}_{k|k}$
+    \State $\mat{P}_{k|k} \gets \mat{Y}_{k|k}^{-1}$
+    \State \Return $\vec{x}_{k|k}, \mat{P}_{k|k}$
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+Algorithms \ref{alg:nav_prediction}, \ref{alg:measurement_info} and \ref{alg:nav_update} have also been summarised graphically in figure \ref{fig:alg_steps}. Here, for brevity, $\mathcal{E}_{pk_0,sk_i}(\cdot)$ and $\mathsf{E}_d(\cdot)$ denote elementwise operations with the same parameters.
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[font=\footnotesize,scale=0.95]
+    % Prediction
+    \draw [gray] (0,2) rectangle (6.5,8);
+    \node at (3.25,7.5) {\small 1. Prediction};
+
+    % Navigator
+    \fill  [blue!40] (2,7) rectangle (4.5,5.5);
+    \pic[xscale=0.22,yscale=0.3] at (3.25,6.6725) {plane};
+    \node at (3.25,5.875) {$\vec{x}_{k|k-1}$, $\mat{P}_{k|k-1}$};
+    
+    % Sensors
+    \fill  (1.25,3) [red!40] ellipse (0.4 and 0.4);
+    \node at (1.25,2.375) {Sensor $1$};
+    \fill  (5.25,3) [red!40] ellipse (0.4 and 0.4);
+    \node at (5.25,2.375) {Sensor $n$};
+        
+    \fill [black] (2.75,3) circle (0.05);
+    \fill [black] (3.25,3) circle (0.05);
+    \fill [black] (3.75,3) circle (0.05);
+        
+    % Arrows
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(3,5.25) (1.5,3.5)};
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(3.5,5.25) (5,3.5)};
+    
+    \fill [lightgray]  (0.25,5) rectangle (6.25,4);
+    \node at (3.25,4.5) {$\left\{\mathcal{E}_{pk_0}(\mathsf{E}_0(\rv{\omega})) \,|\, \rv{\omega} \!\in\! \{\rv{x}^3_{k|k-1}, \rv{y}^3_{k|k-1}, \dots\}\right\}$};
+    
+    
+    % Measurement
+    \draw [gray] (0,-4.25) rectangle (6.5,1.75);
+    \node at (3.25,1.25) {\small 2. Measurement};
+    
+    % Navigator
+    \fill  (3.25,0.25) [blue!40] ellipse (0.4 and 0.4);
+    \pic[xscale=0.22,yscale=0.3] at (3.25,0.4225) {plane};
+        
+    % Sensors
+    \fill  [red!40] (6.25,-3.625)  rectangle (4.25,-2.625);
+    \node at (1.25,-3.875) {Sensor $1$};
+    \fill  [red!40] (2.25,-3.625)  rectangle (0.25,-2.625);
+    \node at (5.25,-3.875) {Sensor $n$};
+    
+    \node at (1.25,-3.125) {$z'_{k,1}$, $r_{k,1}$};
+    \node at (5.25,-3.125) {$z'_{k,n}$, $r_{k,n}$};
+    
+    \fill [black] (2.75,-3.125) circle (0.05);
+    \fill [black] (3.25,-3.125) circle (0.05);
+    \fill [black] (3.75,-3.125) circle (0.05);
+    
+    % Arrows
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(1.25,-2.5) (3,-0.25)};
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(5.25,-2.5) (3.5,-0.25)};
+    
+    \fill [lightgray]  (0.375,-0.875) rectangle (3.125,-1.875);
+    \node[align=center] at (1.75,-1.375) {$\mathcal{E}_{pk_0,sk_1}(\mathsf{E}_1(\vec{i}'_{k,1}))$,\\$\mathcal{E}_{pk_0,sk_1}(\mathsf{E}_1(\mat{I}'_{k,1}))$};
+    \fill [lightgray]  (3.375,-0.875) rectangle (6.125,-1.875);
+    \node[align=center] at (4.75,-1.375) {$\mathcal{E}_{pk_0,sk_n}(\mathsf{E}_1(\vec{i}'_{k,n}))$,\\$\mathcal{E}_{pk_0,sk_n}(\mathsf{E}_1(\mat{I}'_{k,n}))$};
+    
+    
+    % Update
+    \draw [gray] (0,-8.5) rectangle (6.5,-4.5);
+    \node at (3.25,-5) {\small 3. Update};
+    
+    % Navigator
+    \fill  [blue!40] (1.5,-5.5) rectangle (5,-7.5);
+    \pic[xscale=0.22,yscale=0.3] at (3.25,-5.8275) {plane};
+    \node at (3.25,-6.625) {$\sum_{i=1}^n \vec{i}'_{k,i}$, $\sum_{i=1}^n\mat{I}'_{k,i}$};
+    \node at (3.25,-7.125) {$\vec{x}_{k|k}$, $\mat{P}_{k|k}$};
+\end{tikzpicture}
+\caption{Procedure at timestep $k$ for the proposed privacy-preserving EIF.}
+\label{fig:alg_steps}
+\end{figure}
+
+% 
 % ##       ########    ###    ##    ##    ###     ######   ######## 
 % ##       ##         ## ##   ##   ##    ## ##   ##    ##  ##       
 % ##       ##        ##   ##  ##  ##    ##   ##  ##        ##       
@@ -901,224 +1108,6 @@ From these sums and the definitions \eqref{eqn:modified_measurement} and \eqref{
 \begin{theorem}
     In the context of our localization scheme, leakage of the incorporated LCAO secure encryption scheme corresponds to the leakage of average sensor private information, given by the sums in \eqref{eqn:localization_leakage}.
 \end{theorem}
-
-% 
-%    ###    ##        ######   
-%   ## ##   ##       ##    ##  
-%  ##   ##  ##       ##        
-% ##     ## ##       ##   #### 
-% ######### ##       ##    ##  
-% ##     ## ##       ##    ##  
-% ##     ## ########  ######   
-% 
-
-\subsection{Pseudocode} \label{subsec:pseudocode}
-
-Due to the complexity
-several levels of computations
-we summarise the privacy-preserving localisation filter in this section
-
-
-In this section, we piece together our LCAO secure encryption scheme in Section  with the modified measurement model in Sections  and  and define our privacy-preserving localization algorithm.
-
-The privacy-preserving localization filter can be described by the following steps.
-\begin{LaTeXdescription}
-    \item[Setup] The $\mathsf{Setup}$ algorithm from Section  is executed by a trusted third party, $N$ and $H$ are made known to the navigator and all sensors, and the navigator and sensor secret keys, $sk_0=\lambda=\mathsf{lcm}(p-1, q-1)$ and $sk_i$, $1 \leq i \leq n$ respectively, are distributed accordingly. Additionally, we assume that fractional precision $\phi$ from Section \ref{subsec:encoding} is also a public parameter and made known to the navigator and sensors. We will thus simplify the encoding notation $\mathsf{E}_{N,\phi,d}(\cdot)$ to $\mathsf{E}_{d}(\cdot)$.
-
-    \item[Prediction] The navigator computes the typical EKF prediction equations before encrypting state variables and broadcasting to sensors. This is given by Algorithm \ref{alg:nav_prediction}.
-
-    \item[Measurement] Sensors modify their measurements before homomorphically computing measurement vectors and matrices $\rvec{i}'_{k,i}$ and $\mat{I}'_{k,i}$, encrypting them for aggregation, and sending them back to the navigator. Care must be taken when encoding during homomorphic operations to ensure fractional factor $d$ satisfies \eqref{eqn:encoding_homomorphic_add}, in particular when using the property from Remark \ref{rem:lcao_implicit_weight}. This is described by Algorithm \ref{alg:measurement_info}.
-
-    \item[Update] The navigator aggregates measurement vectors and matrices before decrypting them. The typical EIF update equations can then be computed. This is shown in Algorithm \ref{alg:nav_update}.
-\end{LaTeXdescription}
-
-\begin{algorithm}[htbp]
-\caption{Navigator Prediction}\label{alg:nav_prediction}
-\begin{algorithmic}[1]
-    \Procedure{Prediction}{$\rvec{x}_{k-1|k-1}$, $\mat{P}_{k-1|k-1}$, $\vec{f}$, $\mat{Q}$, $N$}
-
-    \State Compute $\mat{F}_k$ by 
-    \State $\rvec{x}_{k|k-1} \gets \vec{f}(\rvec{x}_{k-1|k-1})$
-    \State $\mat{P}_{k|k-1} \gets \mat{F}_k\mat{P}_{k-1|k-1}\mat{F}_k^\top + \mat{Q}$
-
-    \State Compute $\mathsf{E}_{0}(\rv{x}^3_{k|k-1})$ by \eqref{eqn:encode}
-    \State Compute $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}^3_{k|k-1}))$ by \eqref{eqn:our_scheme_encrypt}
-    \State Broadcast $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}^3_{k|k-1}))$ to sensors
-    \For{Remaining weights in \eqref{eqn:weights_to_broadcast}} 
-        \State Broadcast weight in the form above
-    \EndFor
-
-    \State \Return $\rvec{x}_{k|k-1}, \mat{P}_{k|k-1}$
-    \EndProcedure
-\end{algorithmic}
-\end{algorithm}
-
-\begin{algorithm}[htbp]
-\caption{Measurement at Sensor $i$}\label{alg:measurement_info}
-\begin{algorithmic}[1]
-    \Procedure{Measurement}{$i$, $s_{x,i}$, $s_{y,i}$, $r_i$, $N$, $H$}
-
-    \State Measure $\rv{z}_{k,i}$
-    \State Compute $\rv{z}_{k,i}'$ by \eqref{eqn:modified_measurement}
-    \State Compute $\rv{r}_{k, i}$ by \eqref{eqn:modified_measurement_variance_estimate}
-
-    \State Recieve $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}^3_{k|k-1}))$
-    \For{Remaining weights in \eqref{eqn:weights_to_broadcast}}
-        \State Recieve weight in the form above
-    \EndFor
-
-    \State Let $\alpha_{v}^{(i)}$ represent an encryption of element $v$ in $\rvec{i}'_{k,i}$ from \eqref{eqn:hrz_linear_comb}
-    \State $\alpha_{1}^{(i)} \gets \mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}^3_{k|k-1}))^{\mathsf{E}_{0}(2\rv{r}_{k, i}^{-1})}\cdot$\par
-    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}_{k|k-1}\rv{y}^2_{k|k-1}))^{\mathsf{E}_{0}(2\rv{r}_{k, i}^{-1})}\cdot$\par
-    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}^2_{k|k-1}))^{\mathsf{E}_{0}(-\rv{r}_{k, i}^{-1}s_{x,i})}\cdot$\par
-    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{y}^2_{k|k-1}))^{\mathsf{E}_{0}(-2\rv{r}_{k, i}^{-1}s_{x,i})}\cdot$\par
-    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}_{k|k-1}))^{\mathsf{E}_{0}(2\rv{r}_{k, i}^{-1}\rv{z}_{k,i}')}\cdot$\par
-    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}_{k|k-1}))^{\mathsf{E}_{0}(-2\rv{r}_{k, i}^{-1}s_{x,i}^2)}\cdot$\par
-    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}_{k|k-1}))^{\mathsf{E}_{0}(-2\rv{r}_{k, i}^{-1}s_{y,i}^2)}\cdot$\par
-    \ $(N+1)^{\mathsf{E}_{1}(2\rv{r}_{k, i}^{-1}s_{x,i}^3)}
-    (N+1)^{\mathsf{E}_{1}(2\rv{r}_{k, i}^{-1}s_{x,i}s_{y,i}^2)}\cdot$\par
-    \ $(N+1)^{\mathsf{E}_{1}(-2\rv{r}_{k, i}^{-1}s_{x,i}\rv{z}_{k,i}')}
-    H(k\mathbin\|1\mathbin\|1\mathbin\|0)\pmod{N^2}$
-    \State Compute $\alpha_{2}^{(i)}$ using \eqref{eqn:hrz_linear_comb}, \eqref{eqn:our_scheme_lin_comb} and Remark \ref{rem:lcao_implicit_weight} in the form above
-    \For{$v \gets 1$ to $2$}
-        \State Send $\alpha_{v}^{(i)}$ to the navigator
-    \EndFor
-
-    \State Let $\beta_{vw}^{(i)}$ represent an encryption of element $(v,w)$ in $\mat{I}'_{k,i}$ from \eqref{eqn:hrh_linear_comb}
-    \State $\beta_{11}^{(i)} \gets \mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}^2_{k|k-1}))^{\mathsf{E}_{0}(4\rv{r}_{k, i}^{-1})}\cdot$\par
-    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\rv{x}_{k|k-1}))^{\mathsf{E}_{0}(-8\rv{r}_{k, i}^{-1}s_{x,i})}\cdot$\par
-    \ $(N+1)^{\mathsf{E}_{1}(4\rv{r}_{k, i}^{-1}s_{x,i}^2)}\cdot$\par
-    \ $H(k\mathbin\|1\mathbin\|1\mathbin\|1)\pmod{N^2}$
-    \State Compute remaining $\beta_{vw}^{(i)}$ using \eqref{eqn:hrh_linear_comb}, \eqref{eqn:our_scheme_lin_comb} and Remark \ref{rem:lcao_implicit_weight} in the form above
-    \For{$v \gets 1$ to $2$}
-        \For{$w \gets 1$ to $2$} 
-            \State Send $\beta_{vw}^{(i)}$ to the navigator
-        \EndFor
-    \EndFor
-    \EndProcedure
-\end{algorithmic}
-\end{algorithm}
-
-\begin{algorithm}[htbp]
-\caption{Navigator Update}\label{alg:nav_update}
-\begin{algorithmic}[1]
-    \Procedure{Update}{$\rvec{x}_{k|k-1}$, $\mat{P}_{k|k-1}$, $N$, $\lambda$}
-    
-    \For{$v \gets 1$ to $2$}
-        \State Receive $\alpha_{v}^{(i)}$ from each sensor $1\leq i \leq n$
-    \EndFor
-
-    \For{$v \gets 1$ to $2$}
-        \For{$w \gets 1$ to $2$}
-        \State Receive $\beta_{vw}^{(i)}$ from each sensor $1\leq i \leq n$
-        \EndFor
-    \EndFor
-
-    \State Let $\alpha_{v}$ represent an encryption of element $v$ in $\sum_{i=1}^n\rvec{i}'_{k,i}$
-    \For{$v \gets 1$ to $2$}
-        \State $\alpha_{v} \gets \prod_{i=1}^n\alpha_{v}^{(i)}$
-        \State Compute $\mathcal{D}_{sk_0}(\alpha_{v})$ with $\lambda$ by \eqref{eqn:our_scheme_decrypt}
-        \State Compute $\mathsf{E}^{-1}_{1}(\mathcal{D}_{sk_0}(\alpha_{v}))$ by \eqref{eqn:decode}
-    \EndFor
-    \State Construct $\sum_{i=1}^n\rvec{i}'_{k,i}$ from decoded decryptions above
-
-    \State Let $\beta_{vw}$ represent an encryption of element $(v,w)$ in $\sum_{i=1}^n\mat{I}'_{k,i}$
-    \For{$v \gets 1$ to $2$}
-        \For{$w \gets 1$ to $2$}
-            \State $\beta_{vw} \gets \prod_{i=1}^n\beta_{vw}^{(i)}$
-            \State Compute $\mathcal{D}_{sk_0}(\beta_{vw})$ with $\lambda$ by \eqref{eqn:our_scheme_decrypt}
-            \State Compute $\mathsf{E}^{-1}_{1}(\mathcal{D}_{sk_0}(\beta_{vw}))$ by \eqref{eqn:decode}
-        \EndFor
-    \EndFor
-    \State Construct $\sum_{i=1}^n\mat{I}'_{k,i}$ from decoded decryptions above
-
-    \State $\rvec{y}_{k|k} \gets \mat{P}_{k|k-1}^{-1}\rvec{x}_{k|k-1} + \sum_{i=1}^n\rvec{i}'_{k,i}$
-    \State $\mat{Y}_{k|k} \gets \mat{P}_{k|k-1}^{-1} + \sum_{i=1}^n\mat{I}'_{k,i}$
-    \State $\rvec{x}_{k|k} \gets \mat{Y}_{k|k}^{-1}\rvec{y}_{k|k}$
-    \State $\mat{P}_{k|k} \gets \mat{Y}_{k|k}^{-1}$
-    \State \Return $\rvec{x}_{k|k}, \mat{P}_{k|k}$
-    \EndProcedure
-\end{algorithmic}
-\end{algorithm}
-
-Algorithms \ref{alg:nav_prediction}, \ref{alg:measurement_info} and \ref{alg:nav_update} have been summarized graphically in Figure \ref{fig:alg_steps}, where encryptions and encodings of vectors and matrices have been denoted with $\mathcal{E}_{pk_0,sk_i}(\cdot)$ and $\mathsf{E}_d(\cdot)$ for brevity, and represent element-wise operations with the same parameters.
-
-\begin{figure}[htbp]
-\centering
-\vspace{\baselineskip}
-\begin{tikzpicture}[font=\footnotesize,scale=0.95]
-    % Prediction
-    \draw [gray] (0,2) rectangle (6.5,8);
-    \node at (3.25,7.5) {\small 1. Prediction};
-
-    % Navigator
-    \fill  [blue!40] (2,7) rectangle (4.5,5.5);
-    \pic[xscale=0.22,yscale=0.3] at (3.25,6.6725) {plane};
-    \node at (3.25,5.875) {$\rvec{x}_{k|k-1}$, $\mat{P}_{k|k-1}$};
-    
-    % Sensors
-    \fill  (1.25,3) [red!40] ellipse (0.4 and 0.4);
-    \node at (1.25,2.375) {Sensor $1$};
-    \fill  (5.25,3) [red!40] ellipse (0.4 and 0.4);
-    \node at (5.25,2.375) {Sensor $n$};
-        
-    \fill [black] (2.75,3) circle (0.05);
-    \fill [black] (3.25,3) circle (0.05);
-    \fill [black] (3.75,3) circle (0.05);
-        
-    % Arrows
-    \draw [-latex] plot[smooth, tension=.7] coordinates {(3,5.25) (1.5,3.5)};
-    \draw [-latex] plot[smooth, tension=.7] coordinates {(3.5,5.25) (5,3.5)};
-    
-    \fill [lightgray]  (0.25,5) rectangle (6.25,4);
-    \node at (3.25,4.5) {$\langle\mathcal{E}_{pk_0}(\mathsf{E}_0(\rv{\omega})) \,|\, \rv{\omega} \!\in\! \{\rv{x}^3_{k|k-1}, \rv{y}^3_{k|k-1}, \dots\}\rangle$};
-    
-    
-    % Measurement
-    \draw [gray] (0,-4.25) rectangle (6.5,1.75);
-    \node at (3.25,1.25) {\small 2. Measurement};
-    
-    % Navigator
-    \fill  (3.25,0.25) [blue!40] ellipse (0.4 and 0.4);
-    \pic[xscale=0.22,yscale=0.3] at (3.25,0.4225) {plane};
-        
-    % Sensors
-    \fill  [red!40] (6.25,-3.625)  rectangle (4.25,-2.625);
-    \node at (1.25,-3.875) {Sensor $1$};
-    \fill  [red!40] (2.25,-3.625)  rectangle (0.25,-2.625);
-    \node at (5.25,-3.875) {Sensor $n$};
-    
-    \node at (1.25,-3.125) {$\rv{z}'_{k,1}$, $\rv{r}_{k,1}$};
-    \node at (5.25,-3.125) {$\rv{z}'_{k,n}$, $\rv{r}_{k,n}$};
-    
-    \fill [black] (2.75,-3.125) circle (0.05);
-    \fill [black] (3.25,-3.125) circle (0.05);
-    \fill [black] (3.75,-3.125) circle (0.05);
-    
-    % Arrows
-    \draw [-latex] plot[smooth, tension=.7] coordinates {(1.25,-2.5) (3,-0.25)};
-    \draw [-latex] plot[smooth, tension=.7] coordinates {(5.25,-2.5) (3.5,-0.25)};
-    
-    \fill [lightgray]  (0.375,-0.875) rectangle (3.125,-1.875);
-    \node[align=center] at (1.75,-1.375) {$\mathcal{E}_{pk_0,sk_1}(\mathsf{E}_1(\rvec{i}'_{k,1}))$,\\$\mathcal{E}_{pk_0,sk_1}(\mathsf{E}_1(\mat{I}'_{k,1}))$};
-    \fill [lightgray]  (3.375,-0.875) rectangle (6.125,-1.875);
-    \node[align=center] at (4.75,-1.375) {$\mathcal{E}_{pk_0,sk_n}(\mathsf{E}_1(\rvec{i}'_{k,n}))$,\\$\mathcal{E}_{pk_0,sk_n}(\mathsf{E}_1(\mat{I}'_{k,n}))$};
-    
-    
-    % Update
-    \draw [gray] (0,-8.5) rectangle (6.5,-4.5);
-    \node at (3.25,-5) {\small 3. Update};
-    
-    % Navigator
-    \fill  [blue!40] (1.5,-5.5) rectangle (5,-7.5);
-    \pic[xscale=0.22,yscale=0.3] at (3.25,-5.8275) {plane};
-    \node at (3.25,-6.625) {$\sum_{i=1}^n \rvec{i}'_{k,i}$, $\sum_{i=1}^n\mat{I}'_{k,i}$};
-    \node at (3.25,-7.125) {$\rvec{x}_{k|k}$, $\mat{P}_{k|k}$};
-\end{tikzpicture}
-\caption{The summary of steps involved in our proposed privacy-preserving EIF.}
-\vspace{-\baselineskip}
-\label{fig:alg_steps}
-\end{figure}
 
 % 
 %  .d8888b. 8888888 888b     d888 
