@@ -807,32 +807,26 @@ The existence of modified measurements $z'_{k,i}$ and their estimated variances 
 % 
 
 \subsection{Localization} \label{subsec:localization}
-As $h'_i$ and $\mat{H}'_{k,i}$ can be written as linear combinations of powers of location elements in $\vec{x}_{k|k-1}$, $\vec{i}_{k,i}$ and $\mat{I}_{k,i}$ can too. 
-
-
-
-After modifying measurements by . to produce modified measurement functions and Jacobians . and ., 
-
-With the existence of \eqref{eqn:modified_measurement_model}, measurement vector and measurement matrix linear combinations can be given in a similar form by
+Now that range measurements can be modified by \eqref{eqn:modified_measurement}, and the modified model \eqref{eqn:modified_measurement_model} can be used, corresponding modified measurement vectors $\vec{i}'_{k,i}$ and matrices $\mat{I}'_{k,i}$ can be computed as linear combinations of powers of location elements. This is given by
 \begin{equation}
     \begin{split}
-        \rvec{i}'_{k,i} &= \mat{H}_{k,i}^{\prime\top} \rv{r}_{k,i}^{-1}(\rv{z}'_{k,i} - h'_i(\rvec{x}_{k|k-1}) + \mat{H}'_{k,i}\rvec{x}_{k|k-1}) \\
+        \vec{i}'_{k,i} &= \mat{H}_{k,i}^{\prime\top} r_{k,i}^{-1}(z'_{k,i} - h'_i(\vec{x}_{k|k-1}) + \mat{H}'_{k,i}\vec{x}_{k|k-1}) \\
         &= 
         \begin{bmatrix}
             \begin{split}
-                &(2\rv{r}_{k,i}^{-1})\rv{x}_{k|k-1}^3 + (2\rv{r}_{k,i}^{-1})\rv{x}_{k|k-1}\rv{y}_{k|k-1}^2 \\
-                &\quad+ (-\rv{r}_{k,i}^{-1}s_{x,i})\rv{x}_{k|k-1}^2 + (-2\rv{r}_{k,i}^{-1}s_{x,i})\rv{y}_{k|k-1}^2 \\
-                &\quad+ (2\rv{r}_{k,i}^{-1}\rv{z}'_{k,i})\rv{x}_{k|k-1} + (-2\rv{r}_{k,i}^{-1}s_{x,i}^2)\rv{x}_{k|k-1}\\
-                &\quad+ (-2\rv{r}_{k,i}^{-1}s_{y,i}^2)\rv{x}_{k|k-1} + (2\rv{r}_{k,i}^{-1}s_{x,i}^3) \\
-                &\quad+ (2\rv{r}_{k,i}^{-1}s_{x,i}s_{y,i}^2) + (-2\rv{r}_{k,i}^{-1}s_{x,i} \rv{z}'_{k,i})
+                &(2r_{k,i}^{-1})x_{k|k-1}^3 + (2r_{k,i}^{-1})x_{k|k-1}y_{k|k-1}^2 \\
+                &\quad+ (-r_{k,i}^{-1}s_{x,i})x_{k|k-1}^2 + (-2r_{k,i}^{-1}s_{x,i})y_{k|k-1}^2 \\
+                &\quad+ (2r_{k,i}^{-1}z'_{k,i})x_{k|k-1} + (-2r_{k,i}^{-1}s_{x,i}^2)x_{k|k-1}\\
+                &\quad+ (-2r_{k,i}^{-1}s_{y,i}^2)x_{k|k-1} + (2r_{k,i}^{-1}s_{x,i}^3) \\
+                &\quad+ (2r_{k,i}^{-1}s_{x,i}s_{y,i}^2) + (-2r_{k,i}^{-1}s_{x,i} z'_{k,i})
             \end{split}
             \vspace{5pt}\\
             \begin{split}
-                &(2\rv{r}_{k,i}^{-1})\rv{y}_{k|k-1}^3 + (2\rv{r}_{k,i}^{-1})\rv{x}_{k|k-1}^2\rv{y}_{k|k-1} \\
-                &\quad+ (-2\rv{r}_{k,i}^{-1}s_{y,i})\rv{x}_{k|k-1}^2 + (-2\rv{r}_{k,i}^{-1}s_{y,i})\rv{y}_{k|k-1}^2 \\
-                &\quad+ (2\rv{r}_{k,i}^{-1}\rv{z}'_{k,i})\rv{y}_{k|k-1} + (-2\rv{r}_{k,i}^{-1}s_{x,i}^2)\rv{y}_{k|k-1} \\
-                &\quad+ (-2\rv{r}_{k,i}^{-1}s_{y,i}^2)\rv{y}_{k|k-1} + (2\rv{r}_{k,i}^{-1}s_{y,i}s_{x,i}^2) \\
-                &\quad+ (2\rv{r}_{k,i}^{-1}s_{y,i}^3) + (-2\rv{r}_{k,i}^{-1}s_{y,i}\rv{z}'_{k,i})
+                &(2r_{k,i}^{-1})y_{k|k-1}^3 + (2r_{k,i}^{-1})x_{k|k-1}^2y_{k|k-1} \\
+                &\quad+ (-2r_{k,i}^{-1}s_{y,i})x_{k|k-1}^2 + (-2r_{k,i}^{-1}s_{y,i})y_{k|k-1}^2 \\
+                &\quad+ (2r_{k,i}^{-1}z'_{k,i})y_{k|k-1} + (-2r_{k,i}^{-1}s_{x,i}^2)y_{k|k-1} \\
+                &\quad+ (-2r_{k,i}^{-1}s_{y,i}^2)y_{k|k-1} + (2r_{k,i}^{-1}s_{y,i}s_{x,i}^2) \\
+                &\quad+ (2r_{k,i}^{-1}s_{y,i}^3) + (-2r_{k,i}^{-1}s_{y,i}z'_{k,i})
             \end{split}
         \end{bmatrix}
     \end{split} \label{eqn:hrz_linear_comb}
@@ -840,7 +834,7 @@ With the existence of \eqref{eqn:modified_measurement_model}, measurement vector
 and
 \begin{equation}
     \begin{split}
-        \mat{I}'_{k,i} &= \mat{H}_{k,i}^{\prime\top} \rv{r}_{k,i}^{-1}\mat{H}'_{k,i} \\
+        \mat{I}'_{k,i} &= \mat{H}_{k,i}^{\prime\top} r_{k,i}^{-1}\mat{H}'_{k,i} \\
         &=
         \begin{bmatrix}
             \beta_{11} & \beta_{12} \\
@@ -850,31 +844,39 @@ and
 \end{equation}
 with
 \begin{align*}
-    \beta_{11} &= (4\rv{r}_{k,i}^{-1})\rv{x}_{k|k-1}^2 + (-8\rv{r}_{k,i}^{-1}s_{x,i})\rv{x}_{k|k-1} + (4\rv{r}_{k,i}^{-1}s_{x,i}^2)\,, \\
+    \beta_{11} &= (4r_{k,i}^{-1})x_{k|k-1}^2 + (-8r_{k,i}^{-1}s_{x,i})x_{k|k-1} + (4r_{k,i}^{-1}s_{x,i}^2)\,, \\
     \begin{split}
-        \beta_{12} &= (4\rv{r}_{k,i}^{-1})\rv{x}_{k|k-1}\rv{y}_{k|k-1} + (-4\rv{r}_{k,i}^{-1}s_{y,i})\rv{x}_{k|k-1}  \\
-        &\qquad+ (-4\rv{r}_{k,i}^{-1}s_{x,i})\rv{y}_{k|k-1} + (4\rv{r}_{k,i}^{-1}s_{x,i}s_{y,i})\,,
+        \beta_{12} &= (4r_{k,i}^{-1})x_{k|k-1}y_{k|k-1} + (-4r_{k,i}^{-1}s_{y,i})x_{k|k-1}  \\
+        &\qquad+ (-4r_{k,i}^{-1}s_{x,i})y_{k|k-1} + (4r_{k,i}^{-1}s_{x,i}s_{y,i})\,,
     \end{split}\\
     \beta_{21} &= \beta_{12}\,,\ \textrm{and} \\
-    \beta_{22} &= (4\rv{r}_{k,i}^{-1})\rv{y}_{k|k-1}^2 + (-8\rv{r}_{k,i}^{-1}s_{y,i})\rv{y}_{k|k-1} + (4\rv{r}_{k,i}^{-1}s_{y,i}^2)\,.
+    \beta_{22} &= (4r_{k,i}^{-1})y_{k|k-1}^2 + (-8r_{k,i}^{-1}s_{y,i})y_{k|k-1} + (4r_{k,i}^{-1}s_{y,i}^2)\,.
 \end{align*}
-The above rearrangements result in $\rvec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ as linear comabinations of the weights 
+The above rearrangements give $\vec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ as linear comabinations of
 \begin{equation}
     \begin{split}
-        &\langle \rv{x}_{k|k-1}^3,\ \rv{y}_{k|k-1}^3,\ \rv{x}_{k|k-1}^2\rv{y}_{k|k-1},\ \rv{x}_{k|k-1}\rv{y}_{k|k-1}^2,\\
-        &\quad \rv{x}_{k|k-1}^2,\ \rv{y}_{k|k-1}^2,\ \rv{x}_{k|k-1}\rv{y}_{k|k-1},\ \rv{x}_{k|k-1},\ \rv{y}_{k|k-1}\rangle\,,
+        &\{ x_{k|k-1}^3,\ y_{k|k-1}^3,\ x_{k|k-1}^2y_{k|k-1},\ x_{k|k-1}y_{k|k-1}^2,\\
+        &\quad x_{k|k-1}^2,\ y_{k|k-1}^2,\ x_{k|k-1}y_{k|k-1},\ x_{k|k-1},\ y_{k|k-1}\}\,,
     \end{split} \label{eqn:weights_to_broadcast}
 \end{equation}
-which again capture all the required information private to the navigator.
+which now capture all the private state information in $\vec{x}_{k|k-1}$ required at the sensors. The corresponding EIF update steps \eqref{eqn:eif_info_vec_update} and \eqref{eqn:eif_info_mat_update} then become
+\begin{equation}
+    \vec{y}_{k|k} = \vec{y}_{k|k-1} + \sum^n_{i=1}\vec{i}'_{k,i} \label{eqn:eif_modified_vec_update}
+\end{equation}
+and
+\begin{equation}
+    \mat{Y}_{k|k} = \mat{Y}_{k|k-1} + \sum^n_{i=1}\mat{I}'_{k,i}\,, \label{eqn:eif_modified_mat_update}
+\end{equation}
+respectively. Additionally, we note the possible extension to the three-dimensional case.
+\begin{remark}
+    The above has been derived for two-dimensional localisation but can be similarly derived for three-dimensional case. However, we note that the number of weights increases combinatorially with the number of dimensions, thus affecting the cost of communication as well.
+\end{remark}
 
-The final step required for the application of our LCAO secure encryption scheme to the linear combinations \eqref{eqn:hrz_linear_comb} and \eqref{eqn:hrh_linear_comb} is the handling of the scheme's instance variable $t$ in \eqref{eqn:our_scheme_lin_comb}. As six linear-combination aggregations occur at each time-step $k$ (four elements in $\mat{I}'_{k,i}$ and two in $\rvec{i}'_{k,i}$) and it is required for the security of the scheme that $t$ be unique for each aggregation at each time, this is handled by setting $t$ to the concatenation 
+The final step required for computing \eqref{eqn:hrz_linear_comb} and \eqref{eqn:hrh_linear_comb} at the sensors and \eqref{eqn:eif_modified_vec_update} and \eqref{eqn:eif_modified_mat_update} at the navigator using the proposed LCAO scheme, is handling the unique instance variables $t$ in the context of estimation timesteps $k$. This is done by elementwise linear combination of \eqref{eqn:hrz_linear_comb} and \eqref{eqn:hrh_linear_comb} and setting $t$ to the concatenation
 \begin{equation}
     t=k\mathbin\|v\mathbin\|w\mathbin\|\tau
 \end{equation}
-for aggregation in row $v$ and column $w$, with $\tau=0$ for aggregations in $\rvec{i}'_{k,i}$ and $\tau=1$ otherwise.
-\begin{remark}
-    The solutions \eqref{eqn:hrz_linear_comb} and \eqref{eqn:hrh_linear_comb} have been derived for two-dimensional localization, but can be similarly extended to the three-dimensional case. We note, however, the additional cost with increasing dimension. The number of weights is increased in the rearranged functions $h'_i$, and therefore combinatorially increased in $\rvec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ by . This results in a combinatorial increase in weights, and therefore communication, with respect to the number of state parameters required for computing functions $h_i$.
-\end{remark}
+for elements in row $v$ and column $w$, with $\tau=0$ for those in $\rvec{i}'_{k,i}$ and $\tau=1$ otherwise.
 
 % 
 % ##       ########    ###    ##    ##    ###     ######   ######## 
@@ -911,6 +913,12 @@ From these sums and the definitions \eqref{eqn:modified_measurement} and \eqref{
 % 
 
 \subsection{Pseudocode} \label{subsec:pseudocode}
+
+Due to the complexity
+several levels of computations
+we summarise the privacy-preserving localisation filter in this section
+
+
 In this section, we piece together our LCAO secure encryption scheme in Section  with the modified measurement model in Sections  and  and define our privacy-preserving localization algorithm.
 
 The privacy-preserving localization filter can be described by the following steps.
