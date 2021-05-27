@@ -1125,7 +1125,6 @@ Recalling the dependence of the modified measurement noise on the true measureme
 \begin{figure}[htbp]
 \centering
 \includegraphics{images/layouts.pdf}
-\vspace{-\baselineskip}
 \caption{The considered layouts, with varying average distances between navigator and sensors.}
 \label{fig:sim_layouts}
 \end{figure}
@@ -1133,7 +1132,6 @@ To evaluate the accuracy of our method, we have run $100$ simulations, all with 
 \begin{figure}[htbp]
 \centering
 \includegraphics{images/layout_errors.pdf}
-\vspace{-\baselineskip}
 \caption{Filter error for different layouts, where solid lines show the results from our privacy-preserving filter and dashed lines from an unmodified EIF.}
 \label{fig:sim_layout_errors}
 \end{figure}
@@ -1143,9 +1141,7 @@ In addition to accuracy, computational requirements are an important factor in t
 \begin{figure}[htbp]
 \centering
 \includegraphics{images/timing.pdf}
-\vspace{-\baselineskip}
 \caption{Runtimes for varying key sizes and numbers of sensors.}
-\vspace{-\baselineskip}
 \label{fig:sim_timing}
 \end{figure}
 As sensor and navigator computations run in parallel, increases in runtime from additional sensors are primarily due to the longer aggregation operation at the navigator. The predominant computational cost is dependent on the encryption scheme key size, which must be chosen such that sufficient security is provided by the scheme. The current recommendation for a secure implementation relying on prime factorisation (difficulty of factorising $N$) is to use $2048$ bit-long keys \cite{barkerRecommendationPairwiseKey2019}.
@@ -1307,7 +1303,7 @@ for some negligible functions $\eta_1$, $\eta_2$ and security parameter $\kappa$
 %                                         
 %                                         
 % 
-\vspace{-\baselineskip}
+
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{images/marko_ristic}}]{Marko Ristic}
 received his diploma in software engineering in 2018 at the University of Melbourne, Australia. Since 2019, he has been pursuing a Ph.D. at the Intelligent Sensor-Actuator-Systems Laboratory, Karlsruhe Institute of Technology (KIT), Germany. His research interests include encrypted and privacy-preserving signal processing, focusing on state estimation, sensor fusion, and distributed filtering.
 \end{IEEEbiography}
