@@ -267,7 +267,7 @@ While some aspects of privacy-preserving localization are solved in the above me
 % 
 
 \subsection{Notation}
-Throughout this work, we will use the following notation. Lowercase underlined characters are vectors, $\vec{a}$, and random variables are bold, $\rv{a}$. Uppercase bold characters are matrices, $\mat{A}$, with $\mat{A}^{-1}$ denoting the inverse and $\mat{A}^\top$ the transpose. $|a|$ is the absolute value of $a$ and $\lVert\vec{a}\rVert$ the vector norm. Subscripts of the form $\rv{x}_{k|j}$ will denote an estimate of $\rv{x}_k$ using measurements from times up to and including $j$. $\mathsf{E}[\cdot]$ and $\mathsf{Var}[\cdot]$ are used for the expected value and variance, respectively, and encryption and decryption with key $k$ are denoted $\mathcal{E}_{k}(\cdot)$ and $\mathcal{D}_{k}(\cdot)$. Additionally, key $k$ may be ommited when inferrable from context. $\lfloor\cdot\rceil$ rounds to the nearest integer, $a\|b$ stands for a bitwise concatenation of $a$ and $b$ and sets will be written as $\{\dots\}$ while ordered sequences as $\langle\dots\rangle$.
+Throughout this work, we make use of the following notation. Underlined characters, $\vec{a}$, denote vectors, uppercase bold characters, $\mat{A}$, denote matrices. $\mat{A}^{-1}$ is the matrix inverse while $\mat{A}^\top$ is its transpose. The expected value of a random variable is denoted $\mathsf{E}[\cdot]$, while the variance of a random scalar and covariance of a random vector by $\mathsf{Var}[\cdot]$ and $\mathsf{Cov}[\cdot]$, respectively. $|a|$ denotes absolute value, $\lVert\vec{a}\rVert$ the vector norm, $\{\dots\}$ is used for sets and $\langle\dots\rangle$ for ordered sequences. When estimating a state, notation $\vec{x}_{k|l}$ will denote an estimate at timestep $k$ given measurements from timesteps up to and including $l$. When discussing cryptography, $\mathcal{E}_{k}(\cdot)$ and $\mathcal{D}_{k}(\cdot)$ will denote encryption and decryption with key $k$, respectively, with $k$ ommited when inferrable from context. $\mathbb{Z}_n$ is used for the set of integers modulo $n$ and $\mathbb{Z}^*_n$ for its multiplicative group. $\mathsf{lcm}(\cdot,\cdot)$ is the lowest common denominator, $\|$ the binary concatination operator, and the term negligible function refers to the cryptographic definition in \cite{katzIntroductionModernCryptography2008}.
 
 % 
 % 8888888b.  8888888b.   .d88888b.  888888b.   888      8888888888 888b     d888 
@@ -789,7 +789,7 @@ which cannot be guaranteed. Instead, we provide a conservative estimate with $95
 \begin{equation}
     \begin{split}
         r_{k, i} &= 4(z_{k,i} + 2\sqrt{r_i})^2r_i + 2r_i^2 \\
-        &\gtrapprox \Var{v'_{k,i}}
+        &\gtrapprox \mathsf{Var}[v'_{k,i}]
     \end{split}\,. \label{eqn:modified_measurement_variance_estimate}
 \end{equation}
 at each sensor $i$.
