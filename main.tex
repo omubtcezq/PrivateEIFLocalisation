@@ -136,7 +136,7 @@
 % correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
 
-% Apparently requested for submission
+% Requested for submission
 \pdfminorversion=4
 
 \begin{document}
@@ -146,10 +146,11 @@
 %
 %
 % author names and IEEE memberships
-\author{Marko~Ristic,
-        Benjamin~Noack,~\IEEEmembership{Member,~IEEE,}
-        and~Uwe~D.~Hanebeck,~\IEEEmembership{Fellow,~IEEE}% <-this % stops a space
-\thanks{M. Ristic, B. Noack and U. D. Hanebeck are with the Intelligent Sensor-Actuator-Systems Laboratory, Institute for Anthropomatics, Karlsruhe Institute of Technology, 76131 Karlsruhe, Germany. e-mail: marko.ristic@kit.edu}}% <-this % stops a space
+\author{Marko~Ristic$^{1}$,
+        Benjamin~Noack$^{2}$,~\IEEEmembership{Member,~IEEE,}
+        and~Uwe~D.~Hanebeck$^{1}$,~\IEEEmembership{Fellow,~IEEE}% <-this % stops a space
+\thanks{$^{1}$Marko Ristic and Uwe D. Hanebeck are with the Intelligent Sensor-Actuator-Systems Laboratory (ISAS), Institute for Anthropomatics, Karlsruhe Institute of Technology (KIT), Germany (e-mail: \{marko.ristic, uwe.hanebeck\}@kit.edu).}% <-this % stops a space
+\thanks{$^{2}$Benjamin Noack is with the Autonomous Multisensor Systems Group (AMS), Institute for Intelligent Cooperating Systems (ICS), Otto von Guericke University Magdeburg (OVGU), Germany (e-mail: benjamin.noack@ovgu.de).}}% <-this % stops a space
 % \thanks{Manuscript received April 19, 2005; revised August 26, 2015.}}
 
 % The paper headers
@@ -211,13 +212,31 @@ State Estimation, Data Privacy, Sensor Fusion, Extended Kalman Filters.
 % 
 
 \section{Introduction} \label{sec:introduction}
-\IEEEPARstart{L}{ocalisation} methods in distributed sensor environments have long been an active topic of research \cite{pierceIntroductionLoran1946,liContributedReviewSourcelocalization2016}. Ongoing advancements in portable computing power and sensor capabilities have led to the development of various forms of localization methods, from range-free and range-based signal strength measurements \cite{wangConvexCombinationSource2018,heRangeFreeLocalizationSchemes2003}, acoustic range estimates \cite{beutlerNewNonlinearFiltering2004}, and magnetic field measurements \cite{sieblerLocalizationMagneticField2020} to the TDOA and TOA pseudo-range multilateration methods for aircraft \cite{liContributedReviewSourcelocalization2016}. Range-based localization methods, including the use of radar measurements, GPS clocks, and signal strength measurements, have found particularly large applications due to their robustness and accuracy. These methods use distance measurements to produce location estimates and typically involve gathering sensor details such as measurement noise, geographical location, and observations centrally. Broadcasting or gathering information in this way, however, implies a trust between participants within a trusted communication network to ensure shared data may not be used for individual malicious gain. With the advancements in cloud and ubiquitous computing, changes in possible use-cases involving distributed sensors have made the requirements of information security and user privacy more apparent than before \cite{brennerSecretProgramExecution2011,renSecurityChallengesPublic2012}. For example, an aircraft localization scenario in the presence of privately operated measurement stations may imply measurements and locations of stations should be kept private from navigating vehicles. Or in autonomous vehicle state estimation, benefit from neighboring vehicles' information may be desired while no participant wishes to share information about their hardware. Additionally, the dispatching of any expensive intermediate computations to service-providing cloud operators may require ensuring the privacy of information involved in the computations. All of these scenarios, and the one we will consider, require methods for computing specific operations while ensuring the privacy of some or all of the input data. Our contributions in this work will be presented in two parts. We first propose a novel aggregation-based encryption scheme which allows the private aggregation of weighted sums, before developing a computationally plausible localization filter in the presence of range-only sensors using this scheme, such that sensor and navigator privacy is preserved.
 
-The remainder of the paper is structured as follows. In Section  we give an overview of the relevant literature to the topic and in Section  we introduce the localization problem, the relevant aggregation operation for its solution and the restrictions on involved parties. Sections  and  will summarize cryptographic preliminaries and introduce a novel security notion for our required aggregation before defining and proving an encryption scheme which satisfies it. Sections  and  introduce localization preliminaries and our privacy-preserving localization method using the private aggregation scheme. We show and discuss simulation results in Section  and conclude our work in Section .
+\IEEEPARstart{L}{ocalisation} methods in distributed sensor environments have long been an active topic of research \cite{pierceIntroductionLoran1946,liContributedReviewSourcelocalization2016}. 
+
+Range-based localisation methods, with measurements such as signal strength \cite{wangConvexCombinationSource2018,heRangeFreeLocalizationSchemes2003}, acoustic range \cite{beutlerNewNonlinearFiltering2004} or radar, have found particularly large application due to the prevalence of suitable sensors.
+
+most rely on centralised
+
+with the rise of distributed cloud
+
+%starts to broad, skip to range-based?
+%As advancements in portable computing and sensor capabilities have developed, a wide variety of localisation methods have been proposed, including those using signal strength measurements \cite{wangConvexCombinationSource2018,heRangeFreeLocalizationSchemes2003}, acoustic range measurements \cite{beutlerNewNonlinearFiltering2004}, magnetic field measurements \cite{sieblerLocalizationMagneticField2020} and time-difference-of-arrival multilateration methods \cite{liContributedReviewSourcelocalization2016} to localisation agents.
+
+%Due to the prevalence of suitable sensors such as radar or signal strength measurement, range-based localisation methods have found particularly large application.
+
+
+Localisation methods in distributed sensor environments have long been an active topic of research \cite{pierceIntroductionLoran1946,liContributedReviewSourcelocalization2016}. Ongoing advancements in portable computing power and sensor capabilities have led to the development of various forms of localization methods, from range-free and range-based signal strength measurements \cite{wangConvexCombinationSource2018,heRangeFreeLocalizationSchemes2003}, acoustic range estimates \cite{beutlerNewNonlinearFiltering2004}, and magnetic field measurements \cite{sieblerLocalizationMagneticField2020} to the TDOA and TOA pseudo-range multilateration methods for aircraft \cite{liContributedReviewSourcelocalization2016}. Range-based localization methods, including the use of radar measurements, GPS clocks, and signal strength measurements, have found particularly large applications due to their robustness and accuracy. 
+
+These methods use distance measurements to produce location estimates and typically involve gathering sensor details such as measurement noise, geographical location, and observations centrally. Broadcasting or gathering information in this way, however, implies a trust between participants within a trusted communication network to ensure shared data may not be used for individual malicious gain. With the advancements in cloud and ubiquitous computing, changes in possible use-cases involving distributed sensors have made the requirements of information security and user privacy more apparent than before \cite{brennerSecretProgramExecution2011,renSecurityChallengesPublic2012}. 
+
+For example, an aircraft localization scenario in the presence of privately operated measurement stations may imply measurements and locations of stations should be kept private from navigating vehicles. Or in autonomous vehicle state estimation, benefit from neighboring vehicles' information may be desired while no participant wishes to share information about their hardware. Additionally, the dispatching of any expensive intermediate computations to service-providing cloud operators may require ensuring the privacy of information involved in the computations. 
+
+All of these scenarios, and the one we will consider, require methods for computing specific operations while ensuring the privacy of some or all of the input data. Our contributions in this work will be presented in two parts. We first propose a novel aggregation-based encryption scheme which allows the private aggregation of weighted sums, before developing a computationally plausible localization filter in the presence of range-only sensors using this scheme, such that sensor and navigator privacy is preserved.
 
 % LITERATURE OVERVIEW 
 
-\label{sec:lit_overview}
 In this section, we will discuss methods for providing security guarantees in signal processing tasks, and their applications to localization and estimation problems.
 
 % ENCRYPTION SCHEMES IN SIGNAL PROCESSING
@@ -256,6 +275,9 @@ Along with encryption schemes and their application to localization-relevant alg
 
 While some aspects of privacy-preserving localization are solved in the above methods and encryption schemes, they fail to provide a localization solution in our context. In the next section, we will formalize our problem and its accompanying security requirements.
 
+
+In section \ref{sec:problem_statement} we introduce both the cryptographic and estimation problems considered in this work, before giving some relevant preliminaries in section \ref{sec:preliminaries}. Section \ref{sec:lcao_scheme} proposes a cryptographic scheme meeting our desired security properties and section \ref{sec:priv_localization} the solution to the estimation problem making use of this scheme. Simulation results are discussed in section \ref{sec:sim_and_results} and concluding remarks are made in section \ref{sec:conclusion}.
+
 % 
 % ##    ##  #######  ########    ###    ######## ####  #######  ##    ## 
 % ###   ## ##     ##    ##      ## ##      ##     ##  ##     ## ###   ## 
@@ -267,7 +289,7 @@ While some aspects of privacy-preserving localization are solved in the above me
 % 
 
 \subsection{Notation}
-Throughout this work, we make use of the following notation. Underlined characters, $\vec{a}$, denote vectors, uppercase bold characters, $\mat{A}$, denote matrices. $\mat{A}^{-1}$ is the matrix inverse while $\mat{A}^\top$ is its transpose. The expected value of a random variable is denoted $\mathsf{E}[\cdot]$, while the variance of a random scalar and covariance of a random vector by $\mathsf{Var}[\cdot]$ and $\mathsf{Cov}[\cdot]$, respectively. $|a|$ denotes absolute value, $\lVert\vec{a}\rVert$ the vector norm, $\{\dots\}$ is used for sets and $\langle\dots\rangle$ for ordered sequences. When estimating a state, notation $\vec{x}_{k|l}$ will denote an estimate at timestep $k$ given measurements from timesteps up to and including $l$. When discussing cryptography, $\mathcal{E}_{k}(\cdot)$ and $\mathcal{D}_{k}(\cdot)$ will denote encryption and decryption with key $k$, respectively, with $k$ ommited when inferrable from context. $\mathbb{Z}_n$ is used for the set of integers modulo $n$ and $\mathbb{Z}^*_n$ for its multiplicative group. $\mathsf{lcm}(\cdot,\cdot)$ is the lowest common denominator, $\|$ the binary concatination operator, and the term negligible function refers to the cryptographic definition in \cite{katzIntroductionModernCryptography2008}.
+Throughout this work, we make use of the following notation. Underlined characters, $\vec{a}$, denote vectors, uppercase bold characters, $\mat{A}$, denote matrices. $\mat{A}^{-1}$ is the matrix inverse while $\mat{A}^\top$ is its transpose. The expected value of a random variable is denoted $\mathsf{E}[\cdot]$, while the variance of a random scalar and covariance of a random vector by $\mathsf{Var}[\cdot]$ and $\mathsf{Cov}[\cdot]$, respectively. $|a|$ denotes absolute value, $\lVert\vec{a}\rVert$ the vector norm, $\{\dots\}$ is used for sets and $\langle\dots\rangle$ for ordered sequences. When estimating a state, notation $\vec{x}_{k|l}$ will denote an estimate at timestep $k$ given measurements from timesteps up to and including $l$. When discussing cryptography, $\mathcal{E}_{k}(\cdot)$ and $\mathcal{D}_{k}(\cdot)$ will denote encryption and decryption with key $k$, respectively, with $k$ ommited when inferrable from context. $\mathbb{Z}_n$ is used for the set of integers m  odulo $n$ and $\mathbb{Z}^*_n$ for its multiplicative group. $\mathsf{lcm}(\cdot,\cdot)$ is the lowest common denominator, $\|$ the binary concatination operator and the term \textit{negligible function} refers to the cryptographic definition in \cite{katzIntroductionModernCryptography2008}.
 
 % 
 % 8888888b.  8888888b.   .d88888b.  888888b.   888      8888888888 888b     d888 
