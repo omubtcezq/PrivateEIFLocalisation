@@ -96,7 +96,7 @@
 \begin{document}
 
 % paper title
-\title{Privacy-Preserving Localization Using Private Linear-Combination Aggregation}
+\title{Distributed Range-Only Localisation that Preserves Sensor and Navigator Privacies}
 
 % author names and IEEE memberships
 \author{Marko~Ristic$^{1}$,
@@ -123,12 +123,12 @@
 % 
 
 \begin{abstract}
-Distributed state estimation and localization methods have become increasingly popular with the rise of ubiquitous computing, and have led naturally to an increased concern regarding data and estimation privacy. Traditional distributed sensor navigation methods involve the leakage of sensor or navigator information during localization protocols, thus not preserving participants’ data privacy. Existing approaches that do provide such guarantees fail to address sensor and navigator privacy in common non-linear measurement model applications and therefore forfeit broad applicability. We define a suitable notion of linear-combination aggregation encryption and provide a cryptographically secure instance that is applied to the Extended Kalman Filter with range-sensor measurements. Our method keeps navigator location, sensors' locations, and sensors' measurements private during navigation, and has been implemented to evaluate its accuracy and performance. The novel computationally plausible and provably secure range-based localization filter has direct applications to environments where participants are not trusted or data is considered sensitive.
+Distributed state estimation and localisation methods have become increasingly popular with the rise of ubiquitous computing, and have led naturally to an increased concern regarding data and estimation privacy. Traditional distributed sensor navigation methods typically involve the leakage of sensor or navigator information by communicating measurements or estimates and thus do not preserve participants’ privacy. The existing approaches that do provide such guarantees, fail to address sensor and navigator privacy in the common application of model-based range-only estimation, consequently forfeiting broad applicability. In this work, we define a notion of privacy-preserving linear combination aggregation and use it to derive a modified Extended Kalman Filter using range measurements such that navigator location, sensors' locations, and sensors' measurements are kept private during navigation. Additionally, a formal cryptographic backing is presented to guarantee our method's privacy as well as an implementation to evaluate its performance. The novel, provably secure, range-based localisation method has applications in a variety of environments where sensors may not be trusted or estimates are considered sensitive, such as autonomous vehicle localisation or air traffic navigation.
 \end{abstract}
 
 % Note that keywords are not normally used for peerreview papers.
 \begin{IEEEkeywords}
-State Estimation, Data Privacy, Sensor Fusion, Extended Kalman Filters.
+State Estimation, Data Privacy, Sensor Fusion, Extended Kalman Filter.
 \end{IEEEkeywords}
 
 % For peerreview papers, this IEEEtran command inserts a page break and
@@ -158,7 +158,7 @@ Our contribution in this work considers range-only localisation with formal cryp
 
 We motivate this scenario with the example of vehicle localisation in the presence of privately owned measurement stations. While the intention of measurement stations is the accurate navigation of passing vehicles, it may be reasonable to desire identifying location or hardware details to remain unknown at other present stations and to the navigator. Similarly, a navigator may not wish to disclose their most accurate location estimates to untrusted third-party measurers.
 
-In section \ref{sec:problem_statement} we introduce both the cryptographic and estimation problems considered in this work, before giving some relevant preliminaries in section \ref{sec:preliminaries}. Section \ref{sec:lcao_scheme} proposes a cryptographic scheme meeting our desired security properties and section \ref{sec:priv_localization} the solution to the estimation problem making use of this scheme. Simulation results are discussed in section \ref{sec:sim_and_results} and concluding remarks are made in section \ref{sec:conclusion}.
+In section \ref{sec:problem_statement}, we introduce both the cryptographic and estimation problems considered in this work, before giving some relevant preliminaries in section \ref{sec:preliminaries}. Section \ref{sec:lcao_scheme} proposes a cryptographic scheme meeting our desired security properties and section \ref{sec:priv_localization} the solution to the estimation problem making use of this scheme. Simulation results are discussed in section \ref{sec:sim_and_results} and concluding remarks are made in section \ref{sec:conclusion}.
 
 % 
 % ##    ##  #######  ########    ###    ######## ####  #######  ##    ## 
