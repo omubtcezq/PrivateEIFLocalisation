@@ -171,7 +171,7 @@ In section \ref{sec:problem_statement}, we introduce both the cryptographic and 
 % 
 
 \subsection{Notation}
-Throughout this work, we make use of the following notation. Underlined characters, $\vec{a}$, denote vectors, uppercase bold characters, $\mat{A}$, denote matrices. $\mat{A}^{-1}$ is the matrix inverse while $\mat{A}^\top$ is its transpose. The expected value of a random variable is denoted $\mathsf{E}[\cdot]$, while the variance of a random scalar and covariance of a random vector by $\mathsf{Var}[\cdot]$ and $\mathsf{Cov}[\cdot]$, respectively. $|a|$ denotes absolute value, $\lVert\vec{a}\rVert$ the vector norm, $\{\dots\}$ is used for sets and $\langle\dots\rangle$ for ordered sequences. When estimating a state, notation $\vec{x}_{k|l}$ will denote an estimate at timestep $k$ given measurements from timesteps up to and including $l$. When discussing cryptography, $\mathcal{E}_{k}(\cdot)$ and $\mathcal{D}_{k}(\cdot)$ will denote encryption and decryption with key $k$, respectively, with $k$ ommited when inferrable from context. $\mathbb{Z}_n$ is used for the set of integers m  odulo $n$ and $\mathbb{Z}^*_n$ for its multiplicative group. $\mathsf{lcm}(\cdot,\cdot)$ is the lowest common denominator, $\|$ the binary concatination operator and the term \textit{negligible function} refers to the cryptographic definition in \cite{katzIntroductionModernCryptography2008}.
+Throughout this work, we make use of the following notation. Underlined characters, $\vec{a}$, denote vectors, uppercase bold characters, $\mat{A}$, denote matrices. $\mat{A}^{-1}$ is the matrix inverse while $\mat{A}^\top$ is its transpose. The expected value of a random variable is denoted $\mathsf{E}[\cdot]$, while the variance of a random scalar and covariance of a random vector by $\mathsf{Var}[\cdot]$ and $\mathsf{Cov}[\cdot]$, respectively. $|a|$ denotes absolute value, $\lVert\vec{a}\rVert$ the vector norm, $\{\dots\}$ is used for sets and $\langle\dots\rangle$ for ordered sequences. When estimating a state, notation $\hat{\vec{x}}_{k|l}$ will denote an estimate of $\vec{x}$ at timestep $k$ given measurements from timesteps up to and including $l$. When discussing cryptography, $\mathcal{E}_{k}(\cdot)$ and $\mathcal{D}_{k}(\cdot)$ will denote encryption and decryption with key $k$, respectively, with $k$ ommited when inferrable from context. $\mathbb{Z}_n$ is used for the set of integers m  odulo $n$ and $\mathbb{Z}^*_n$ for its multiplicative group. $\mathsf{lcm}(\cdot,\cdot)$ is the lowest common denominator, $\|$ the binary concatination operator and the term \textit{negligible function} refers to the cryptographic definition in \cite{katzIntroductionModernCryptography2008}.
 
 % 
 % 8888888b.  8888888b.   .d88888b.  888888b.   888      8888888888 888b     d888 
@@ -188,7 +188,7 @@ Throughout this work, we make use of the following notation. Underlined characte
 % 
 
 \section{Problem Statement} \label{sec:problem_statement}
-In this work, we consider the context of privacy-preserving range-sensor navigation, where we want no sensor to learn information about the navigator or other sensors beyond their local measurements, and the navigator to learn no information about individual sensors beyond its location estimate. The problem is two-fold, in that we require explicit cryptographic requirements with a suitable encryption scheme meeting them, as well as an estimation scheme that can use the scheme in the context of range-sensor navigation.
+In this work, we consider the context of privacy-preserving range sensor navigation, where we want no sensor to learn information about the navigator or other sensors beyond their local measurements, and the navigator to learn no information about individual sensors beyond its location estimate. The problem is two-fold, in that we require explicit cryptographic requirements with a suitable encryption scheme meeting them, as well as an estimation scheme that can use the scheme in the context of range-only navigation.
 
 To give a formal cryptographic requirement in a distributed setting, we must first consider the communication requirements of our context, and define the attacker capabilities and the desired security of a suitable encryption scheme. In this section, we will define a communication protocol and the relevant formal definition of security we aim to achieve, followed by the estimation problem to which we will apply it.
 
@@ -205,21 +205,21 @@ To give a formal cryptographic requirement in a distributed setting, we must fir
 \subsection{Formal Cryptographic Problem} \label{subsec:crypto_problem}
 The communication between the navigator and sensors in our estimation problem will be decomposed into a simple two-step bi-directional protocol that will simplify defining formal security. In section \ref{sec:priv_localization}, we will show how this protocol is sufficient to compute the location estimate at a navigator while meeting our desired privacy goals. The communication protocol is as follows.
 
-At every \textit{instance} $t$ (used to distinguish from an estimation \textit{timestep}), the navigator first broadcasts $m$ weights $\omega_j^{(t)}, 1 \leq j \leq m$ to all sensors $1\leq i\leq n$, who individually compute linear-combinations $l^{(t)}_i=\sum^m_{j=1}a_{j,i}^{(t)}\omega_i^{(t)}$ based on their measurement data $a_{j,i}$. Linear-combinations are then sent back to the navigator, who computes their sum $\sum^n_{i=1}l^{(t)}_{i}$. This two-step linear-combination aggregation protocol has been visually displayed in figure \ref{fig:agg_steps}.
+At every \textit{instance} $t$ (used to distinguish from an estimation \textit{timestep}), the navigator first broadcasts $m$ weights $\omega_j^{(t)}, 1 \leq j \leq m$ to all sensors $1\leq i\leq n$, who individually compute linear combinations $l^{(t)}_i=\sum^m_{j=1}a_{j,i}^{(t)}\omega_i^{(t)}$ based on their measurement data $a_{j,i}$. Linear combinations are then sent back to the navigator, who computes their sum $\sum^n_{i=1}l^{(t)}_{i}$. This two-step linear combination aggregation protocol has been visually displayed in figure \ref{fig:agg_steps}.
 \begin{figure}[htbp]
 \centering
 \begin{tikzpicture}[font=\footnotesize,scale=0.95]
     % Step 1
     \node at (3.25,5.5) {1. Broadcast and Combination Step};
     % Navigator
-    \fill (3.25,4.5) [blue!40] ellipse (0.4 and 0.4);
+    \fill (3.25,4.5) [green!80!black!60] ellipse (0.4 and 0.4);
     \pic[xscale=0.22,yscale=0.3] at (3.25,4.6725) {plane};
     % Sensors
     \node at (1.5,0.375) {Sensor $1$};
-    \fill [red!40] (0.25,0.625) rectangle (2.875,1.625);
+    \fill [blue!80!black!40] (0.25,0.625) rectangle (2.875,1.625);
     \node at (1.625,1.125) {$\displaystyle l_1^{(t)} \!=\! \sum^m_{j=1}a_{1,j}^{(t)}\omega_j^{(t)}$};
     \node at (5,0.375) {Sensor $n$};
-    \fill [red!40] (3.625,0.625) rectangle (6.25,1.625);
+    \fill [blue!80!black!40] (3.625,0.625) rectangle (6.25,1.625);
     \node at (5,1.125) {$\displaystyle l_n^{(t)} \!=\! \sum^m_{j=1}a_{n,j}^{(t)}\omega_j^{(t)}$};
     \fill [black] (3.5,1.125) circle (0.05);
     \fill [black] (3,1.125) circle (0.05);
@@ -233,14 +233,14 @@ At every \textit{instance} $t$ (used to distinguish from an estimation \textit{t
     % Step 2
     \node at (3.25,-0.75) {2. Aggregation Step};
     % Navigator
-    \fill [blue!40] (1.375,-3) rectangle (5.125,-1.25);
+    \fill [green!80!black!60] (1.375,-3) rectangle (5.125,-1.25);
     \pic[xscale=0.22,yscale=0.3] at (3.25,-1.4775) {plane};
     \node at (3.25,-2.375) {$\displaystyle \sum^{n}_{i=1}\sum^{m}_{j=1} a_{i,j}^{(t)}\omega_j^{(t)} = \sum^n_{i=1}l^{(t)}_{i}$};
     % Sensors
     \node at (1.25,-5.875) {Sensor $1$};
-    \fill  (5.25,-5.25) [red!40] ellipse (0.4 and 0.4);
+    \fill  (5.25,-5.25) [blue!80!black!40] ellipse (0.4 and 0.4);
     \node at (5.25,-5.875) {Sensor $n$};
-    \fill  (1.25,-5.25) [red!40] ellipse (0.4 and 0.4);
+    \fill  (1.25,-5.25) [blue!80!black!40] ellipse (0.4 and 0.4);
     \fill [black] (2.75,-5.25) circle (0.05);
     \fill [black] (3.75,-5.25) circle (0.05);
     \fill [black] (3.25,-5.25) circle (0.05);
@@ -256,7 +256,7 @@ At every \textit{instance} $t$ (used to distinguish from an estimation \textit{t
     \draw [gray] (0,6) rectangle (6.5,0);
     \draw [gray] (0,-0.25) rectangle (6.5,-6.25);
 \end{tikzpicture}
-\caption{Required linear-combination aggregation steps at instance $t$.}
+\caption{Required linear combination aggregation steps at instance $t$.}
 \label{fig:agg_steps}
 \end{figure}
 In addition, we note that an alternative approach to the two-step protocol is computing $\sum^{m}_{j=1}(\omega_j^{(t)}\sum^{n}_{i=1} a_{i,j}^{(t)})$ at the navigator, requiring only values $a_{i,j}^{(t)}, 1 \leq j \leq m$ to be sent from each sensor $i$. We justify the use of bi-directional communication by reducing communication costs when the number of weights is larger than the number of sensors, $m>n$, and by sending fewer weights in the presence of repeats, as will be shown to be the case in section \ref{sec:priv_localization}.
@@ -269,19 +269,19 @@ Before giving a formal definition for the construction and security of our desir
 \end{LaTeXdescription}
 We justify the global broadcast assumption by noting that any subset of sensors within the range of the navigator can be considered a complete group and treated as the global set for estimation purposes, generalising the method, while the wide-spread use of cheap non-directional antennas supports the assumption of consistent broadcasts. The final assumption refers to the known problem of misbehaving sensors \cite{lazosSeRLocSecureRangeindependent2004,ben-galOutlierDetection2005}, often requiring additional complicated detection mechanisms, and will not be considered in this work.
 
-We are now ready to define the type of encryption scheme we want for the specified communication protocol and the security guarantees it should provide. We let a linear-combination aggregation scheme be defined as a tuple of the four algorithms $(\mathsf{Setup}, \mathsf{Enc}, \mathsf{CombEnc}, \mathsf{AggDec})$. These will be used by a trusted setup party, the navigator and sensors $i,\,1\leq i \leq n$. They are defined as follows.
+We are now ready to define the type of encryption scheme we want for the specified communication protocol and the security guarantees it should provide. We let a linear combination aggregation scheme be defined as a tuple of the four algorithms $(\mathsf{Setup}, \mathsf{Enc}, \mathsf{CombEnc}, \mathsf{AggDec})$. These will be used by a trusted setup party, the navigator and sensors $i,\,1\leq i \leq n$. They are defined as follows.
 \begin{LaTeXdescription}
     \item[$\mathsf{Setup}(\kappa)$] On input of security paramater $\kappa$, generate public parameters $\mathsf{pub}$, the number of weights $m$, the navigator's public and private keys $pk_0$ and $sk_0$ and the sensor private keys $sk_i,\,1\leq i \leq n$.
     \item[$\mathsf{Enc}(pk_0, x)$] The navigator and sensors can encrypt any value $x$ with the navigator's public key $pk_0$ and obtain the encryption $\mathcal{E}_{pk_0}(x)$.
     \item[$\mathsf{CombEnc}(t, pk_0, sk_i, \mathcal{E}_{pk_0}(\omega_1^{(t)}),\shrtdots,\mathcal{E}_{pk_0}(\omega_m^{(t)}), a^{(t)}_{i,1},\shrtdots,a^{(t)}_{i,m})$] At instance $t$, sensor $i$ computes and obtains the encrypted linear combination $l^{(t)}_i = \mathcal{E}_{pk_0,sk_i}(\sum^m_{j=1}a^{(t)}_{i,j}\omega^{(t)}_j)$ using its secret key $sk_i$.
-    \item[$\mathsf{AggDec}(t, pk_0, sk_0, l^{(t)}_1,\shrtdots,l^{(t)}_n)$] At instance $t$, the navigator computes the aggregation of linear-combinations $\sum^{n}_{i=1}l_i^{(t)}=\sum^{n}_{i=1}\sum^{m}_{j=1} a^{(t)}_{i,j}\omega^{(t)}_j$ using its public and private keys $pk_0$, $sk_0$.
+    \item[$\mathsf{AggDec}(t, pk_0, sk_0, l^{(t)}_1,\shrtdots,l^{(t)}_n)$] At instance $t$, the navigator computes the aggregation of linear combinations $\sum^{n}_{i=1}l_i^{(t)}=\sum^{n}_{i=1}\sum^{m}_{j=1} a^{(t)}_{i,j}\omega^{(t)}_j$ using its public and private keys $pk_0$, $sk_0$.
 \end{LaTeXdescription}
 The security notions we want the above algorithms to meet reflect the previously stated estimation privacy goals. The navigator should learn no information from individual sensors while sensors should learning no information from the navigator or any other sensors. In the context of the introduced communication protocol, this can be summarised as the following notions.
 \begin{LaTeXdescription}
     \item[Indistinguishable Weights] No colluding subset of sensors gains any new knowledge about the navigator weights $\omega^{(t)}_j,\,1\leq j \leq m$ when receiving only their encryptions from the current and previous instances, and having the ability to encrypt plaintexts of their choice.
-    \item[Linear-Combination Aggregator Obliviousness] No colluding subset \textit{excluding} the navigator gains additional information about the remaining sensor values to be weighted, $a^{(t)}_{i,j},\,1\leq j\leq m$, where sensor $i$ is not colluding, given only encryptions of their linear combinations $l_i$ from the current and previous instances. Any colluding subset \textit{including} the navigator learns only the sum of all linear combinations weighted by weights of their choice, $\sum^{n}_{i=1}l_i^{(t)}=\sum^{n}_{i=1}\sum^{m}_{j=1} a^{(t)}_{i,j}\omega^{(t)}_j$.
+    \item[Linear Combination Aggregator Obliviousness] No colluding subset \textit{excluding} the navigator gains additional information about the remaining sensor values to be weighted, $a^{(t)}_{i,j},\,1\leq j\leq m$, where sensor $i$ is not colluding, given only encryptions of their linear combinations $l_i$ from the current and previous instances. Any colluding subset \textit{including} the navigator learns only the sum of all linear combinations weighted by weights of their choice, $\sum^{n}_{i=1}l_i^{(t)}=\sum^{n}_{i=1}\sum^{m}_{j=1} a^{(t)}_{i,j}\omega^{(t)}_j$.
 \end{LaTeXdescription}
-While indistinguishable weights can be achieved by encrypting weights with an encryption scheme meeting the notion of Indistinguishability under the Chosen Ciphertext Attack (IND-CPA) \cite{katzIntroductionModernCryptography2008}, the novel notion of Linear-Combination Aggregator Obliviousness (LCAO) has been formalised as a typical cryptographic game between attacker and challenger in appendix \ref{app:lcao}. Lastly, we conclude the cryptographic problem definition with the following important remark.
+While indistinguishable weights can be achieved by encrypting weights with an encryption scheme meeting the notion of Indistinguishability under the Chosen Ciphertext Attack (IND-CPA) \cite{katzIntroductionModernCryptography2008}, the novel notion of Linear Combination Aggregator Obliviousness (LCAO) has been formalised as a typical cryptographic game between attacker and challenger in appendix \ref{app:lcao}. Lastly, we conclude the cryptographic problem definition with the following important remark.
 \begin{remark}
     A leakage function including weights from the navigator requires extra care to be taken when giving its definition. If an attacker compromises the navigator, they have control over the weights, and therefore the leakage function. We note that in the leakage function above, $\sum^n_{i=1}\sum^m_{j=1}a^{(t)}_{i,j}\omega^{(t)}_j$, an individual sum weighted by the same weight may be learned by an attacker, \textit{e.g.}, $\sum^n_{i=1}a^{(t)}_{i,1}$ given weights $(1,0,\dots,0)$, but that individual sensor values $a^{(t)}_{i,j}$ remain private due to the assumption of a consistent broadcast.
 \end{remark}
@@ -306,20 +306,13 @@ The estimation problem we consider, for which we will reduce communication to th
 \end{equation}
 The state evolves following a known system model, which at timestep $k$ is given by
 \begin{equation}
-    \vec{x}_k = \vec{f}(\vec{x}_{k-1})+\vec{w}_k\,, \label{eqn:system_model}
+    \vec{x}_k = \vec{f}_k(\vec{x}_{k-1})+\vec{w}_k\,, \label{eqn:system_model}
 \end{equation}
-with system noise covariance $\mathsf{Cov}[\vec{w}_k]=\mat{Q}_k$. The measurement model is dependent on sensor $i$'s location,
-\begin{equation}
-    \vec{s}_i = 
-    \begin{bmatrix}
-        s_{x,i} & s_{y,i}
-    \end{bmatrix}^\top\,,
-\end{equation} 
-and is given by
+with system noise covariance $\mathsf{Cov}[\vec{w}_k]=\mat{Q}_k$. Measurements of the system follow a measurement model dependent on sensor $i$, $0\leq i \leq n$, given by 
 \begin{equation}
     z_{k,i} = h_i(\vec{x}_k)+v_{k,i}\,, \label{eqn:measurement_model}
 \end{equation}
-with Gaussian measurement noises $v_{k,i} \sim \mathcal{N}(0,r_i)$ and measurement function $h_i$, for sensor $i$, as
+with Gaussian measurement noises $v_{k,i} \sim \mathcal{N}(0,r_{k,i})$ and measurement function
 \begin{equation}
     \begin{split}
         h_i(\vec{x}) &= \left\lVert
@@ -327,11 +320,19 @@ with Gaussian measurement noises $v_{k,i} \sim \mathcal{N}(0,r_i)$ and measureme
             x & y
         \end{bmatrix}^\top
         - \vec{s}_{i}\right\rVert \\
-        &= \sqrt{(x-s_{x,i})^2 + (y-s_{y,i})^2}\,.
+        &= \sqrt{(x-s_{x,i})^2 + (y-s_{y,i})^2}\,,
     \end{split}
 \end{equation}
+where
+\begin{equation}
+    \vec{s}_i = 
+    \begin{bmatrix}
+        s_{x,i} & s_{y,i}
+    \end{bmatrix}^\top
+\end{equation} 
+is the location of sensor $i$.
 
-We aim to provide a filter that estimates the navigator's state $\vec{x}_k$, at every timestep $k$, without learning sensor positions $\vec{s}_i$, measurements $z_{k,i}$ and measurement variances $r_i$ beyond the information in the corresponding aggregation leakage function. Similarly, sensors should not learn any information about current state estimates or any other sensor information. Leakage will be further discussed in section \ref{subsec:leakage}, but we note that from any sequential state estimates, following known models, some sensor information leakage can be computed by the navigator. In the context of our leakage function, we will show that this corresponds to the global sums of private sensor information, while individual, or subsets of sensors', information remain private. Similarly, corrupted sensors with access to one or more measurements can produce state estimates of their own, leaking information about navigator state estimates, however, the most accurate estimates, requiring all measurements, will always remain private to the navigator.
+We aim to provide a filter that estimates the navigator's state $\vec{x}_k$, at every timestep $k$, without learning sensor positions $\vec{s}_i$, measurements $z_{k,i}$ and measurement variances $r_{k,i}$ beyond the information in the corresponding aggregation leakage function. Similarly, sensors should not learn any information about current state estimates or any other sensor information. Leakage will be further discussed in section \ref{subsec:leakage}, but we note that from any sequential state estimates, following known models, some sensor information leakage can be computed by the navigator. In the context of our leakage function, we will show that this corresponds to the global sums of private sensor information, while individual, or subsets of sensors', information remain private. Similarly, corrupted sensors with access to one or more measurements can produce state estimates of their own, leaking information about navigator state estimates, however, the most accurate estimates, requiring all measurements, will always remain private to the navigator.
 
 % 
 % 8888888b.  8888888b.  8888888888 888      8888888 888b     d888  .d8888b.  
@@ -492,7 +493,7 @@ In practice, $N$ is typically very large ($N>2^{1024}$) and this condition can b
 %                                            
 % 
 
-\section{Private Linear-Combination Aggregation Scheme} \label{sec:lcao_scheme}
+\section{Private Linear Combination Aggregation Scheme} \label{sec:lcao_scheme}
 In this section, we introduce an encryption scheme meeting the desired security properties in section \ref{subsec:crypto_problem}. The scheme is a combination of the Paillier and Joye-Libert schemes and provides encrypted weights meeting IND-CPA and encrypted aggregation meeting LCAO. Similarly to its constituents, the scheme bases its security on the DCRA and, as with the Joye-Libert scheme, requires a trusted party for initial key generation and distribution. The four algorithms defining our scheme are given as follows.
 \begin{LaTeXdescription}
     \item[$\mathsf{Setup}(\kappa)$] On input parameter $\kappa$, generate two equal length, sufficiently large, primes $p$ and $q$, and compute $N=pq$. Define a hash function $H:\mathbb{Z} \rightarrow \mathbb{Z}_{N^2}^*$, choose a the number of weights to combine, $m>1$, and set public parameter $\mathsf{pub}=H$, navigator public key $pk_0 = N$ and navigator private key $sk_0=(p,q)$. Sensor secret keys are generated by choosing $sk_i,\,1\leq i\leq n-1$ uniformly from $\mathbb{Z}_{N^2}$ and setting the last key as $sk_n = -\sum^{n-1}_{i=1}sk_i \pmod{N^2}$.
@@ -568,15 +569,15 @@ Lastly, we make the following remark about a possible implicit weight.
 % 
 
 \section{Privacy-Preserving Localization} \label{sec:priv_localization}
-With a concrete scheme meeting the LCAO notion, we can now put forward a localisation filter with communication that reduces to the required protocol. To produce an estimate of the state $\vec{x}_k$, we make use of an algebraic reformulation of the Extended Kalman Filter (EKF), the Extended Information Filter (EIF) \cite{maybeckStochasticModelsEstimation1982}, which reduces the filter update step to a single summation. The EIF update step requires the predicted state estimate $\vec{x}_{k|k-1}$ and estimate covariance $\mat{P}_{k|k-1}$ in the information vector and matrix forms
+With a concrete scheme meeting the LCAO notion, we can now put forward a localisation filter with communication that reduces to the required protocol. To produce an estimate of the state $\vec{x}_k$, we make use of an algebraic reformulation of the Extended Kalman Filter (EKF), the Extended Information Filter (EIF) \cite{maybeckStochasticModelsEstimation1982}, which reduces the filter update step to a single summation. The EIF update step requires the predicted state estimate $\hat{\vec{x}}_{k|k-1}$ and estimate covariance $\mat{P}_{k|k-1}$ in the information vector and matrix forms
 \begin{equation}
-    \vec{y}_{k|k-1} = \mat{P}_{k|k-1}^{-1}\vec{x}_{k|k-1} \quad\textrm{and}\quad \mat{Y}_{k|k-1} = \mat{P}_{k|k-1}^{-1}\,,
+    \hat{\vec{y}}_{k|k-1} = \mat{P}_{k|k-1}^{-1}\hat{\vec{x}}_{k|k-1} \quad\textrm{and}\quad \mat{Y}_{k|k-1} = \mat{P}_{k|k-1}^{-1}\,,
 \end{equation}
 respectively. In this form, the update equations for $n$ sensor measurements at time $k$, given process and measurement models \eqref{eqn:system_model} and \eqref{eqn:measurement_model}, are given by
 \begin{equation}
     \begin{split}
-        &\vec{y}_{k|k} = \vec{y}_{k|k-1} + \\
-        &\quad \sum^n_{i=1}\mat{H}^\top_{k,i} r^{-1}_i (z_{k,i} - h_i(\vec{x}_{k|k-1}) + \mat{H}_{k,i}\vec{x}_{k|k-1})
+        &\hat{\vec{y}}_{k|k} = \hat{\vec{y}}_{k|k-1} + \\
+        &\quad \sum^n_{i=1}\mat{H}^\top_{k,i} r^{-1}_i (z_{k,i} - h_i(\hat{\vec{x}}_{k|k-1}) + \mat{H}_{k,i}\hat{\vec{x}}_{k|k-1})
     \end{split} \label{eqn:eif_info_vec_update}
 \end{equation}
 and
@@ -585,30 +586,30 @@ and
 \end{equation}
 with Jacobians
 \begin{equation}
-    \mat{H}_{k,i} = \left.\frac{\partial h_i}{\partial \vec{x}}\right|_{\rvec{x}_{k|k-1}} \label{eqn:measurement_jacobian}
+    \mat{H}_{k,i} = \left.\frac{\partial h_i}{\partial \vec{x}}\right|_{\hat{\vec{x}}_{k|k-1}} \label{eqn:measurement_jacobian}
 \end{equation}
-for sensors $1 \leq i \leq n$. The filter's prediction step can be computed by converting information vector $\vec{y}_{k|k}$ and matrix $\mat{Y}_{k|k}$ back to state estimate and covariance 
+for sensors $1 \leq i \leq n$. The filter's prediction step can be computed by converting information vector $\hat{\vec{y}}_{k|k}$ and matrix $\mat{Y}_{k|k}$ back to state estimate and covariance 
 \begin{equation}
-    \vec{x}_{k|k} = \mat{Y}_{k|k}^{-1}\vec{y}_{k|k} \quad\textrm{and}\quad \mat{P}_{k|k} = \mat{Y}_{k|k}^{-1}\,,
+    \hat{\vec{x}}_{k|k} = \mat{Y}_{k|k}^{-1}\hat{\vec{y}}_{k|k} \quad\textrm{and}\quad \mat{P}_{k|k} = \mat{Y}_{k|k}^{-1}\,,
 \end{equation}
 before using the normal EKF prediction equations
 \begin{equation}
-    \vec{x}_{k+1|k} = \vec{f}(\vec{x}_{k|k}) \quad\textrm{and}\quad \mat{P}_{k+1|k} = \mat{F}_k\mat{P}_{k|k}\mat{F}_k^\top + \mat{Q}_k\,, \label{eqn:ekf_prediction}
+    \hat{\vec{x}}_{k|k-1} \!=\! \vec{f}_k(\hat{\vec{x}}_{k-1|k-1}) \ \textrm{and}\ \mat{P}_{k|k-1} \!=\! \mat{F}_k\mat{P}_{k-1|k-1}\mat{F}_k^\top + \mat{Q}_k, \label{eqn:ekf_prediction}
 \end{equation}
 with Jacobian
 \begin{equation}
-    \mat{F}_{k} = \left.\frac{\partial \vec{f}}{\partial \vec{x}}\right|_{\vec{x}_{k|k}}\,. \label{eqn:jacobian_f}
+    \mat{F}_{k} = \left.\frac{\partial \vec{f}_k}{\partial \vec{x}}\right|_{\hat{\vec{x}}_{k-1|k-1}}\,. \label{eqn:jacobian_f}
 \end{equation}
 
 In the form above, at every timestep $k$, all sensitive sensor information required for state estimation is captured in the measurement vector
 \begin{equation}
-    \vec{i}_{k,i} = \mat{H}^\top_{k,i} r^{-1}_i (z_{k,i} - h_i(\vec{x}_{k|k-1}) + \mat{H}_{k,i}\vec{x}_{k|k-1}) \label{eqn:measurement_vec}
+    \vec{i}_{k,i} = \mat{H}^\top_{k,i} r^{-1}_i (z_{k,i} - h_i(\hat{\vec{x}}_{k|k-1}) + \mat{H}_{k,i}\hat{\vec{x}}_{k|k-1}) \label{eqn:measurement_vec}
 \end{equation}
 and the measurement matrix
 \begin{equation}
     \mat{I}_{k,i} = \mat{H}^\top_{k,i} r^{-1}_i \mat{H}_{k,i}\,, \label{eqn:measurement_mat}
 \end{equation}
-namely, their measurements $z_{k,i}$, measurement variances $r_i$ and locations $\vec{s}_i$; captured in measurement functions $h_i$ and Jacobians $\mat{H}_{k,i}$. $\vec{i}_{k,i}$ and $\mat{I}_{k,i}$, however, also require the current predicted state estimate $\vec{x}_{k|k-1}$ to be computed (in $h_i$ and $\mat{H}_{k,i}$). For this reason, our goal is to reformulate \eqref{eqn:measurement_vec} and \eqref{eqn:measurement_mat} to be computable at each sensor $i$ as a linear combination of functions of the navigator state estimate (the navigator weights), to be subsequently aggregated at the navigator. Application of the linear-combination aggregation scheme proposed would in turn guarantee that sensors do not learn the navigator state, and that the navigator learns only the aggregation required for updating its state estimate in \eqref{eqn:eif_info_vec_update} and \eqref{eqn:eif_info_mat_update}.
+namely, their measurements $z_{k,i}$, measurement variances $r_{k,i}$ and locations $\vec{s}_i$; captured in measurement functions $h_i$ and Jacobians $\mat{H}_{k,i}$. $\vec{i}_{k,i}$ and $\mat{I}_{k,i}$, however, also require the current predicted state estimate $\hat{\vec{x}}_{k|k-1}$ to be computed (in $h_i$ and $\mat{H}_{k,i}$). For this reason, our goal is to reformulate \eqref{eqn:measurement_vec} and \eqref{eqn:measurement_mat} to be computable at each sensor $i$ as a linear combination of functions of the navigator state estimate (the navigator weights), to be subsequently aggregated at the navigator. Application of the linear combination aggregation scheme proposed would in turn guarantee that sensors do not learn the navigator state, and that the navigator learns only the aggregation required for updating its state estimate in \eqref{eqn:eif_info_vec_update} and \eqref{eqn:eif_info_mat_update}.
 
 % 
 % ########     ###    ##    ##  ######   ########    ##     ##  #######  ########  
@@ -622,19 +623,19 @@ namely, their measurements $z_{k,i}$, measurement variances $r_i$ and locations 
 
 \subsection{Range Measurement Modification} \label{subsec:range_measurement_mod}
 
-The first thing we notice when wanting to decompose $\vec{i}_{k,i}$ and $\mat{I}_{k,i}$ to a linear combination of functions of $\vec{x}_{k|k-1}$, is that $h_i$ cannot be rearranged in this way due to the present square-root. Similarly, the Jacobian of $h_i$ at $\vec{x}_{k|k-1}$,
+The first thing we notice when wanting to decompose $\vec{i}_{k,i}$ and $\mat{I}_{k,i}$ to a linear combination of functions of $\hat{\vec{x}}_{k|k-1}$, is that $h_i$ cannot be rearranged in this way due to the present square-root. Similarly, the Jacobian of $h_i$ at $\hat{\vec{x}}_{k|k-1}$,
 \begin{equation}
     \mat{H}_{k,i} = 
     \begin{bmatrix}
-        \frac{x_{k|k-1} - s_{x,i}}{\sqrt{(x_{k|k-1} - s_{x,i})^2 + (y_{k|k-1} - s_{y,i})^2}} \\
-        \frac{y_{k|k-1} - s_{y,i}}{\sqrt{(x_{k|k-1} - s_{x,i})^2 + (y_{k|k-1} - s_{y,i})^2}} 
+        \frac{\hat{x}_{k|k-1} - s_{x,i}}{\sqrt{(\hat{x}_{k|k-1} - s_{x,i})^2 + (\hat{y}_{k|k-1} - s_{y,i})^2}} \\
+        \frac{\hat{y}_{k|k-1} - s_{y,i}}{\sqrt{(\hat{x}_{k|k-1} - s_{x,i})^2 + (\hat{y}_{k|k-1} - s_{y,i})^2}} 
     \end{bmatrix}\,,
 \end{equation}
 cannot be either. We, therefore, consider the modified measurement functions
 \begin{equation}
     h'_i(\vec{x}) = h_i(\vec{x})^2\,. \label{eqn:modified_measurement_func}
 \end{equation}
-A measurement function in this form allows rearrangement of $h'_i$ and the corresponding Jacobian $\mat{H}'_{k,i}$ to a linear combination of powers of location elements in $\vec{x}_{k|k-1}$, as
+A measurement function in this form allows rearrangement of $h'_i$ and the corresponding Jacobian $\mat{H}'_{k,i}$ to a linear combination of powers of location elements in $\hat{\vec{x}}_{k|k-1}$, as
 \begin{equation}
     \begin{split}
         h'_i(\vec{x}) &= \left\lVert
@@ -649,17 +650,17 @@ and
 \begin{equation}
     \mat{H}'_{k,i} = 
     \begin{bmatrix}
-        2x_{k|k-1} - 2s_{x,i} \\
-        2y_{k|k-1} - 2s_{y,i}
+        2\hat{x}_{k|k-1} - 2s_{x,i} \\
+        2\hat{y}_{k|k-1} - 2s_{y,i}
     \end{bmatrix}\,. \label{eqn:modified_jacobian}
 \end{equation}
-Here, $h'_i$ and $\mat{H}'_{k,i}$ are linear combinations of $x_{k|k-1}^2$, $y_{k|k-1}^2$, $x_{k|k-1}$ and $y_{k|k-1}$. To show how the corresponding modified measurement vectors $\vec{i}'_{k,i}$ and matrices $\mat{I}'_{k,i}$ can be similarly rearranged and used for localisation, we also require the existence of measurements following a modified measurement model of the form
+Here, $h'_i$ and $\mat{H}'_{k,i}$ are linear combinations of $\hat{x}_{k|k-1}^2$, $\hat{y}_{k|k-1}^2$, $\hat{x}_{k|k-1}$ and $\hat{y}_{k|k-1}$. To show how the corresponding modified measurement vectors $\vec{i}'_{k,i}$ and matrices $\mat{I}'_{k,i}$ can be similarly rearranged and used for localisation, we also require the existence of measurements following a modified measurement model of the form
 \begin{equation}
     z'_{k,i} = h'_i(\vec{x}_k)+v'_{k,i}\,, \label{eqn:modified_measurement_model}
 \end{equation}
-where $z'_{k,i}$ is the modified measurement, and noise term $v'_{k,i}$ is zero-mean and has a known variance $r_{k,i}$.
+where $z'_{k,i}$ is the modified measurement, and noise term $v'_{k,i}$ is zero-mean and has a known variance $r'_{k,i}$.
 
-Computing $z'_{k,i}$ and its variance $r_{k,i}$ from the original measurements $z_{k,i}$ are complicated by the noise term $v_{k,i} \sim \mathcal{N}(0, r_i)$, and simply squaring the original range measurements produces
+Computing $z'_{k,i}$ and its variance $r'_{k,i}$ from the original measurements $z_{k,i}$ are complicated by the noise term $v_{k,i} \sim \mathcal{N}(0, r_{k,i})$, and simply squaring the original range measurements produces
 \begin{equation}
     \begin{split}
         z_{k,i}^2 &= (h_i(\vec{x}_k) + v_{k,i})^2 \\
@@ -668,19 +669,19 @@ Computing $z'_{k,i}$ and its variance $r_{k,i}$ from the original measurements $
 \end{equation}
 with a new noise term $2h_i(\vec{x}_k)v_{k,i} + v_{k,i}^2$, now dependent on the measurement function $h_i$, and no longer zero-mean. We can compute the mean of this new noise term (a function of the Gaussian term $v_{k,i}$) as
 \begin{equation}
-    \mathsf{E}[2h_i(\vec{x}_k)v_{k,i} + v_{k,i}^2] = r_i\, \label{eqn:modified_noise_mean}
+    \mathsf{E}[2h_i(\vec{x}_k)v_{k,i} + v_{k,i}^2] = r_{k,i}\, \label{eqn:modified_noise_mean}
 \end{equation}
 and mean-adjust modified measurements as
 \begin{equation}
     \begin{split}
-        z'_{k,i} &= z_{k,i}^2 - r_i \\
-        &= h_i(\vec{x}_k)^2 + 2h_i(\vec{x}_k)v_{k,i} + v_{k,i}^2 - r_i \\
+        z'_{k,i} &= z_{k,i}^2 - r_{k,i} \\
+        &= h_i(\vec{x}_k)^2 + 2h_i(\vec{x}_k)v_{k,i} + v_{k,i}^2 - r_{k,i} \\
         &= h'_i(\vec{x}_k) + v'_{k,i}\,,
     \end{split} \label{eqn:modified_measurement}
 \end{equation}
-with now zero-mean noise $v'_{k,i} = 2h_i(\vec{x}_k)v_{k,i} + v_{k,i}^2 - r_i$. The noise in this case (again a function of Gaussian term $v_{k,i}$) has variance 
+with now zero-mean noise $v'_{k,i} = 2h_i(\vec{x}_k)v_{k,i} + v_{k,i}^2 - r_{k,i}$. The noise in this case (again a function of Gaussian term $v_{k,i}$) has variance 
 \begin{equation}
-    \mathsf{Var}[v'_{k,i}] = 4h_i(\vec{x}_k)^2r_i + 2r_i^2
+    \mathsf{Var}[v'_{k,i}] = 4h_i(\vec{x}_k)^2r_{k,i} + 2r_{k,i}^2
 \end{equation}
 and is also dependent on $h_i$. To use the modified measurement \eqref{eqn:modified_measurement} with the EIF, we require an estimate for $\mathsf{Var}[v'_{k,i}]$ at the sensor as well. Additionally, a conservative estimate (\textit{i.e.}, a larger variance resulting in less confidence in measurements) is desirable to reduce filter divergence. The naive approach, replacing $h_i(\vec{x}_k)$ with $z_{k,i}$, only provides a conservative estimate when
 \begin{equation}
@@ -689,10 +690,10 @@ and is also dependent on $h_i$. To use the modified measurement \eqref{eqn:modif
         \implies &v_{k,i} > 0\,,
     \end{split}
 \end{equation}
-which cannot be guaranteed. Instead, we provide a conservative estimate with $95\%$ confidence due to the Gaussianity of $v_{k,i}$, by adjusting the replacement term $z_{k,i}$ by two of its standard deviations $\sqrt{r_i}$. The modified measurement's variance at timestep $k$ is therefore conservatively approximated by
+which cannot be guaranteed. Instead, we provide a conservative estimate with $95\%$ confidence due to the Gaussianity of $v_{k,i}$, by adjusting the replacement term $z_{k,i}$ by two of its standard deviations $\sqrt{r_{k,i}}$. The modified measurement's variance at timestep $k$ is therefore conservatively approximated by
 \begin{equation}
     \begin{split}
-        r_{k, i} &= 4(z_{k,i} + 2\sqrt{r_i})^2r_i + 2r_i^2 \\
+        r'_{k, i} &= 4(z_{k,i} + 2\sqrt{r_{k,i}})^2r_{k,i} + 2r_{k,i}^2 \\
         &\gtrapprox \mathsf{Var}[v'_{k,i}]
     \end{split}\,. \label{eqn:modified_measurement_variance_estimate}
 \end{equation}
@@ -710,27 +711,27 @@ The modified measurement model \eqref{eqn:modified_measurement_model} can now be
 % ########  #######   ######  
 % 
 
-\subsection{Localization} \label{subsec:localization}
+\subsection{Localisation} \label{subsec:localisation}
 To complete the EIF update using a linear combination aggregation process, modified measurement vectors $\vec{i}'_{k,i}$ and matrices $\mat{I}'_{k,i}$, using the modified measurement model \eqref{eqn:modified_measurement_model}, can be rearragned as follows.
 \begin{equation}
     \begin{split}
-        \vec{i}'_{k,i} &= \mat{H}_{k,i}^{\prime\top} r_{k,i}^{-1}(z'_{k,i} - h'_i(\vec{x}_{k|k-1}) + \mat{H}'_{k,i}\vec{x}_{k|k-1}) \\
+        \vec{i}'_{k,i} &= \mat{H}_{k,i}^{\prime\top} r_{k,i}^{\prime-1}(z'_{k,i} - h'_i(\hat{\vec{x}}_{k|k-1}) + \mat{H}'_{k,i}\hat{\vec{x}}_{k|k-1}) \\
         &= 
         \begin{bmatrix}
             \begin{split}
-                &(2r_{k,i}^{-1})x_{k|k-1}^3 + (2r_{k,i}^{-1})x_{k|k-1}y_{k|k-1}^2 \\
-                &\quad+ (-r_{k,i}^{-1}s_{x,i})x_{k|k-1}^2 + (-2r_{k,i}^{-1}s_{x,i})y_{k|k-1}^2 \\
-                &\quad+ (2r_{k,i}^{-1}z'_{k,i})x_{k|k-1} + (-2r_{k,i}^{-1}s_{x,i}^2)x_{k|k-1}\\
-                &\quad+ (-2r_{k,i}^{-1}s_{y,i}^2)x_{k|k-1} + (2r_{k,i}^{-1}s_{x,i}^3) \\
-                &\quad+ (2r_{k,i}^{-1}s_{x,i}s_{y,i}^2) + (-2r_{k,i}^{-1}s_{x,i} z'_{k,i})
+                &(2r_{k,i}^{\prime-1})\hat{x}_{k|k-1}^3 + (2r_{k,i}^{\prime-1})\hat{x}_{k|k-1}\hat{y}_{k|k-1}^2 \\
+                &\quad+ (-r_{k,i}^{\prime-1}s_{x,i})\hat{x}_{k|k-1}^2 + (-2r_{k,i}^{\prime-1}s_{x,i})\hat{y}_{k|k-1}^2 \\
+                &\quad+ (2r_{k,i}^{\prime-1}z'_{k,i})\hat{x}_{k|k-1} + (-2r_{k,i}^{\prime-1}s_{x,i}^2)\hat{x}_{k|k-1}\\
+                &\quad+ (-2r_{k,i}^{\prime-1}s_{y,i}^2)\hat{x}_{k|k-1} + (2r_{k,i}^{\prime-1}s_{x,i}^3) \\
+                &\quad+ (2r_{k,i}^{\prime-1}s_{x,i}s_{y,i}^2) + (-2r_{k,i}^{\prime-1}s_{x,i} z'_{k,i})
             \end{split}
             \vspace{5pt}\\
             \begin{split}
-                &(2r_{k,i}^{-1})y_{k|k-1}^3 + (2r_{k,i}^{-1})x_{k|k-1}^2y_{k|k-1} \\
-                &\quad+ (-2r_{k,i}^{-1}s_{y,i})x_{k|k-1}^2 + (-2r_{k,i}^{-1}s_{y,i})y_{k|k-1}^2 \\
-                &\quad+ (2r_{k,i}^{-1}z'_{k,i})y_{k|k-1} + (-2r_{k,i}^{-1}s_{x,i}^2)y_{k|k-1} \\
-                &\quad+ (-2r_{k,i}^{-1}s_{y,i}^2)y_{k|k-1} + (2r_{k,i}^{-1}s_{y,i}s_{x,i}^2) \\
-                &\quad+ (2r_{k,i}^{-1}s_{y,i}^3) + (-2r_{k,i}^{-1}s_{y,i}z'_{k,i})
+                &(2r_{k,i}^{\prime-1})\hat{y}_{k|k-1}^3 + (2r_{k,i}^{\prime-1})\hat{x}_{k|k-1}^2\hat{y}_{k|k-1} \\
+                &\quad+ (-2r_{k,i}^{\prime-1}s_{y,i})\hat{x}_{k|k-1}^2 + (-2r_{k,i}^{\prime-1}s_{y,i})\hat{y}_{k|k-1}^2 \\
+                &\quad+ (2r_{k,i}^{\prime-1}z'_{k,i})\hat{y}_{k|k-1} + (-2r_{k,i}^{\prime-1}s_{x,i}^2)\hat{y}_{k|k-1} \\
+                &\quad+ (-2r_{k,i}^{\prime-1}s_{y,i}^2)\hat{y}_{k|k-1} + (2r_{k,i}^{\prime-1}s_{y,i}s_{x,i}^2) \\
+                &\quad+ (2r_{k,i}^{\prime-1}s_{y,i}^3) + (-2r_{k,i}^{\prime-1}s_{y,i}z'_{k,i})
             \end{split}
         \end{bmatrix}
     \end{split} \label{eqn:hrz_linear_comb}
@@ -738,7 +739,7 @@ To complete the EIF update using a linear combination aggregation process, modif
 and
 \begin{equation}
     \begin{split}
-        \mat{I}'_{k,i} &= \mat{H}_{k,i}^{\prime\top} r_{k,i}^{-1}\mat{H}'_{k,i} \\
+        \mat{I}'_{k,i} &= \mat{H}_{k,i}^{\prime\top} r_{k,i}^{\prime-1}\mat{H}'_{k,i} \\
         &=
         \begin{bmatrix}
             \beta_{11} & \beta_{12} \\
@@ -748,24 +749,24 @@ and
 \end{equation}
 with
 \begin{align*}
-    \beta_{11} &= (4r_{k,i}^{-1})x_{k|k-1}^2 + (-8r_{k,i}^{-1}s_{x,i})x_{k|k-1} + (4r_{k,i}^{-1}s_{x,i}^2)\,, \\
+    \beta_{11} &= (4r_{k,i}^{\prime-1})\hat{x}_{k|k-1}^2 + (-8r_{k,i}^{\prime-1}s_{x,i})\hat{x}_{k|k-1} + (4r_{k,i}^{\prime-1}s_{x,i}^2)\,, \\
     \begin{split}
-        \beta_{12} &= (4r_{k,i}^{-1})x_{k|k-1}y_{k|k-1} + (-4r_{k,i}^{-1}s_{y,i})x_{k|k-1}  \\
-        &\qquad+ (-4r_{k,i}^{-1}s_{x,i})y_{k|k-1} + (4r_{k,i}^{-1}s_{x,i}s_{y,i})\,,
+        \beta_{12} &= (4r_{k,i}^{\prime-1})\hat{x}_{k|k-1}\hat{y}_{k|k-1} + (-4r_{k,i}^{\prime-1}s_{y,i})\hat{x}_{k|k-1}  \\
+        &\qquad+ (-4r_{k,i}^{\prime-1}s_{x,i})\hat{y}_{k|k-1} + (4r_{k,i}^{\prime-1}s_{x,i}s_{y,i})\,,
     \end{split}\\
     \beta_{21} &= \beta_{12}\,,\ \textrm{and} \\
-    \beta_{22} &= (4r_{k,i}^{-1})y_{k|k-1}^2 + (-8r_{k,i}^{-1}s_{y,i})y_{k|k-1} + (4r_{k,i}^{-1}s_{y,i}^2)\,.
+    \beta_{22} &= (4r_{k,i}^{\prime-1})\hat{y}_{k|k-1}^2 + (-8r_{k,i}^{\prime-1}s_{y,i})\hat{y}_{k|k-1} + (4r_{k,i}^{\prime-1}s_{y,i}^2)\,.
 \end{align*}
-The above rearrangements give $\vec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ as linear comabinations of
+The above rearrangements give $\vec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ as linear comabinations of elements in
 \begin{equation}
     \begin{split}
-        &\{ x_{k|k-1}^3,\ y_{k|k-1}^3,\ x_{k|k-1}^2y_{k|k-1},\ x_{k|k-1}y_{k|k-1}^2,\\
-        &\quad x_{k|k-1}^2,\ y_{k|k-1}^2,\ x_{k|k-1}y_{k|k-1},\ x_{k|k-1},\ y_{k|k-1}\}\,,
+        &\{ \hat{x}_{k|k-1}^3,\ \hat{y}_{k|k-1}^3,\ \hat{x}_{k|k-1}^2\hat{y}_{k|k-1},\ \hat{x}_{k|k-1}\hat{y}_{k|k-1}^2,\\
+        &\quad \hat{x}_{k|k-1}^2,\ \hat{y}_{k|k-1}^2,\ \hat{x}_{k|k-1}\hat{y}_{k|k-1},\ \hat{x}_{k|k-1},\ \hat{y}_{k|k-1}\}\,,
     \end{split} \label{eqn:weights_to_broadcast}
 \end{equation}
-which now capture all the private state information in $\vec{x}_{k|k-1}$ required at the sensors. The corresponding EIF update steps \eqref{eqn:eif_info_vec_update} and \eqref{eqn:eif_info_mat_update} then become
+which now captures all the private state information in $\hat{\vec{x}}_{k|k-1}$ required at the sensors. The corresponding EIF update steps \eqref{eqn:eif_info_vec_update} and \eqref{eqn:eif_info_mat_update} then become
 \begin{equation}
-    \vec{y}_{k|k} = \vec{y}_{k|k-1} + \sum^n_{i=1}\vec{i}'_{k,i} \label{eqn:eif_modified_vec_update}
+    \hat{\vec{y}}_{k|k} = \hat{\vec{y}}_{k|k-1} + \sum^n_{i=1}\vec{i}'_{k,i} \label{eqn:eif_modified_vec_update}
 \end{equation}
 and
 \begin{equation}
@@ -807,20 +808,20 @@ Measurement modification, real number encoding and linear combination aggregatio
 \begin{algorithm}[htbp]
 \caption{Navigator Prediction}\label{alg:nav_prediction}
 \begin{algorithmic}[1]
-    \Procedure{Prediction}{$\vec{x}_{k-1|k-1}$, $\mat{P}_{k-1|k-1}$, $\vec{f}$, $\mat{Q}$, $N$}
+    \Procedure{Prediction}{$\hat{\vec{x}}_{k-1|k-1}$, $\mat{P}_{k-1|k-1}$, $\vec{f}_k$, $\mat{Q}_k$, $N$}
 
     \State Compute $\mat{F}_k$ by \eqref{eqn:jacobian_f}
-    \State $\vec{x}_{k|k-1} \gets \vec{f}(\vec{x}_{k-1|k-1})$
+    \State $\hat{\vec{x}}_{k|k-1} \gets \vec{f}_k(\hat{\vec{x}}_{k-1|k-1})$
     \State $\mat{P}_{k|k-1} \gets \mat{F}_k\mat{P}_{k-1|k-1}\mat{F}_k^\top + \mat{Q}_k$
 
-    \State Compute $\mathsf{E}_{0}(x^3_{k|k-1})$ by \eqref{eqn:encode}
-    \State Compute $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(x^3_{k|k-1}))$ by \eqref{eqn:our_scheme_encrypt}
-    \State Broadcast $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(x^3_{k|k-1}))$ to sensors
+    \State Compute $\mathsf{E}_{0}(\hat{x}^3_{k|k-1})$ by \eqref{eqn:encode}
+    \State Compute $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{x}^3_{k|k-1}))$ by \eqref{eqn:our_scheme_encrypt}
+    \State Broadcast $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{x}^3_{k|k-1}))$ to sensors
     \For{Remaining weights in \eqref{eqn:weights_to_broadcast}} 
         \State Broadcast weight in the form above
     \EndFor
 
-    \State \Return $\vec{x}_{k|k-1}, \mat{P}_{k|k-1}$
+    \State \Return $\hat{\vec{x}}_{k|k-1}, \mat{P}_{k|k-1}$
     \EndProcedure
 \end{algorithmic}
 \end{algorithm}
@@ -828,28 +829,28 @@ Measurement modification, real number encoding and linear combination aggregatio
 \begin{algorithm}[htbp]
 \caption{Measurement at Sensor $i$}\label{alg:measurement_info}
 \begin{algorithmic}[1]
-    \Procedure{Measurement}{$i$, $s_{x,i}$, $s_{y,i}$, $r_i$, $N$, $H$}
+    \Procedure{Measurement}{$i$, $s_{x,i}$, $s_{y,i}$, $r_{k,i}$, $N$, $H$}
 
     \State Measure $z_{k,i}$
     \State Compute $z'_{k,i}$ by \eqref{eqn:modified_measurement}
-    \State Compute $r_{k,i}$ by \eqref{eqn:modified_measurement_variance_estimate}
+    \State Compute $r'_{k,i}$ by \eqref{eqn:modified_measurement_variance_estimate}
 
-    \State Recieve $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(x^3_{k|k-1}))$
+    \State Recieve $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{x}^3_{k|k-1}))$
     \For{Remaining weights in \eqref{eqn:weights_to_broadcast}}
         \State Recieve weight in the form above
     \EndFor
 
     \State Let $\alpha_{v}^{(i)}$ represent an encryption of element $v$ in $\vec{i}'_{k,i}$ from \eqref{eqn:hrz_linear_comb}
-    \State $\alpha_{1}^{(i)} \gets \mathcal{E}_{pk_0}(\mathsf{E}_{0}(x^3_{k|k-1}))^{\mathsf{E}_{0}(2r_{k,i}^{-1})}\cdot$\par
-    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(x_{k|k-1}y^2_{k|k-1}))^{\mathsf{E}_{0}(2r_{k,i}^{-1})}\cdot$\par
-    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(x^2_{k|k-1}))^{\mathsf{E}_{0}(-r_{k, i}^{-1}s_{x,i})}\cdot$\par
-    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(y^2_{k|k-1}))^{\mathsf{E}_{0}(-2r_{k, i}^{-1}s_{x,i})}\cdot$\par
-    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(x_{k|k-1}))^{\mathsf{E}_{0}(2r_{k,i}^{-1}z_{k,i}')}\cdot$\par
-    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(x_{k|k-1}))^{\mathsf{E}_{0}(-2r_{k,i}^{-1}s_{x,i}^2)}\cdot$\par
-    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(x_{k|k-1}))^{\mathsf{E}_{0}(-2r_{k,i}^{-1}s_{y,i}^2)}\cdot$\par
-    \ $(N+1)^{\mathsf{E}_{1}(2r_{k,i}^{-1}s_{x,i}^3)}
-    (N+1)^{\mathsf{E}_{1}(2r_{k,i}^{-1}s_{x,i}s_{y,i}^2)}\cdot$\par
-    \ $(N+1)^{\mathsf{E}_{1}(-2r_{k, i}^{-1}s_{x,i}z_{k,i}')}
+    \State $\alpha_{1}^{(i)} \gets \mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{x}^3_{k|k-1}))^{\mathsf{E}_{0}(2r_{k,i}^{\prime-1})}\cdot$\par
+    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{x}_{k|k-1}\hat{y}^2_{k|k-1}))^{\mathsf{E}_{0}(2r_{k,i}^{\prime-1})}\cdot$\par
+    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{x}^2_{k|k-1}))^{\mathsf{E}_{0}(-r_{k, i}^{\prime-1}s_{x,i})}\cdot$\par
+    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{y}^2_{k|k-1}))^{\mathsf{E}_{0}(-2r_{k, i}^{\prime-1}s_{x,i})}\cdot$\par
+    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{x}_{k|k-1}))^{\mathsf{E}_{0}(2r_{k,i}^{\prime-1}z_{k,i}')}\cdot$\par
+    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{x}_{k|k-1}))^{\mathsf{E}_{0}(-2r_{k,i}^{\prime-1}s_{x,i}^2)}\cdot$\par
+    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{x}_{k|k-1}))^{\mathsf{E}_{0}(-2r_{k,i}^{\prime-1}s_{y,i}^2)}\cdot$\par
+    \ $(N+1)^{\mathsf{E}_{1}(2r_{k,i}^{\prime-1}s_{x,i}^3)}
+    (N+1)^{\mathsf{E}_{1}(2r_{k,i}^{\prime-1}s_{x,i}s_{y,i}^2)}\cdot$\par
+    \ $(N+1)^{\mathsf{E}_{1}(-2r_{k, i}^{\prime-1}s_{x,i}z_{k,i}')}
     H(k\mathbin\|1\mathbin\|1\mathbin\|0)\pmod{N^2}$
     \State Compute $\alpha_{2}^{(i)}$ using \eqref{eqn:hrz_linear_comb}, \eqref{eqn:our_scheme_lin_comb} and the remark from section \ref{sec:lcao_scheme} in the form above
     \For{$v \gets 1$ to $2$}
@@ -857,9 +858,9 @@ Measurement modification, real number encoding and linear combination aggregatio
     \EndFor
 
     \State Let $\beta_{vw}^{(i)}$ represent an encryption of element $(v,w)$ in $\mat{I}'_{k,i}$ from \eqref{eqn:hrh_linear_comb}
-    \State $\beta_{11}^{(i)} \gets \mathcal{E}_{pk_0}(\mathsf{E}_{0}(x^2_{k|k-1}))^{\mathsf{E}_{0}(4r_{k,i}^{-1})}\cdot$\par
-    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(x_{k|k-1}))^{\mathsf{E}_{0}(-8r_{k, i}^{-1}s_{x,i})}\cdot$\par
-    \ $(N+1)^{\mathsf{E}_{1}(4r_{k,i}^{-1}s_{x,i}^2)}\cdot$\par
+    \State $\beta_{11}^{(i)} \gets \mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{x}^2_{k|k-1}))^{\mathsf{E}_{0}(4r_{k,i}^{\prime-1})}\cdot$\par
+    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{x}_{k|k-1}))^{\mathsf{E}_{0}(-8r_{k, i}^{\prime-1}s_{x,i})}\cdot$\par
+    \ $(N+1)^{\mathsf{E}_{1}(4r_{k,i}^{\prime-1}s_{x,i}^2)}\cdot$\par
     \ $H(k\mathbin\|1\mathbin\|1\mathbin\|1)\pmod{N^2}$
     \State Compute remaining $\beta_{vw}^{(i)}$ using \eqref{eqn:hrh_linear_comb}, \eqref{eqn:our_scheme_lin_comb} and the remark from section \ref{sec:lcao_scheme} in the form above
     \For{$v \gets 1$ to $2$}
@@ -874,7 +875,7 @@ Measurement modification, real number encoding and linear combination aggregatio
 \begin{algorithm}[htbp]
 \caption{Navigator Update}\label{alg:nav_update}
 \begin{algorithmic}[1]
-    \Procedure{Update}{$\vec{x}_{k|k-1}$, $\mat{P}_{k|k-1}$, $N$, $\lambda$}
+    \Procedure{Update}{$\hat{\vec{x}}_{k|k-1}$, $\mat{P}_{k|k-1}$, $N$, $\lambda$}
     
     \For{$v \gets 1$ to $2$}
         \State Receive $\alpha_{v}^{(i)}$ from each sensor $1\leq i \leq n$
@@ -904,11 +905,11 @@ Measurement modification, real number encoding and linear combination aggregatio
     \EndFor
     \State Construct $\sum_{i=1}^n\mat{I}'_{k,i}$ from decoded decryptions above
 
-    \State $\vec{y}_{k|k} \gets \mat{P}_{k|k-1}^{-1}\vec{x}_{k|k-1} + \sum_{i=1}^n\vec{i}'_{k,i}$
+    \State $\hat{\vec{y}}_{k|k} \gets \mat{P}_{k|k-1}^{-1}\hat{\vec{x}}_{k|k-1} + \sum_{i=1}^n\vec{i}'_{k,i}$
     \State $\mat{Y}_{k|k} \gets \mat{P}_{k|k-1}^{-1} + \sum_{i=1}^n\mat{I}'_{k,i}$
-    \State $\vec{x}_{k|k} \gets \mat{Y}_{k|k}^{-1}\vec{y}_{k|k}$
+    \State $\hat{\vec{x}}_{k|k} \gets \mat{Y}_{k|k}^{-1}\hat{\vec{y}}_{k|k}$
     \State $\mat{P}_{k|k} \gets \mat{Y}_{k|k}^{-1}$
-    \State \Return $\vec{x}_{k|k}, \mat{P}_{k|k}$
+    \State \Return $\hat{\vec{x}}_{k|k}, \mat{P}_{k|k}$
     \EndProcedure
 \end{algorithmic}
 \end{algorithm}
@@ -922,14 +923,14 @@ Algorithms \ref{alg:nav_prediction}, \ref{alg:measurement_info} and \ref{alg:nav
     \node at (3.25,7.5) {\small 1. Prediction};
 
     % Navigator
-    \fill  [blue!40] (2,7) rectangle (4.5,5.5);
+    \fill  [green!80!black!60] (2,7) rectangle (4.5,5.5);
     \pic[xscale=0.22,yscale=0.3] at (3.25,6.6725) {plane};
-    \node at (3.25,5.875) {$\vec{x}_{k|k-1}$, $\mat{P}_{k|k-1}$};
+    \node at (3.25,5.875) {$\hat{\vec{x}}_{k|k-1}$, $\mat{P}_{k|k-1}$};
     
     % Sensors
-    \fill  (1.25,3) [red!40] ellipse (0.4 and 0.4);
+    \fill  (1.25,3) [blue!80!black!40] ellipse (0.4 and 0.4);
     \node at (1.25,2.375) {Sensor $1$};
-    \fill  (5.25,3) [red!40] ellipse (0.4 and 0.4);
+    \fill  (5.25,3) [blue!80!black!40] ellipse (0.4 and 0.4);
     \node at (5.25,2.375) {Sensor $n$};
         
     \fill [black] (2.75,3) circle (0.05);
@@ -941,7 +942,7 @@ Algorithms \ref{alg:nav_prediction}, \ref{alg:measurement_info} and \ref{alg:nav
     \draw [-latex] plot[smooth, tension=.7] coordinates {(3.5,5.25) (5,3.5)};
     
     \fill [lightgray]  (0.25,5) rectangle (6.25,4);
-    \node at (3.25,4.5) {$\left\{\mathcal{E}_{pk_0}(\mathsf{E}_0(\rv{\omega})) \,|\, \rv{\omega} \!\in\! \{\rv{x}^3_{k|k-1}, \rv{y}^3_{k|k-1}, \dots\}\right\}$};
+    \node at (3.25,4.5) {$\left\langle\mathcal{E}_{pk_0}(\mathsf{E}_0(\omega)) \,|\, \omega \!\in\! \{\hat{x}^3_{k|k-1}, \hat{y}^3_{k|k-1}, \dots\}\right\rangle$};
     
     
     % Measurement
@@ -949,17 +950,17 @@ Algorithms \ref{alg:nav_prediction}, \ref{alg:measurement_info} and \ref{alg:nav
     \node at (3.25,1.25) {\small 2. Measurement};
     
     % Navigator
-    \fill  (3.25,0.25) [blue!40] ellipse (0.4 and 0.4);
+    \fill  (3.25,0.25) [green!80!black!60] ellipse (0.4 and 0.4);
     \pic[xscale=0.22,yscale=0.3] at (3.25,0.4225) {plane};
         
     % Sensors
-    \fill  [red!40] (6.25,-3.625)  rectangle (4.25,-2.625);
+    \fill  [blue!80!black!40] (6.25,-3.625)  rectangle (4.25,-2.625);
     \node at (1.25,-3.875) {Sensor $1$};
-    \fill  [red!40] (2.25,-3.625)  rectangle (0.25,-2.625);
+    \fill  [blue!80!black!40] (2.25,-3.625)  rectangle (0.25,-2.625);
     \node at (5.25,-3.875) {Sensor $n$};
     
-    \node at (1.25,-3.125) {$z'_{k,1}$, $r_{k,1}$};
-    \node at (5.25,-3.125) {$z'_{k,n}$, $r_{k,n}$};
+    \node at (1.25,-3.125) {$z'_{k,1}$, $r'_{k,1}$};
+    \node at (5.25,-3.125) {$z'_{k,n}$, $r'_{k,n}$};
     
     \fill [black] (2.75,-3.125) circle (0.05);
     \fill [black] (3.25,-3.125) circle (0.05);
@@ -980,10 +981,10 @@ Algorithms \ref{alg:nav_prediction}, \ref{alg:measurement_info} and \ref{alg:nav
     \node at (3.25,-5) {\small 3. Update};
     
     % Navigator
-    \fill  [blue!40] (1.5,-5.5) rectangle (5,-7.5);
+    \fill  [green!80!black!60] (1.5,-5.5) rectangle (5,-7.5);
     \pic[xscale=0.22,yscale=0.3] at (3.25,-5.8275) {plane};
     \node at (3.25,-6.625) {$\sum_{i=1}^n \vec{i}'_{k,i}$, $\sum_{i=1}^n\mat{I}'_{k,i}$};
-    \node at (3.25,-7.125) {$\vec{x}_{k|k}$, $\mat{P}_{k|k}$};
+    \node at (3.25,-7.125) {$\hat{\vec{x}}_{k|k}$, $\mat{P}_{k|k}$};
 \end{tikzpicture}
 \caption{Procedure at timestep $k$ for the proposed privacy-preserving EIF.}
 \label{fig:alg_steps}
@@ -1000,9 +1001,9 @@ Algorithms \ref{alg:nav_prediction}, \ref{alg:measurement_info} and \ref{alg:nav
 % 
 
 \subsection{Leakage} \label{subsec:leakage}
-With the privacy-preserving EIF defined in the previous section, we can now interpret the aggregation leakage of an LCAO scheme in the context of range sensor localisation. The leakage function from the $\mathsf{AggDec}$ algorithm corresponds to the information vector and matrix sums, $\sum_{i=1}^n\vec{i}'_{k,i}$ and $\sum_{i=1}^n\mat{I}'_{k,i}$, respectively. However, recalling that a compromised navigator can also learn the individual sums weighted by the same weight, which in this case means the leakage of $\{\sum_{i=1}^n2r^{-1}_{k,i},\ \sum_{i=1}^n-r^{-1}_{k,i}s_{x,i},\ \sum_{i=1}^n-2r^{-1}_{k,i}s_{x,i},\ \dots\}$. From these leaked sums, we can see that private sensor information, $z'_{k,i}$, $r_{k,i}$ and $\vec{s}_i$, is present only in their complete sums
+With the privacy-preserving EIF defined in the previous section, we can now interpret the aggregation leakage of an LCAO scheme in the context of range sensor localisation. The leakage function from the $\mathsf{AggDec}$ algorithm corresponds to the information vector and matrix sums, $\sum_{i=1}^n\vec{i}'_{k,i}$ and $\sum_{i=1}^n\mat{I}'_{k,i}$, respectively. However, recalling that a compromised navigator can also learn the individual sums weighted by the same weight, which in this case means the leakage of $\{\sum_{i=1}^n2r^{-1}_{k,i},\ \sum_{i=1}^n-r^{-1}_{k,i}s_{x,i},\ \sum_{i=1}^n-2r^{-1}_{k,i}s_{x,i},\ \dots\}$. From these leaked sums, we can see that private sensor information, $z'_{k,i}$, $r'_{k,i}$ and $\vec{s}_i$, is present only in their complete sums
 \begin{equation}
-    \sum_{i=1}^nz'_{k,i}\,,\ \sum_{i=1}^nr_{k,i}\,,\ \sum_{i=1}^ns_{x,i}\ \textrm{and}\ \sum_{i=1}^ns_{y,i}\,,\label{eqn:localisation_leakage}
+    \sum_{i=1}^nz'_{k,i}\,,\ \sum_{i=1}^nr'_{k,i}\,,\ \sum_{i=1}^ns_{x,i}\ \textrm{and}\ \sum_{i=1}^ns_{y,i}\,,\label{eqn:localisation_leakage}
 \end{equation}
 which in practice correspond to their averages. We can therefore say, in the context of our proposed localisation method, LCAO leakage corresponds to the averages of sensor private information, while individual sensor information remains private.
 
@@ -1043,21 +1044,21 @@ and
 \end{equation*}
 for all $k>0$, was simulated and tracked with the algorithms in section \ref{subsec:pseudocode}. Code was written in the C programming language, using the MPI library \cite{theopenmpiprojectOpenMPI2020} to support asynchronous computations by the sensors and navigator. The MG1 mask generation function and the SHA256 hash function, from the OpenSSL library \cite{theopensslprojectOpenSSL2020}, were used to implement the required hash function $H$, and the Libpaillier library \cite{bethencourtLibpaillier2010} was used for the Paillier encryption scheme. Additionally, GNU libraries, GSL \cite{thegsldevelopmentteamGSLGNUScientific2019} and GMP \cite{granlundGMPGNUMultiple2020}, were used for algebraic operations and multiple-precision encoded integers, respectively. All execution was performed on a 3.00GHz Intel i7-9700 CPU, running on the Windows Subsystem for Linux (WSL).
 
-We have considered multiple sensor layouts, each with four sensors, to capture the dependence of estimated modified measurement variances $r_{k,i}$ on the original measurements $z_{k,i}$. The layouts, of varying sensor distances to the navigator track, are shown in figure \ref{fig:sim_layouts}.
+We have considered multiple sensor layouts, each with four sensors, to capture the dependence of estimated modified measurement variances $r'_{k,i}$ on the original measurements $z_{k,i}$. The layouts, of varying sensor distances to the navigator track, are shown in figure \ref{fig:sim_layouts}.
 \begin{figure}[htbp]
     \centering
     \includegraphics{images/layouts.pdf}
     \caption{Diffrent simulation layouts with varying average distances between navigator and sensors.}
     \label{fig:sim_layouts}
 \end{figure}
-The simulation root mean square error (RMSE) of the privacy-preserving method has been compared to the RMSE of the standard EIF (an algebraic equivalent of the EKF), using unmodified measurements. Measurement and estimation in each layout from figure \ref{fig:sim_layouts} consists of $50$ filter iterations and was run $100$ times. Unmodified measurement variances were taken as $r_i=5$ and a large fractional precision factor, $\phi=2^{32}$, was chosen. The results can be seen in figure \ref{fig:sim_layout_errors}.
+The simulation root mean square error (RMSE) of the privacy-preserving method has been compared to the RMSE of the standard EIF (an algebraic equivalent of the EKF), using unmodified measurements. Measurement and estimation in each layout from figure \ref{fig:sim_layouts} consists of $50$ filter iterations and was run $100$ times. Unmodified measurement variances were taken as $r_{k,i}=5$ for all $k>0$ and a large fractional precision factor, $\phi=2^{32}$, was chosen. The results can be seen in figure \ref{fig:sim_layout_errors}.
 \begin{figure}[htbp]
     \centering
     \includegraphics{images/layout_errors.pdf}
     \caption{MSE of the privacy-preserving EIF and standard EIF for different layout simulations.}
     \label{fig:sim_layout_errors}
 \end{figure}
-From these results, we can see the similarity in filter performance between the privacy-preserving method and that of the traditional EIF. We can also see that the varying average distances between sensors and navigator have little impact on the differences in performance. We can attribute the similarity in MSE to the conservativeness of estimated modified measurement variances $r_{k,i}$, resulting in few additional filter divergences, and to the high fractional precision factor, keeping computations consistent with the floating-point arithmetic of the EIF.
+From these results, we can see the similarity in filter performance between the privacy-preserving method and that of the traditional EIF. We can also see that the varying average distances between sensors and navigator have little impact on the differences in performance. We can attribute the similarity in MSE to the conservativeness of estimated modified measurement variances $r'_{k,i}$, resulting in few additional filter divergences, and to the high fractional precision factor, keeping computations consistent with the floating-point arithmetic of the EIF.
 
 In addition to filter error, computational performance is important to consider when relying on cryptographic methods. Figure \ref{fig:sim_timing} shows the average execution time of $50$ simulation runs with varying numbers of sensors, for different key sizes (bit lengths of $N$). Here, increasing the number of sensors primarily affects the number of inter-process communications and aggregation modular multiplications due to the asynchronous implementation.
 \begin{figure}[htbp]
@@ -1100,7 +1101,7 @@ We have presented a localisation filter in the presence of range-only sensors, w
 % 
 
 \appendices
-\section{Linear-Combination Aggregator Oblivousness (LCAO)} \label{app:lcao}
+\section{Linear Combination Aggregator Oblivousness (LCAO)} \label{app:lcao}
 The following game between attacker and challenger defines the security notion of LCAO.
 \begin{LaTeXdescription}
     \item[Setup] The challenger chooses security parameter $\kappa$, runs the $\mathsf{Setup}(\kappa)$ algorithm and gives $\mathsf{pub}$, $m$ and $pk_0$ to the attacker
