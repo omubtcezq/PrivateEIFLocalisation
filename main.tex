@@ -1021,7 +1021,7 @@ which in practice correspond to their averages. We can therefore say, in the con
 % 
 
 \section{Simulation and Results} \label{sec:sim_and_results}
-As well as having shown the theoretical backing for the security of our scheme, we have simulated the proposed localisation method to evaluate its performance. A two-dimensional linear constant velocity process model, with
+As well as having shown the theoretical backing for the security of our scheme, we have simulated the proposed localisation method to evaluate its performance. A two-dimensional, linear, constant velocity process model, with
 \begin{equation*}
     \vec{f}_k(\vec{x}) =
     \begin{bmatrix}
@@ -1047,31 +1047,26 @@ We have considered multiple sensor layouts, each with four sensors, to capture t
 \begin{figure}[htbp]
     \centering
     \includegraphics{images/layouts.pdf}
-    \caption{The considered layouts, with varying average distances between navigator and sensors.}
+    \caption{Diffrent simulation layouts with varying average distances between navigator and sensors.}
     \label{fig:sim_layouts}
 \end{figure}
-
-
-
-standard EIF, equivalent to the EKF, as the baseline we comapre to
-
-To evaluate the accuracy of our method, we have run $100$ simulations, all with $50$ filter iterations, for each of the sensor layouts with sensor measurement variances set to $r_i=5$ simulation units. Due to the large encoding modulus $N$, no notable advantage is gained when choosing a low fractional precision factor $\phi$, thus, $\phi=2^{32}$ was chosen to ensure minimal loss of precision when compared to the floating-point computations in the unencrypted EIF. The plotted average RMSE of our proposed method as well as that of the unencrypted EIF filter can be seen in Figure \ref{fig:sim_layout_errors}.
+The simulation root mean square error (RMSE) of the privacy-preserving method has been compared to the RMSE of the standard EIF (algebraic equivalent of the EKF), using the unmodified measurements. Measurement and estimation in each layout from figure \ref{fig:sim_layouts} consists of $50$ filter iterations and was run $100$ times. Unmodified measurement variances were taken as $r_i=5$ and a large fractional precision factor, $\phi=2^{32}$, was chosen. The results can be seen in figure \ref{fig:sim_layout_errors}.
 \begin{figure}[htbp]
-\centering
-\includegraphics{images/layout_errors.pdf}
-\caption{Filter error for different layouts, where solid lines show the results from our privacy-preserving filter and dashed lines from an unmodified EIF.}
-\label{fig:sim_layout_errors}
+    \centering
+    \includegraphics{images/layout_errors.pdf}
+    \caption{MSE of the privacy-preserving EIF and standard EIF for different layout simulations.}
+    \label{fig:sim_layout_errors}
 \end{figure}
-From the results, it can be seen that sensor distance has little effect on the performance of the filter and that the measurement modification from Section \ref{subsec:range_measurement_mod} has a negligible effect when compared to a normal EIF filter. The robustness of the privacy-preserving method can be attributed to the conservativeness of variance estimates in \eqref{eqn:modified_measurement_variance_estimate} and the sufficiently large fractional precision parameter $\phi$.
+From these results, we can see the similarity in filter performance between the privacy-preserving method and that of the traditional EIF. We can also see that the varying average distances between sensors and navigator have little impact to the differences in performace. We can attribute the similarity in MSE to the conservativeness of estimated modified measurement variances $r_{k,i}$, resulting in few additional filter divergences, and to the high fractional precision factor, keeping computations consistent with the floating-point arithmetic of the EIF.
 
-In addition to accuracy, computational requirements are an important factor in the adoption of novel cryptographic methods. Figure \ref{fig:sim_timing} shows the average simulation runtimes when encryption key bit lengths (\textit{i.e.}, bit lengths of $N$) and the number of sensors are varied. Every plotted time is again the average of $100$ simulations, each running for $50$ filter iterations. 
+In addition to filter error, computational performance is important to consider when relying on cryptographic methods. Figure \ref{fig:sim_timing} shows the average execution time of $50$ simulation runs with varying numbers of sensors, for different key sizes (bit lengths of $N$). Here, increasing the number of sensors primarily affects the number of inter-process communications and aggregation modular multiplications due to the asynchronous implementation.
 \begin{figure}[htbp]
-\centering
-\includegraphics{images/timing.pdf}
-\caption{Runtimes for varying key sizes and numbers of sensors.}
-\label{fig:sim_timing}
+    \centering
+    \includegraphics{images/timing.pdf}
+    \caption{Runtimes for varying key sizes and numbers of sensors.}
+    \label{fig:sim_timing}
 \end{figure}
-As sensor and navigator computations run in parallel, increases in runtime from additional sensors are primarily due to the longer aggregation operation at the navigator. The predominant computational cost is dependent on the encryption scheme key size, which must be chosen such that sufficient security is provided by the scheme. The current recommendation for a secure implementation relying on prime factorisation (difficulty of factorising $N$) is to use $2048$ bit-long keys \cite{barkerRecommendationPairwiseKey2019}.
+We can see from the figure that the predominant computational costs stem from cryptographic computations and are directly dependent on the chosen key size. The key size should be chosen such that sufficient security is achieved, and the current recommentation, when relying on the DCRA for security (difficulty of factorising $N$), is the use of $2048$ bit length keys \cite{barkerRecommendationPairwiseKey2019}. This results in a complete filter update step roughly every $1.6s$, for our implementation of the filter.
 
 % 
 %  .d8888b.   .d88888b.  888b    888  .d8888b.  
