@@ -1050,14 +1050,14 @@ We have considered multiple sensor layouts, each with four sensors, to capture t
     \caption{Diffrent simulation layouts with varying average distances between navigator and sensors.}
     \label{fig:sim_layouts}
 \end{figure}
-The simulation root mean square error (RMSE) of the privacy-preserving method has been compared to the RMSE of the standard EIF (algebraic equivalent of the EKF), using the unmodified measurements. Measurement and estimation in each layout from figure \ref{fig:sim_layouts} consists of $50$ filter iterations and was run $100$ times. Unmodified measurement variances were taken as $r_i=5$ and a large fractional precision factor, $\phi=2^{32}$, was chosen. The results can be seen in figure \ref{fig:sim_layout_errors}.
+The simulation root mean square error (RMSE) of the privacy-preserving method has been compared to the RMSE of the standard EIF (an algebraic equivalent of the EKF), using unmodified measurements. Measurement and estimation in each layout from figure \ref{fig:sim_layouts} consists of $50$ filter iterations and was run $100$ times. Unmodified measurement variances were taken as $r_i=5$ and a large fractional precision factor, $\phi=2^{32}$, was chosen. The results can be seen in figure \ref{fig:sim_layout_errors}.
 \begin{figure}[htbp]
     \centering
     \includegraphics{images/layout_errors.pdf}
     \caption{MSE of the privacy-preserving EIF and standard EIF for different layout simulations.}
     \label{fig:sim_layout_errors}
 \end{figure}
-From these results, we can see the similarity in filter performance between the privacy-preserving method and that of the traditional EIF. We can also see that the varying average distances between sensors and navigator have little impact to the differences in performace. We can attribute the similarity in MSE to the conservativeness of estimated modified measurement variances $r_{k,i}$, resulting in few additional filter divergences, and to the high fractional precision factor, keeping computations consistent with the floating-point arithmetic of the EIF.
+From these results, we can see the similarity in filter performance between the privacy-preserving method and that of the traditional EIF. We can also see that the varying average distances between sensors and navigator have little impact on the differences in performance. We can attribute the similarity in MSE to the conservativeness of estimated modified measurement variances $r_{k,i}$, resulting in few additional filter divergences, and to the high fractional precision factor, keeping computations consistent with the floating-point arithmetic of the EIF.
 
 In addition to filter error, computational performance is important to consider when relying on cryptographic methods. Figure \ref{fig:sim_timing} shows the average execution time of $50$ simulation runs with varying numbers of sensors, for different key sizes (bit lengths of $N$). Here, increasing the number of sensors primarily affects the number of inter-process communications and aggregation modular multiplications due to the asynchronous implementation.
 \begin{figure}[htbp]
@@ -1066,7 +1066,7 @@ In addition to filter error, computational performance is important to consider 
     \caption{Runtimes for varying key sizes and numbers of sensors.}
     \label{fig:sim_timing}
 \end{figure}
-We can see from the figure that the predominant computational costs stem from cryptographic computations and are directly dependent on the chosen key size. The key size should be chosen such that sufficient security is achieved, and the current recommentation, when relying on the DCRA for security (difficulty of factorising $N$), is the use of $2048$ bit length keys \cite{barkerRecommendationPairwiseKey2019}. This results in a complete filter update step roughly every $1.6s$, for our implementation of the filter.
+We can see from the figure that the predominant computational costs stem from cryptographic computations and are directly dependent on the chosen key size. The key size should be chosen such that sufficient security is achieved, and the current recommendation, when relying on the DCRA for security (difficulty of factorising $N$), is the use of $2048$ bit length keys \cite{barkerRecommendationPairwiseKey2019}. This results in a complete filter update step roughly every $1.6s$, for our implementation of the filter.
 
 % 
 %  .d8888b.   .d88888b.  888b    888  .d8888b.  
