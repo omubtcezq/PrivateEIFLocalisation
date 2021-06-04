@@ -153,9 +153,9 @@ State Estimation, Data Privacy, Sensor Fusion, Extended Kalman Filter.
 
 Typical cryptographic secrecy involves hiding all transferred data such that external parties in the communication network learn no new information from acquired encryptions. This can be achieved with common symmetric and public-key encryption scheme such as AES \cite{gueronIntelAdvancedEncryption2010} and RSA \cite{rivestMethodObtainingDigital1978}, respectively. In some cases however, partial data leakage or encrypted data processing is required for achieving a desired goal which has led to several homomorphic and functional encryption schemes \cite{paillierPublicKeyCryptosystemsBased1999,shiPrivacyPreservingAggregationTimeSeries2011,joyeScalableSchemePrivacyPreserving2013,chotardDecentralizedMultiClientFunctional2018} finding uses in such signal processing or localisation tasks. In \cite{alanwarPrOLocResilientLocalization2017}, homomorphic encryption is used to make time-independent model-free location estimates where an estimator does not learn sensor measurements or locations. In \cite{aristovEncryptedMultisensorInformation2018}, similar secrecy is achieved with a linear Kalman filter when a hierarchical sensor network is present. In \cite{shiPrivacyPreservingAggregationTimeSeries2011,joyeScalableSchemePrivacyPreserving2013}, privacy-preserving aggregation schemes are presented as a means to compute total powergrid usage without disclosing individual contributions, while in \cite{alexandruEncryptedCooperativeControl2019,alexandruPrivateWeightedSum2020}, centralised and hidden weighted sum aggregations, pWSAc and pWSAh, respectively, are introduced as a means for computing local control inputs in a distributed environment without learning individual inputs.
 
-Our contribution in this work considers range-only localisation with formal cryptographic requirements ensuring that sensors keep their measurements and locations private and that navigator estimates cannot be learned by sensors. We define a novel notion for private linear combination aggregation, satisfying these cryptographic requirements, before using it to derive a filter based on the Extended Kalman Filter, with no hierarchical sensor layout assumptions. The linear combination aggregation scheme put forward is in principle similar to the pWSAh scheme in \cite{alexandruPrivateWeightedSum2020}, however, a formal definition capturing communication assumptions and leakages is given, crucial for cryptographic security.
+Our contribution in this work presents a range-only localisation method meeting formal cryptographic requirements that ensure sensors keep their measurements and locations private and navigator estimates cannot be learned by sensors. We first define a novel notion for private linear combination aggregation, satisfying these cryptographic requirements, before using it to derive a filter based on the Extended Kalman Filter, with no hierarchical sensor layout assumptions. The linear combination aggregation scheme we put forward is in principle similar to the pWSAh scheme in \cite{alexandruPrivateWeightedSum2020}, however, a formal definition capturing communication assumptions and leakages is given, crucial for cryptographic security. To the best of the authors' knowledge, no existing method for Bayesian state estimation using range-only sensors and meeting the desired privacy requirements exists.
 
-We motivate this scenario with the example of vehicle localisation in the presence of privately owned measurement stations. While the intention of measurement stations is the accurate navigation of passing vehicles, it may be reasonable to desire identifying location or hardware details to remain unknown at other present stations and to the navigator. Similarly, a navigator may not wish to disclose their most accurate location estimates to untrusted third-party measurers.
+We motivate this scenario with the example of vehicle localisation in the presence of privately owned measurement stations. While the intention of measurement stations is the accurate navigation of passing vehicles, it may be reasonable to desire identifying location or hardware details to remain unknown to the other present stations and to the navigator. Similarly, a navigator may not wish to disclose their most accurate location estimates to untrusted third-party measurers.
 
 In section \ref{sec:problem_statement}, we introduce both the cryptographic and estimation problems considered in this work, before giving some relevant preliminaries in section \ref{sec:preliminaries}. Section \ref{sec:lcao_scheme} proposes a cryptographic scheme meeting our desired security properties and section \ref{sec:priv_localization} the solution to the estimation problem making use of this scheme. Simulation results are discussed in section \ref{sec:sim_and_results} and concluding remarks are made in section \ref{sec:conclusion}.
 
@@ -680,21 +680,14 @@ and mean-adjust modified measurements as
 \end{equation}
 with now zero-mean noise $v'_{k,i} = 2h_i(\vec{x}_k)v_{k,i} + v_{k,i}^2 - r_{k,i}$. The noise in this case (again a function of Gaussian term $v_{k,i}$) has variance 
 \begin{equation}
-    \mathsf{Var}[v'_{k,i}] = 4h_i(\vec{x}_k)^2r_{k,i} + 2r_{k,i}^2
+    \mathsf{Var}[v'_{k,i}] = 4h_i(\vec{x}_k)^2r_{k,i} + 2r_{k,i}^2 \label{eqn:modified_measurement_variance}
 \end{equation}
-and is also dependent on $h_i$. To use the modified measurement \eqref{eqn:modified_measurement} with the EIF, we require an estimate for $\mathsf{Var}[v'_{k,i}]$ at the sensor as well. Additionally, a conservative estimate (\textit{i.e.}, a larger variance resulting in less confidence in measurements) is desirable to reduce filter divergence. The naive approach, replacing $h_i(\vec{x}_k)$ with $z_{k,i}$, only provides a conservative estimate when
-\begin{equation}
-    \begin{split}
-        &z_{k,i} > h_i(\vec{x}_k) \\
-        \implies &v_{k,i} > 0\,,
-    \end{split}
-\end{equation}
-which cannot be guaranteed. Instead, we provide a conservative estimate with $95\%$ confidence due to the Gaussianity of $v_{k,i}$, by adjusting the replacement term $z_{k,i}$ by two of its standard deviations $\sqrt{r_{k,i}}$. The modified measurement's variance at timestep $k$ is therefore conservatively approximated by
+and is also dependent on $h_i$. To use the modified measurement \eqref{eqn:modified_measurement} with the EIF, we require an estimate for $\mathsf{Var}[v'_{k,i}]$ at the sensor as well. Additionally, a conservative estimate (\textit{i.e.}, a larger variance resulting in less confidence in measurements) is desirable to reduce filter divergence. While the naive approach, replacing $h_i(\vec{x}_k)$ with $z_{k,i}$ in \eqref{eqn:modified_measurement_variance}, may not provide a conservative estimate when $z_{k,i}^2 < h_i(\vec{x}_k)^2$, the Gaussianity of $v_{k,i}$ can be exploited to provide a conservative estimate with $95\%$ confidence by shifting the replacement term $z_{k,i}$ by two of its standard deviations $\sqrt{r_{k,i}}$. The modified measurement's variance at timestep $k$ can therefore be conservatively approximated by
 \begin{equation}
     \begin{split}
         r'_{k, i} &= 4(z_{k,i} + 2\sqrt{r_{k,i}})^2r_{k,i} + 2r_{k,i}^2 \\
-        &\gtrapprox \mathsf{Var}[v'_{k,i}]
-    \end{split}\,. \label{eqn:modified_measurement_variance_estimate}
+        &\gtrapprox \mathsf{Var}[v'_{k,i}]\,,
+    \end{split} \label{eqn:modified_measurement_variance_estimate}
 \end{equation}
 at each sensor $i$.
 
@@ -1050,7 +1043,7 @@ We have considered multiple sensor layouts, each with four sensors, to capture t
     \caption{Diffrent simulation layouts with varying average distances between navigator and sensors.}
     \label{fig:sim_layouts}
 \end{figure}
-The simulation root mean square error (RMSE) of the privacy-preserving method has been compared to the RMSE of the standard EIF (an algebraic equivalent of the EKF), using unmodified measurements. Measurement and estimation in each layout from figure \ref{fig:sim_layouts} consists of $50$ filter iterations and was run $100$ times. Unmodified measurement variances were taken as $r_{k,i}=5$ for all $k>0$ and a large fractional precision factor, $\phi=2^{32}$, was chosen. The results can be seen in figure \ref{fig:sim_layout_errors}.
+To demonstrate the accuracy of the method, we have compared the root mean square error (RMSE) of the privacy-preserving filter to the standard EIF using unmodified measurements, that is algebraically equivalent to the EKF, typically used in industry for linearising non-linear state estimation. Measurement and estimation in each layout from figure \ref{fig:sim_layouts} consists of $50$ filter iterations and was run $100$ times. Unmodified measurement variances were taken as $r_{k,i}=5$ for all $k>0$ and a large fractional precision factor, $\phi=2^{32}$, was chosen. The results can be seen in figure \ref{fig:sim_layout_errors}.
 \begin{figure}[htbp]
     \centering
     \includegraphics{images/layout_errors.pdf}
