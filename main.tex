@@ -22,6 +22,7 @@
 \usepackage{amsfonts}
 \usepackage{amsthm}
 \usepackage{mathtools}
+\usepackage{bm}
 % Algorithms
 \usepackage{algorithm}
 \usepackage{algpseudocode}
@@ -710,44 +711,49 @@ To complete the EIF update using a linear combination aggregation process, modif
         \vec{i}'_{k,i} &= \mat{H}_{k,i}^{\prime\top} r_{k,i}^{\prime-1}(z'_{k,i} - h'_i(\hat{\vec{x}}_{k|k-1}) + \mat{H}'_{k,i}\hat{\vec{x}}_{k|k-1}) \\
         &= 
         \begin{bmatrix}
-            \begin{split}
-                &(2r_{k,i}^{\prime-1})\hat{x}_{k|k-1}^3 + (2r_{k,i}^{\prime-1})\hat{x}_{k|k-1}\hat{y}_{k|k-1}^2 \\
-                &\quad+ (-r_{k,i}^{\prime-1}s_{x,i})\hat{x}_{k|k-1}^2 + (-2r_{k,i}^{\prime-1}s_{x,i})\hat{y}_{k|k-1}^2 \\
-                &\quad+ (2r_{k,i}^{\prime-1}z'_{k,i})\hat{x}_{k|k-1} + (-2r_{k,i}^{\prime-1}s_{x,i}^2)\hat{x}_{k|k-1}\\
-                &\quad+ (-2r_{k,i}^{\prime-1}s_{y,i}^2)\hat{x}_{k|k-1} + (2r_{k,i}^{\prime-1}s_{x,i}^3) \\
-                &\quad+ (2r_{k,i}^{\prime-1}s_{x,i}s_{y,i}^2) + (-2r_{k,i}^{\prime-1}s_{x,i} z'_{k,i})
-            \end{split}
-            \vspace{5pt}\\
-            \begin{split}
-                &(2r_{k,i}^{\prime-1})\hat{y}_{k|k-1}^3 + (2r_{k,i}^{\prime-1})\hat{x}_{k|k-1}^2\hat{y}_{k|k-1} \\
-                &\quad+ (-2r_{k,i}^{\prime-1}s_{y,i})\hat{x}_{k|k-1}^2 + (-2r_{k,i}^{\prime-1}s_{y,i})\hat{y}_{k|k-1}^2 \\
-                &\quad+ (2r_{k,i}^{\prime-1}z'_{k,i})\hat{y}_{k|k-1} + (-2r_{k,i}^{\prime-1}s_{x,i}^2)\hat{y}_{k|k-1} \\
-                &\quad+ (-2r_{k,i}^{\prime-1}s_{y,i}^2)\hat{y}_{k|k-1} + (2r_{k,i}^{\prime-1}s_{y,i}s_{x,i}^2) \\
-                &\quad+ (2r_{k,i}^{\prime-1}s_{y,i}^3) + (-2r_{k,i}^{\prime-1}s_{y,i}z'_{k,i})
-            \end{split}
-        \end{bmatrix}
+            \alpha_1^{(i)} & 0 & \alpha_2^{(i)} & 0
+        \end{bmatrix}^\top\,,
     \end{split} \label{eqn:hrz_linear_comb}
 \end{equation}
+with
+\begin{align*}
+    \begin{split}
+        \alpha_1^{(i)} &= (2r_{k,i}^{\prime-1})\hat{x}_{k|k-1}^3 + (2r_{k,i}^{\prime-1})\hat{x}_{k|k-1}\hat{y}_{k|k-1}^2 \\
+        &\quad+ (-r_{k,i}^{\prime-1}s_{x,i})\hat{x}_{k|k-1}^2 + (-2r_{k,i}^{\prime-1}s_{x,i})\hat{y}_{k|k-1}^2 \\
+        &\quad+ (2r_{k,i}^{\prime-1}z'_{k,i})\hat{x}_{k|k-1} + (-2r_{k,i}^{\prime-1}s_{x,i}^2)\hat{x}_{k|k-1}\\
+        &\quad+ (-2r_{k,i}^{\prime-1}s_{y,i}^2)\hat{x}_{k|k-1} + (2r_{k,i}^{\prime-1}s_{x,i}^3) \\
+        &\quad+ (2r_{k,i}^{\prime-1}s_{x,i}s_{y,i}^2) + (-2r_{k,i}^{\prime-1}s_{x,i} z'_{k,i})\ \textrm{and}
+    \end{split}\\
+    \begin{split}
+        \alpha_2^{(i)} &= (2r_{k,i}^{\prime-1})\hat{y}_{k|k-1}^3 + (2r_{k,i}^{\prime-1})\hat{x}_{k|k-1}^2\hat{y}_{k|k-1} \\
+        &\quad+ (-2r_{k,i}^{\prime-1}s_{y,i})\hat{x}_{k|k-1}^2 + (-2r_{k,i}^{\prime-1}s_{y,i})\hat{y}_{k|k-1}^2 \\
+        &\quad+ (2r_{k,i}^{\prime-1}z'_{k,i})\hat{y}_{k|k-1} + (-2r_{k,i}^{\prime-1}s_{x,i}^2)\hat{y}_{k|k-1} \\
+        &\quad+ (-2r_{k,i}^{\prime-1}s_{y,i}^2)\hat{y}_{k|k-1} + (2r_{k,i}^{\prime-1}s_{y,i}s_{x,i}^2) \\
+        &\quad+ (2r_{k,i}^{\prime-1}s_{y,i}^3) + (-2r_{k,i}^{\prime-1}s_{y,i}z'_{k,i})\,,
+    \end{split}
+\end{align*}
 and
 \begin{equation}
     \begin{split}
         \mat{I}'_{k,i} &= \mat{H}_{k,i}^{\prime\top} r_{k,i}^{\prime-1}\mat{H}'_{k,i} \\
         &=
         \begin{bmatrix}
-            \beta_{11} & \beta_{12} \\
-            \beta_{21} & \beta_{22}
+            \beta_1^{(i)} & 0 & \beta_2^{(i)} & 0 \\
+            0 & 0 & 0 & 0 \\
+            \beta_3^{(i)} & 0 & \beta_4^{(i)} & 0 \\
+            0 & 0 & 0 & 0
         \end{bmatrix}\,,
     \end{split} \label{eqn:hrh_linear_comb}
 \end{equation}
 with
 \begin{align*}
-    \beta_{11} &= (4r_{k,i}^{\prime-1})\hat{x}_{k|k-1}^2 + (-8r_{k,i}^{\prime-1}s_{x,i})\hat{x}_{k|k-1} + (4r_{k,i}^{\prime-1}s_{x,i}^2)\,, \\
+    \beta_1^{(i)} &= (4r_{k,i}^{\prime-1})\hat{x}_{k|k-1}^2 + (-8r_{k,i}^{\prime-1}s_{x,i})\hat{x}_{k|k-1} + (4r_{k,i}^{\prime-1}s_{x,i}^2)\,, \\
     \begin{split}
-        \beta_{12} &= (4r_{k,i}^{\prime-1})\hat{x}_{k|k-1}\hat{y}_{k|k-1} + (-4r_{k,i}^{\prime-1}s_{y,i})\hat{x}_{k|k-1}  \\
+        \beta_2^{(i)} &= (4r_{k,i}^{\prime-1})\hat{x}_{k|k-1}\hat{y}_{k|k-1} + (-4r_{k,i}^{\prime-1}s_{y,i})\hat{x}_{k|k-1}  \\
         &\qquad+ (-4r_{k,i}^{\prime-1}s_{x,i})\hat{y}_{k|k-1} + (4r_{k,i}^{\prime-1}s_{x,i}s_{y,i})\,,
     \end{split}\\
-    \beta_{21} &= \beta_{12}\,,\ \textrm{and} \\
-    \beta_{22} &= (4r_{k,i}^{\prime-1})\hat{y}_{k|k-1}^2 + (-8r_{k,i}^{\prime-1}s_{y,i})\hat{y}_{k|k-1} + (4r_{k,i}^{\prime-1}s_{y,i}^2)\,.
+    \beta_3^{(i)} &= \beta_{12}\ \textrm{and} \\
+    \beta_4^{(i)} &= (4r_{k,i}^{\prime-1})\hat{y}_{k|k-1}^2 + (-8r_{k,i}^{\prime-1}s_{y,i})\hat{y}_{k|k-1} + (4r_{k,i}^{\prime-1}s_{y,i}^2)\,.
 \end{align*}
 The above rearrangements give $\vec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ as linear comabinations of elements in
 \begin{equation}
@@ -832,8 +838,8 @@ Measurement modification, real number encoding and linear combination aggregatio
         \State Recieve weight in the form above
     \EndFor
 
-    \State Let $\alpha_{v}^{(i)}$ represent an encryption of element $v$ in $\vec{i}'_{k,i}$ from \eqref{eqn:hrz_linear_comb}
-    \State $\alpha_{1}^{(i)} \gets \mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{x}^3_{k|k-1}))^{\mathsf{E}_{0}(2r_{k,i}^{\prime-1})}\cdot$\par
+    \State Let $\bm{\alpha}_{v}^{(i)}$ represent the encryption of $\alpha_{v}^{(i)}$ in \eqref{eqn:hrz_linear_comb}
+    \State $\bm{\alpha}_{1}^{(i)} \gets \mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{x}^3_{k|k-1}))^{\mathsf{E}_{0}(2r_{k,i}^{\prime-1})}\cdot$\par
     \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{x}_{k|k-1}\hat{y}^2_{k|k-1}))^{\mathsf{E}_{0}(2r_{k,i}^{\prime-1})}\cdot$\par
     \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{x}^2_{k|k-1}))^{\mathsf{E}_{0}(-r_{k, i}^{\prime-1}s_{x,i})}\cdot$\par
     \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{y}^2_{k|k-1}))^{\mathsf{E}_{0}(-2r_{k, i}^{\prime-1}s_{x,i})}\cdot$\par
@@ -844,21 +850,19 @@ Measurement modification, real number encoding and linear combination aggregatio
     (N+1)^{\mathsf{E}_{1}(2r_{k,i}^{\prime-1}s_{x,i}s_{y,i}^2)}\cdot$\par
     \ $(N+1)^{\mathsf{E}_{1}(-2r_{k, i}^{\prime-1}s_{x,i}z_{k,i}')}
     H(k\mathbin\|1\mathbin\|1\mathbin\|0)\pmod{N^2}$
-    \State Compute $\alpha_{2}^{(i)}$ using \eqref{eqn:hrz_linear_comb}, \eqref{eqn:our_scheme_lin_comb} and the remark from section \ref{sec:lcao_scheme} in the form above
+    \State Compute $\bm{\alpha}_{2}^{(i)}$ using \eqref{eqn:hrz_linear_comb}, \eqref{eqn:our_scheme_lin_comb} and the remark from section \ref{sec:lcao_scheme} in the form above
     \For{$v \gets 1$ to $2$}
-        \State Send $\alpha_{v}^{(i)}$ to the navigator
+        \State Send $\bm{\alpha}_{v}^{(i)}$ to the navigator
     \EndFor
 
-    \State Let $\beta_{vw}^{(i)}$ represent an encryption of element $(v,w)$ in $\mat{I}'_{k,i}$ from \eqref{eqn:hrh_linear_comb}
-    \State $\beta_{11}^{(i)} \gets \mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{x}^2_{k|k-1}))^{\mathsf{E}_{0}(4r_{k,i}^{\prime-1})}\cdot$\par
+    \State Let $\bm{\beta}_{w}^{(i)}$ represent an encryption of $\beta_{w}^{(i)}$ in \eqref{eqn:hrh_linear_comb}
+    \State $\bm{\beta}_{1}^{(i)} \gets \mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{x}^2_{k|k-1}))^{\mathsf{E}_{0}(4r_{k,i}^{\prime-1})}\cdot$\par
     \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{x}_{k|k-1}))^{\mathsf{E}_{0}(-8r_{k, i}^{\prime-1}s_{x,i})}\cdot$\par
     \ $(N+1)^{\mathsf{E}_{1}(4r_{k,i}^{\prime-1}s_{x,i}^2)}\cdot$\par
     \ $H(k\mathbin\|1\mathbin\|1\mathbin\|1)\pmod{N^2}$
-    \State Compute remaining $\beta_{vw}^{(i)}$ using \eqref{eqn:hrh_linear_comb}, \eqref{eqn:our_scheme_lin_comb} and the remark from section \ref{sec:lcao_scheme} in the form above
-    \For{$v \gets 1$ to $2$}
-        \For{$w \gets 1$ to $2$} 
-            \State Send $\beta_{vw}^{(i)}$ to the navigator
-        \EndFor
+    \State Compute remaining $\bm{\beta}_{w}^{(i)}$ using \eqref{eqn:hrh_linear_comb}, \eqref{eqn:our_scheme_lin_comb} and the remark from section \ref{sec:lcao_scheme} in the form above
+    \For{$w \gets 1$ to $4$}
+        \State Send $\bm{\beta}_{w}^{(i)}$ to the navigator
     \EndFor
     \EndProcedure
 \end{algorithmic}
@@ -870,30 +874,26 @@ Measurement modification, real number encoding and linear combination aggregatio
     \Procedure{Update}{$\hat{\vec{x}}_{k|k-1}$, $\mat{P}_{k|k-1}$, $N$, $\lambda$}
     
     \For{$v \gets 1$ to $2$}
-        \State Receive $\alpha_{v}^{(i)}$ from each sensor $1\leq i \leq n$
+        \State Receive $\bm{\alpha}_{v}^{(i)}$ from each sensor $1\leq i \leq n$
     \EndFor
 
-    \For{$v \gets 1$ to $2$}
-        \For{$w \gets 1$ to $2$}
-        \State Receive $\beta_{vw}^{(i)}$ from each sensor $1\leq i \leq n$
-        \EndFor
+    \For{$w \gets 1$ to $4$}
+        \State Receive $\bm{\beta}_{w}^{(i)}$ from each sensor $1\leq i \leq n$
     \EndFor
 
-    \State Let $\alpha_{v}$ represent an encryption of element $v$ in $\sum_{i=1}^n\vec{i}'_{k,i}$
+    \State Let $\bm{\alpha}_{v}$ represent an encryption of $\sum_{i=1}^n\alpha_{v}^{(i)}$
     \For{$v \gets 1$ to $2$}
-        \State $\alpha_{v} \gets \prod_{i=1}^n\alpha_{v}^{(i)}$
-        \State Compute $\mathcal{D}_{sk_0}(\alpha_{v})$ with $\lambda$ by \eqref{eqn:our_scheme_decrypt}
-        \State Compute $\mathsf{E}^{-1}_{1}(\mathcal{D}_{sk_0}(\alpha_{v}))$ by \eqref{eqn:decode}
+        \State $\bm{\alpha}_{v} \gets \prod_{i=1}^n\bm{\alpha}_{v}^{(i)}$
+        \State Compute $\mathcal{D}_{sk_0}(\bm{\alpha}_{v})$ with $\lambda$ by \eqref{eqn:our_scheme_decrypt}
+        \State Compute $\mathsf{E}^{-1}_{1}(\mathcal{D}_{sk_0}(\bm{\alpha}_{v}))$ by \eqref{eqn:decode}
     \EndFor
     \State Construct $\sum_{i=1}^n\vec{i}'_{k,i}$ from decoded decryptions above
 
-    \State Let $\beta_{vw}$ represent an encryption of element $(v,w)$ in $\sum_{i=1}^n\mat{I}'_{k,i}$
-    \For{$v \gets 1$ to $2$}
-        \For{$w \gets 1$ to $2$}
-            \State $\beta_{vw} \gets \prod_{i=1}^n\beta_{vw}^{(i)}$
-            \State Compute $\mathcal{D}_{sk_0}(\beta_{vw})$ with $\lambda$ by \eqref{eqn:our_scheme_decrypt}
-            \State Compute $\mathsf{E}^{-1}_{1}(\mathcal{D}_{sk_0}(\beta_{vw}))$ by \eqref{eqn:decode}
-        \EndFor
+    \State Let $\bm{\beta}_{w}$ represent an encryption of $\sum_{i=1}^n\beta_{w}^{(i)}$
+    \For{$w \gets 1$ to $4$}
+            \State $\bm{\beta}_{w} \gets \prod_{i=1}^n\bm{\beta}_{w}^{(i)}$
+            \State Compute $\mathcal{D}_{sk_0}(\bm{\beta}_{w})$ with $\lambda$ by \eqref{eqn:our_scheme_decrypt}
+            \State Compute $\mathsf{E}^{-1}_{1}(\mathcal{D}_{sk_0}(\bm{\beta}_{w}))$ by \eqref{eqn:decode}
     \EndFor
     \State Construct $\sum_{i=1}^n\mat{I}'_{k,i}$ from decoded decryptions above
 
