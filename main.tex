@@ -212,49 +212,49 @@ At every \textit{instance} $t$ (used to distinguish from an estimation \textit{t
     % Step 1
     \node at (3.25,5.5) {1. Broadcast and Combination Step};
     % Navigator
-    \fill (3.25,4.5) [green!80!black!60] ellipse (0.4 and 0.4);
-    \pic[xscale=0.22,yscale=0.3] at (3.25,4.6725) {plane};
+    \fill (3.25,4.75) [green!80!black!60] ellipse (0.4 and 0.4);
+    \pic[xscale=0.22,yscale=0.3] at (3.25,4.9225) {plane};
     % Sensors
-    \node at (1.5,0.375) {Sensor $1$};
-    \fill [blue!80!black!40] (0.25,0.625) rectangle (2.875,1.625);
-    \node at (1.625,1.125) {$\displaystyle l_1^{(t)} \!=\! \sum^m_{j=1}a_{1,j}^{(t)}\omega_j^{(t)}$};
-    \node at (5,0.375) {Sensor $n$};
-    \fill [blue!80!black!40] (3.625,0.625) rectangle (6.25,1.625);
-    \node at (5,1.125) {$\displaystyle l_n^{(t)} \!=\! \sum^m_{j=1}a_{n,j}^{(t)}\omega_j^{(t)}$};
-    \fill [black] (3.5,1.125) circle (0.05);
-    \fill [black] (3,1.125) circle (0.05);
-    \fill [black] (3.25,1.125) circle (0.05);
+    \node at (1.5,1.375) {Sensor $1$};
+    \fill [blue!80!black!40] (0.25,1.625) rectangle (2.875,2.625);
+    \node at (1.625,2.125) {$\displaystyle l_1^{(t)} \!=\! \sum^m_{j=1}a_{1,j}^{(t)}\omega_j^{(t)}$};
+    \node at (5,1.375) {Sensor $n$};
+    \fill [blue!80!black!40] (3.625,1.625) rectangle (6.25,2.625);
+    \node at (5,2.125) {$\displaystyle l_n^{(t)} \!=\! \sum^m_{j=1}a_{n,j}^{(t)}\omega_j^{(t)}$};
+    \fill [black] (3.5,2.125) circle (0.05);
+    \fill [black] (3,2.125) circle (0.05);
+    \fill [black] (3.25,2.125) circle (0.05);
     % Lines
-    \draw [-latex] plot[smooth, tension=.7] coordinates {(3.5,4) (5,1.875)};
-    \draw [-latex] plot[smooth, tension=.7] coordinates {(3,4) (1.5,1.875)};
-    \fill [lightgray] (2.125,3.375) rectangle (4.375,2.625);
-    \node at (3.25,3) {$\langle\omega_1^{(t)},\dots ,\omega_m^{(t)}\rangle$};
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(3.5,4.25) (5,2.875)};
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(3,4.25) (1.5,2.875)};
+    \fill [lightgray] (2.125,3.875) rectangle (4.375,3.125);
+    \node at (3.25,3.5) {$\langle\omega_1^{(t)},\dots ,\omega_m^{(t)}\rangle$};
     
     % Step 2
-    \node at (3.25,-0.75) {2. Aggregation Step};
+    \node at (3.25,0.25) {2. Aggregation Step};
     % Navigator
-    \fill [green!80!black!60] (1.375,-3) rectangle (5.125,-1.25);
-    \pic[xscale=0.22,yscale=0.3] at (3.25,-1.4775) {plane};
-    \node at (3.25,-2.375) {$\displaystyle \sum^{n}_{i=1}\sum^{m}_{j=1} a_{i,j}^{(t)}\omega_j^{(t)} = \sum^n_{i=1}l^{(t)}_{i}$};
+    \fill [green!80!black!60] (1.375,-2) rectangle (5.125,-0.25);
+    \pic[xscale=0.22,yscale=0.3] at (3.25,-0.4775) {plane};
+    \node at (3.25,-1.375) {$\displaystyle \sum^{n}_{i=1}\sum^{m}_{j=1} a_{i,j}^{(t)}\omega_j^{(t)} = \sum^n_{i=1}l^{(t)}_{i}$};
     % Sensors
-    \node at (1.25,-5.875) {Sensor $1$};
-    \fill  (5.25,-5.25) [blue!80!black!40] ellipse (0.4 and 0.4);
-    \node at (5.25,-5.875) {Sensor $n$};
-    \fill  (1.25,-5.25) [blue!80!black!40] ellipse (0.4 and 0.4);
-    \fill [black] (2.75,-5.25) circle (0.05);
-    \fill [black] (3.75,-5.25) circle (0.05);
-    \fill [black] (3.25,-5.25) circle (0.05);
+    \node at (1.25,-3.875) {Sensor $1$};
+    \fill  (5.25,-3.25) [blue!80!black!40] ellipse (0.4 and 0.4);
+    \node at (5.25,-3.875) {Sensor $n$};
+    \fill  (1.25,-3.25) [blue!80!black!40] ellipse (0.4 and 0.4);
+    \fill [black] (2.75,-3.25) circle (0.05);
+    \fill [black] (3.75,-3.25) circle (0.05);
+    \fill [black] (3.25,-3.25) circle (0.05);
     % Lines
-    \draw [-latex] plot[smooth, tension=.7] coordinates {(5,-4.75) (3.75,-3.25)};
-    \draw [-latex] plot[smooth, tension=.7] coordinates {(1.5,-4.75) (2.75,-3.25)};
-    \fill [lightgray] (1.625,-3.75) rectangle (2.25,-4.25);
-    \node at (2,-4) {$l_1^{(t)}$};
-    \fill [lightgray] (4.25,-3.75) rectangle (4.875,-4.25);
-    \node at (4.625,-4) {$l_n^{(t)}$};
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(5,-2.75) (4.5,-2.25)};
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(1.5,-2.75) (2,-2.25)};
+    \fill [lightgray] (1.625,-2.5) rectangle (2.25,-3);
+    \node at (2,-2.75) {$l_1^{(t)}$};
+    \fill [lightgray] (4.25,-2.5) rectangle (4.875,-3);
+    \node at (4.625,-2.75) {$l_n^{(t)}$};
     
     % Bounding rectangles
-    \draw [gray] (0,6) rectangle (6.5,0);
-    \draw [gray] (0,-0.25) rectangle (6.5,-6.25);
+    \draw [gray] (0,6) rectangle (6.5,1);
+    \draw [gray] (0,0.75) rectangle (6.5,-4.25);
 \end{tikzpicture}
 \caption{Required linear combination aggregation steps at instance $t$.}
 \label{fig:agg_steps}
@@ -911,72 +911,72 @@ Algorithms \ref{alg:nav_prediction}, \ref{alg:measurement_info} and \ref{alg:nav
 \centering
 \begin{tikzpicture}[font=\footnotesize,scale=0.95]
     % Prediction
-    \draw [gray] (0,2) rectangle (6.5,8);
+    \draw [gray] (0,3) rectangle (6.5,8);
     \node at (3.25,7.5) {\small 1. Prediction};
 
     % Navigator
-    \fill  [green!80!black!60] (2,7) rectangle (4.5,5.5);
-    \pic[xscale=0.22,yscale=0.3] at (3.25,6.6725) {plane};
-    \node at (3.25,5.875) {$\hat{\vec{x}}_{k|k-1}$, $\mat{P}_{k|k-1}$};
+    \fill  [green!80!black!60] (2,7) rectangle (4.5,5.75);
+    \pic[xscale=0.22,yscale=0.3] at (3.25,6.7975) {plane};
+    \node at (3.25,6.0625) {$\hat{\vec{x}}_{k|k-1}$, $\mat{P}_{k|k-1}$};
     
     % Sensors
-    \fill  (1.25,3) [blue!80!black!40] ellipse (0.4 and 0.4);
-    \node at (1.25,2.375) {Sensor $1$};
-    \fill  (5.25,3) [blue!80!black!40] ellipse (0.4 and 0.4);
-    \node at (5.25,2.375) {Sensor $n$};
+    \fill  (1.25,4) [blue!80!black!40] ellipse (0.4 and 0.4);
+    \node at (1.25,3.375) {Sensor $1$};
+    \fill  (5.25,4) [blue!80!black!40] ellipse (0.4 and 0.4);
+    \node at (5.25,3.375) {Sensor $n$};
         
-    \fill [black] (2.75,3) circle (0.05);
-    \fill [black] (3.25,3) circle (0.05);
-    \fill [black] (3.75,3) circle (0.05);
+    \fill [black] (2.75,4) circle (0.05);
+    \fill [black] (3.25,4) circle (0.05);
+    \fill [black] (3.75,4) circle (0.05);
         
     % Arrows
-    \draw [-latex] plot[smooth, tension=.7] coordinates {(3,5.25) (1.5,3.5)};
-    \draw [-latex] plot[smooth, tension=.7] coordinates {(3.5,5.25) (5,3.5)};
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(3,5.5) (1.75,4.25)};
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(3.5,5.5) (4.75,4.25)};
     
-    \fill [lightgray]  (0.25,5) rectangle (6.25,4);
-    \node at (3.25,4.5) {$\left\langle\mathcal{E}_{pk_0}(\mathsf{E}_0(\omega)) \,|\, \omega \!\in\! \{\hat{x}^3_{k|k-1}, \hat{y}^3_{k|k-1}, \dots\}\right\rangle$};
+    \fill [lightgray]  (0.25,5.375) rectangle (6.25,4.625);
+    \node at (3.25,5) {$\left\langle\mathcal{E}_{pk_0}(\mathsf{E}_0(\omega)) \,|\, \omega \!\in\! \{\hat{x}^3_{k|k-1}, \hat{y}^3_{k|k-1}, \dots\}\right\rangle$};
     
     
     % Measurement
-    \draw [gray] (0,-4.25) rectangle (6.5,1.75);
-    \node at (3.25,1.25) {\small 2. Measurement};
+    \draw [gray] (0,-2.25) rectangle (6.5,2.75);
+    \node at (3.25,2.25) {\small 2. Measurement};
     
     % Navigator
-    \fill  (3.25,0.25) [green!80!black!60] ellipse (0.4 and 0.4);
-    \pic[xscale=0.22,yscale=0.3] at (3.25,0.4225) {plane};
+    \fill  (3.25,1.5) [green!80!black!60] ellipse (0.4 and 0.4);
+    \pic[xscale=0.22,yscale=0.3] at (3.25,1.6725) {plane};
         
     % Sensors
-    \fill  [blue!80!black!40] (6.25,-3.625)  rectangle (4.25,-2.625);
-    \node at (1.25,-3.875) {Sensor $1$};
-    \fill  [blue!80!black!40] (2.25,-3.625)  rectangle (0.25,-2.625);
-    \node at (5.25,-3.875) {Sensor $n$};
+    \fill  [blue!80!black!40] (6.25,-1.625)  rectangle (4.25,-0.625);
+    \node at (1.25,-1.875) {Sensor $1$};
+    \fill  [blue!80!black!40] (2.25,-1.625)  rectangle (0.25,-0.625);
+    \node at (5.25,-1.875) {Sensor $n$};
     
-    \node at (1.25,-3.125) {$z'_{k,1}$, $r'_{k,1}$};
-    \node at (5.25,-3.125) {$z'_{k,n}$, $r'_{k,n}$};
+    \node at (1.25,-1.125) {$z'_{k,1}$, $r'_{k,1}$};
+    \node at (5.25,-1.125) {$z'_{k,n}$, $r'_{k,n}$};
     
-    \fill [black] (2.75,-3.125) circle (0.05);
-    \fill [black] (3.25,-3.125) circle (0.05);
-    \fill [black] (3.75,-3.125) circle (0.05);
+    \fill [black] (2.75,-1.125) circle (0.05);
+    \fill [black] (3.25,-1.125) circle (0.05);
+    \fill [black] (3.75,-1.125) circle (0.05);
     
     % Arrows
-    \draw [-latex] plot[smooth, tension=.7] coordinates {(1.25,-2.5) (3,-0.25)};
-    \draw [-latex] plot[smooth, tension=.7] coordinates {(5.25,-2.5) (3.5,-0.25)};
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(1.25,-0.5) (3,1)};
+    \draw [-latex] plot[smooth, tension=.7] coordinates {(5.25,-0.5) (3.5,1)};
     
-    \fill [lightgray]  (0.375,-0.875) rectangle (3.125,-1.875);
-    \node[align=center] at (1.75,-1.375) {$\mathcal{E}_{pk_0,sk_1}(\mathsf{E}_1(\vec{i}'_{k,1}))$,\\$\mathcal{E}_{pk_0,sk_1}(\mathsf{E}_1(\mat{I}'_{k,1}))$};
-    \fill [lightgray]  (3.375,-0.875) rectangle (6.125,-1.875);
-    \node[align=center] at (4.75,-1.375) {$\mathcal{E}_{pk_0,sk_n}(\mathsf{E}_1(\vec{i}'_{k,n}))$,\\$\mathcal{E}_{pk_0,sk_n}(\mathsf{E}_1(\mat{I}'_{k,n}))$};
+    \fill [lightgray]  (0.375,0.75) rectangle (3.125,-0.25);
+    \node[align=center] at (1.75,0.25) {$\mathcal{E}_{pk_0,sk_1}(\mathsf{E}_1(\vec{i}'_{k,1}))$,\\$\mathcal{E}_{pk_0,sk_1}(\mathsf{E}_1(\mat{I}'_{k,1}))$};
+    \fill [lightgray]  (3.375,0.75) rectangle (6.125,-0.25);
+    \node[align=center] at (4.75,0.25) {$\mathcal{E}_{pk_0,sk_n}(\mathsf{E}_1(\vec{i}'_{k,n}))$,\\$\mathcal{E}_{pk_0,sk_n}(\mathsf{E}_1(\mat{I}'_{k,n}))$};
     
     
     % Update
-    \draw [gray] (0,-8.5) rectangle (6.5,-4.5);
-    \node at (3.25,-5) {\small 3. Update};
+    \draw [gray] (0,-5.75) rectangle (6.5,-2.5);
+    \node at (3.25,-3) {\small 3. Update};
     
     % Navigator
-    \fill  [green!80!black!60] (1.5,-5.5) rectangle (5,-7.5);
-    \pic[xscale=0.22,yscale=0.3] at (3.25,-5.8275) {plane};
-    \node at (3.25,-6.625) {$\sum_{i=1}^n \vec{i}'_{k,i}$, $\sum_{i=1}^n\mat{I}'_{k,i}$};
-    \node at (3.25,-7.125) {$\hat{\vec{x}}_{k|k}$, $\mat{P}_{k|k}$};
+    \fill  [green!80!black!60] (1.5,-3.5) rectangle (5,-5.5);
+    \pic[xscale=0.22,yscale=0.3] at (3.25,-3.8275) {plane};
+    \node at (3.25,-4.625) {$\sum_{i=1}^n \vec{i}'_{k,i}$, $\sum_{i=1}^n\mat{I}'_{k,i}$};
+    \node at (3.25,-5.125) {$\hat{\vec{x}}_{k|k}$, $\mat{P}_{k|k}$};
 \end{tikzpicture}
 \caption{Procedure at timestep $k$ for the proposed privacy-preserving EIF.}
 \label{fig:alg_steps}
@@ -1040,14 +1040,14 @@ We have considered multiple sensor layouts, each with four sensors, to capture t
 \begin{figure}[htbp]
     \centering
     \includegraphics{images/layouts.pdf}
-    \caption{Diffrent simulation layouts with varying average distances between navigator and sensors.}
+    \caption{Different simulation layouts with varying distances between navigator and sensors.}
     \label{fig:sim_layouts}
 \end{figure}
 To demonstrate the accuracy of the method, we have compared the root mean square error (RMSE) of the privacy-preserving filter to the standard EIF using unmodified measurements, that is algebraically equivalent to the EKF, typically used in industry for linearising non-linear state estimation. Measurement and estimation in each layout from figure \ref{fig:sim_layouts} consists of $50$ filter iterations and was run $100$ times. Unmodified measurement variances were taken as $r_{k,i}=5$ for all $k>0$ and a large fractional precision factor, $\phi=2^{32}$, was chosen. The results can be seen in figure \ref{fig:sim_layout_errors}.
 \begin{figure}[htbp]
     \centering
     \includegraphics{images/layout_errors.pdf}
-    \caption{MSE of the privacy-preserving EIF and standard EIF for different layout simulations.}
+    \caption{Average RMSE of our privacy-preserving filter and the standard EIF for different layouts.}
     \label{fig:sim_layout_errors}
 \end{figure}
 From these results, we can see the similarity in filter performance between the privacy-preserving method and that of the traditional EIF. We can also see that the varying average distances between sensors and navigator have little impact on the differences in performance. We can attribute the similarity in MSE to the conservativeness of estimated modified measurement variances $r'_{k,i}$, resulting in few additional filter divergences, and to the high fractional precision factor, keeping computations consistent with the floating-point arithmetic of the EIF.
