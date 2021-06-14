@@ -142,7 +142,7 @@ Marko Ristic, Benjamin Noack, and Uwe D. Hanebeck
 
 The reviewers feel the paper interesting, which many include publishable materials. On the other hand, the reviewers feel the paper should be reorganized by shortening the length (e.g. introduction etc.), and highlight the novelty and contribution. Also the relevance of the paper to the journal should be clarified.}
 
-Thank you for the response. We have undertaken a large overhaul of the manuscript in order to accomodate for the suggested changes of the reviewers. The work has been shortened by four pages, the introduction shortened to a single page and the novelty of our method clearly stated within it. We state the estimation problem tackled, namely, range-only sensor localisation with specific security requirements, and its benefits over existing and comparable approaches. We believe that the more clarified novelty and contribution also better justifies the relevance of the paper to the TAC journal.
+Thank you for the response. We have undertaken a large overhaul of the manuscript in order to accomodate for the suggested changes of the reviewers. The work has been shortened by four pages, the introduction shortened to a single page and the novelty of our method clearly stated within it. We state the estimation problem tackled, namely, a modified EKF estimator for range-only sensor localisation with specific security requirements, and its benefits over existing and comparable approaches. We believe that the more clarified contribution and novelty also better justifies the relevance of the paper to the TAC journal.
 
 \item \reviewtext{We encourage you to examine carefully the comments of the enclosed reviews and to consider making a major revision of the paper, which can be resubmitted as a Technical Note, to the Transactions on Automatic Control.  If you do submit a revised version of the paper as a Technical Note, you should take care that the paper is reduced to no
 more than 8 double-column pages using IEEE template.
@@ -171,19 +171,19 @@ After a large revision of our manuscript, including the suggested additions and 
 \begin{rebuttal}
 \item \reviewtext{This paper concerns the localization problem under privacy constraints. Cryptographic schemes have been devised by the authors to achieve some privacy requirements. The contribution is significant enough and the paper is well written but hard to understand for a usual reader of IEEE TAC due to sections with cryptographic background.}
 
-Our response.
+We thank the reviwer for their comment on our contribution and are sorry that the work was not made easier to understand. We have rearranged the paper to make both the problem tackled and the solution presented easier to follow and more concise. Additionally we have greatly reduced the amount of cryptographic background presented, and hope that these changes make the work much easier to follow for the usual target audience of IEEE TAC.
 
 \item \reviewtext{As a TAC paper, performance analysis in terms of estimation accuracy was expected but is actually missing.}
 
-Our response.
+We regret that the method of analysis for our approach was not made clearer. As the proposed method we present is ineherently a modified EKF, we directly compare the estimation accuracy of our method to the industry standrd EKF (EIF reformulation in our case). To make this clearer, we have rewritten the results section to portray this evaluation better, and changed the results figure to be far more legible. Direct comparisons beween the EIF and our method are now made for each simluation considered, and the estimation error (accuracy of the filters) can be seen much more clearly. We hope this makes the evaulation of the presented method easier to understand.
 
 \item \reviewtext{This reviewer wonders if IEEE TAC is well adapted for an efficient exposition of the authors' findings.}
 
-Our response.
+We agree that the state of the initial submission was not as well suited to the TAC journal as could be desired and thank the reviewer for pointing this out. For the resubmission, we have greatly reduced the cryptographic components of the work and stated our contribution and its novelty more clearly to clarify the suitability of the proposed estimation method to the TAC journal. We will additionally consider some of the heavier cryptographic computations presented for an alternative submission elsewhere.
 
 \item \reviewtext{In the framework of a Control theory paper, cryptographic notions would be kept as minimum as possible in the main body of the paper or moved to Appendices.}
 
-Our response.
+As above, we regret that the quantity of presented cryptographic content was so poorly suited to the context of TAC and have greatly modified the work to make it a better fit. Much of the cryptographic discussion has been removed and the remaining, necessary but dense, novel notions have been put in the appendix. We hope this makes the work better suited in the context of TAC.
 
 \end{rebuttal}
 
