@@ -221,23 +221,23 @@ Thank you for pointing this out, this has now been added to the manuscript.
 
 \item \reviewtext{-The actual computation steps are in fact scattered all over the paper, in several sections.  In the current version, the reader has to collect all the scattered pieces to come out with the approach. I would therefore, strongly recommend the authors to summarize all the steps of the approach gathered by the end of the paper, to help the reader directly use and implement the algorithm.}
 
-Due to the number of components in the proposed method (encoding, encryption and estimation) our aim was to present the algorithm pseudocode as the summary of the method, but regret that this was not made clearer. We have rewritten and reorganised the localisation section and have tried to make a pseudocode summary, and its purpose, clearer. We hope that the updated manuscript better captures the overall summary of all presented components at the end of introduced components.
+Due to the number of components in the proposed method (encoding, encryption and estimation), our aim was to present the algorithm pseudocode as the summary of the method, and regret that this was not made clearer. We have rewritten and reorganised the localisation section and have tried to make a pseudocode summary, and its purpose, clearer. We hope that the updated manuscript now presents a better overall summary after all the componenets are presented.
 
 \item \reviewtext{-Page 10, Equation (36), Right part of Equation: d is from 0 to D}
 
-Our response.
+This was indeed missing. After shortening the paper, this subsection was removed and the equation is no longer there, but we thank you for pointing it out regardless. 
 
 \item \reviewtext{-Inequality (50) must be clarified,}
 
-Our response.
+We apologies for not making this clearer. The section has been modified and the reason for adding standard deviations to give a conservative estimate has been rewritten and clarified.
 
 \item \reviewtext{-Algorithm 1, steps 2/3/4, it is F\_\{k-1\},}
 
-Our response.
+Thank you for pointing this out. This was due to an error in notation in a previous section which gave incorrect timestep subscripts in the EKF prediction equations. This has now been fixed and results in $\mat{F}_k$ being the correct notation in the pseudocode section.
 
 \item \reviewtext{-Section VIII-some explanations on the process model must be added. Figure 6 is too small; it is difficult to distinguish the different lines.}
 
-Our response.
+Process model informaiton was indeed missing and the figure hard to read. The section has been modified to include details of the models used in the simulation and the figure modified to display comparisons between the privacy-preserving filter and the EIF seperately for each considered sensor layout. We hope that the comparison and the drawn conclusions are now much easier to follow.
 
 \end{rebuttal}
 
