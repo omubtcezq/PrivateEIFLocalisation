@@ -142,7 +142,7 @@ Marko Ristic, Benjamin Noack, and Uwe D. Hanebeck
 
 The reviewers feel the paper interesting, which many include publishable materials. On the other hand, the reviewers feel the paper should be reorganized by shortening the length (e.g. introduction etc.), and highlight the novelty and contribution. Also the relevance of the paper to the journal should be clarified.}
 
-Thank you for the response. We have undertaken a large overhaul of the manuscript in order to accomodate for the suggested changes of the reviewers. The work has been shortened by four pages, the introduction shortened to a single page and the novelty of our method clearly stated within it. We state the estimation problem tackled, namely, a modified EKF estimator for range-only sensor localisation with specific security requirements, and its benefits over existing and comparable approaches. We believe that the more clarified contribution and novelty also better justifies the relevance of the paper to the TAC journal.
+Thank you for the response. We have undertaken a large overhaul of the manuscript in order to accommodate the suggested changes of the reviewers. The work has been shortened by four pages, the introduction shortened to a single page and the novelty of our method clearly stated within it. We state the estimation problem tackled, namely, a modified EKF estimator for range-only sensor localisation with specific security requirements, and its benefits over existing and comparable approaches. We believe that the more clarified contribution and novelty also better justify the relevance of the paper to the TAC journal.
 
 \item \reviewtext{We encourage you to examine carefully the comments of the enclosed reviews and to consider making a major revision of the paper, which can be resubmitted as a Technical Note, to the Transactions on Automatic Control.  If you do submit a revised version of the paper as a Technical Note, you should take care that the paper is reduced to no
 more than 8 double-column pages using IEEE template.
@@ -171,11 +171,11 @@ After a large revision of our manuscript, including the suggested additions and 
 \begin{rebuttal}
 \item \reviewtext{This paper concerns the localization problem under privacy constraints. Cryptographic schemes have been devised by the authors to achieve some privacy requirements. The contribution is significant enough and the paper is well written but hard to understand for a usual reader of IEEE TAC due to sections with cryptographic background.}
 
-We thank the reviwer for their comment on our contribution and are sorry that the work was not made easier to understand. We have rearranged the paper to make both the problem tackled and the solution presented easier to follow and more concise. Additionally we have greatly reduced the amount of cryptographic background presented, and hope that these changes make the work much easier to follow for the usual target audience of IEEE TAC.
+We thank the reviewer for their comment on our contribution and are sorry that the work was not made easier to understand. We have rearranged the paper to make both the problem tackled and the solution presented easier to follow and more concise. Additionally, we have greatly reduced the amount of cryptographic background presented, and hope that these changes make the work much easier to follow for the usual target audience of IEEE TAC.
 
 \item \reviewtext{As a TAC paper, performance analysis in terms of estimation accuracy was expected but is actually missing.}
 
-We regret that the method of analysis for our approach was not made clearer. As the proposed method we present is ineherently a modified EKF, we directly compare the estimation accuracy of our method to the industry standrd EKF (EIF reformulation in our case). To make this clearer, we have rewritten the results section to portray this evaluation better, and changed the results figure to be far more legible. Direct comparisons beween the EIF and our method are now made for each simluation considered, and the estimation error (accuracy of the filters) can be seen much more clearly. We hope this makes the evaulation of the presented method easier to understand.
+We regret that the method of analysis for our approach was not made clearer. As the proposed method we present is inherently a modified EKF, we directly compare the estimation accuracy of our method to the industry standard EKF (EIF reformulation in our case). To make this clearer, we have rewritten the results section to portray this evaluation better and changed the results figure to be far more legible. Direct comparisons between the EIF and our method are now made for each simulation considered, and the estimation error (accuracy of the filters) can be seen much more clearly. We hope this makes the evaluation of the presented method easier to understand.
 
 \item \reviewtext{This reviewer wonders if IEEE TAC is well adapted for an efficient exposition of the authors' findings.}
 
@@ -207,13 +207,13 @@ The proposed approach is interesting and the results are technically sound. The 
 
 The reviewer encourages the authors to reorganize the article by greatly shortening it and to highlight the novelty.}
 
-We're happy to hear that the results were found interesing and regret that the length and organisation has made the manuscript hard to read. We have heavily reorganised and rewritten parts of the work to make it easier to follow, including shortening the work by four pages. We hope that the flow of information is now easier to follow and that the method is more concisely described.
+We're happy to hear that the results were found interesting and regret that the length and organisation have made the manuscript hard to read. We have heavily reorganised and rewritten parts of the work to make it easier to follow, including shortening the work by four pages. We hope that the flow of information is now easier to follow and that the method is more concisely described.
 
 \item \reviewtext{Some additional comments are given below:
 
 -Introduction (2 pages) is too long and does not focus on the main ideas of the paper. There are too many reminders of classical notions.}
 
-We're sorry this was the case and agree with the reviewer that the introduction was too long. We have greatly reduced the length of the introduction and removed a lot of the cryptographic reminders throughout the work. Our hope is that the new layout is easier to read and better suited to the target audience of the TAC journal.
+We're sorry that the introduction was found too long and agree that it could be made shorter. We have now greatly reduced the length of the introduction and removed a lot of the cryptographic reminders throughout the work. We hope that the new layout is easier to read and better suited to the target audience of the TAC journal.
 
 \item \reviewtext{-Equation (3): i from 1 to n must be added.}
 
@@ -221,7 +221,7 @@ Thank you for pointing this out, this has now been added to the manuscript.
 
 \item \reviewtext{-The actual computation steps are in fact scattered all over the paper, in several sections.  In the current version, the reader has to collect all the scattered pieces to come out with the approach. I would therefore, strongly recommend the authors to summarize all the steps of the approach gathered by the end of the paper, to help the reader directly use and implement the algorithm.}
 
-Due to the number of components in the proposed method (encoding, encryption and estimation), our aim was to present the algorithm pseudocode as the summary of the method, and regret that this was not made clearer. We have rewritten and reorganised the localisation section and have tried to make a pseudocode summary, and its purpose, clearer. We hope that the updated manuscript now presents a better overall summary after all the componenets are presented.
+Due to the number of components in the proposed method (encoding, encryption and estimation), we aimed to present the algorithm pseudocode as the summary of the method, and regret that this was not made clearer. We have rewritten and reorganised the localisation section and have tried to make a pseudocode summary, and its purpose, clearer. We hope that the updated manuscript now presents a better overall summary after all the components are presented.
 
 \item \reviewtext{-Page 10, Equation (36), Right part of Equation: d is from 0 to D}
 
@@ -237,7 +237,7 @@ Thank you for pointing this out. This was due to an error in notation in a previ
 
 \item \reviewtext{-Section VIII-some explanations on the process model must be added. Figure 6 is too small; it is difficult to distinguish the different lines.}
 
-Process model informaiton was indeed missing and the figure hard to read. The section has been modified to include details of the models used in the simulation and the figure modified to display comparisons between the privacy-preserving filter and the EIF seperately for each considered sensor layout. We hope that the comparison and the drawn conclusions are now much easier to follow.
+Process model information was indeed missing and the figure hard to read. The section has been modified to include details of the models used in the simulation and the figure modified to display comparisons between the privacy-preserving filter and the EIF separately for each considered sensor layout. We hope that the comparison and the drawn conclusions are now much easier to follow.
 
 \end{rebuttal}
 
@@ -257,31 +257,39 @@ Process model informaiton was indeed missing and the figure hard to read. The se
 \begin{rebuttal}
 \item \reviewtext{This paper presented a theoretical framework for privacy-preserving localisation combining the encryption scheme and filtering. In particular, the private linear-combination aggregation has been adopted in the presented framework. Basically, the contribution of the paper is clearly indicated with an interesting and important topic. However, some technical problems need to be further clarified. Therefore, a major revision is necessary in my opinion.}
 
-Our response.
+We're glad to hear that the contribution was found interesting and important. We have made a very large revision of the work, including rewriting, reorganising and shortening the text to make the information easier to follow and better suited to the audience of the TAC journal.
 
 \item \reviewtext{1) Is any filtering method can be integrated into the presented framework? If so, can we replace the method via numerical approach such as particle filter.}
 
-Our response.
+% The method proposed achieves the desired security propoerties by modifying the range-only measurement model and rearranging the terms in the Extended Information Filter (EIF) during the filter update step. With this method, using the EIF is cruicial for reducing the communication of distributed participants to that which can use the introduced encryption scheme, and thus meet the security properties. 
+
+% While a particle filter that can reduce its communication to suit another type of encryption scheme may exist, it is beyond the scope of this work and would likely differ both in its required encryption scheme and in any filter or model modifications.
 
 \item \reviewtext{2) How does the linear combination reflect the dynamics of the investigated system in Eq.(2)?}
-
-Our response.
+  
+% TODO complete
+%The linear combination aggregation scheme is only used to encrypt communication required during computation of the EIF update step. Ideally, the encryption has no effect on the proposed filter, but in practice, minor descrepancies are introduced with the quantisation of floating-piont numbers used for encryption and homomorphic summation. The proposed filter itself requires a modified measurement function to be able to use this scheme, which is where differences in performance with a standard EIF are introduced. The system model given in ($2$) is, however, unaffected in our method, in that both it and the standard EIF assume the measured state to follow these dynamics exactly.
 
 \item \reviewtext{3) Why is the noise of the system Gaussian? In Eq.(2), function f() is known then what is the physical meaning of the Gaussian process noise?}
 
-Our response.
+% TODO complete
+%Thank you for pointing this out. You are right to say that the Gaussianity of additive system noise is not required by either the standard EIF or our approach and has now been removed from the manuscript.
 
 \item \reviewtext{4) In the paper, the noise is depended on covariance matrix \$Q\$ which is also particularly used in Algroithm 1, however, in practice, Q is unmeasurable and unknown. How to estimate the value of Q in terms of performance guarantee.}
 
-Our response.
+% TODO complete
+%As we consider a linearising state estimation filter (the EKF), system noise covariance $\mat{Q}$ is 
+%Estimating the system noise covariance $\mat{Q}$ is common practice when using linearising state estimation filters such as the EKF, and a requirement for predicting a
 
 \item \reviewtext{5) The experimental results are limited. The comparison is essential to validate the performance of the presented algorithm. What about using the existing filtering method to demonstrate the various encryption scheme?}
 
-Our response.
+We agree that the results section was lacking and have rewritten it to try and make the evaluation clearer. To validate the accuracy of the algorithm, it has been compared to the industry standard EKF (reformulated as the EIF) and the comparison figure changed to make it clearer how the proposed filter performs. The computational performance is more difficult to compare. No alternative encryption scheme suitable for our filter (i.e. scheme meeting LCAO) exists, beyond the one introduced in the work. 
+
+%A possible comparison, as remarked earlier in the paper, is using a scheme meeting AO combined with a unidirectional communication protocol, but we consider this beyond the scope of the work due to no existing 
 
 \item \reviewtext{6) There are some typos in the manuscript please correct them, for example, page 1 Notation, '\$\textbackslash left\textbackslash\textbar\textbackslash underline a\textbackslash right\textbackslash\textbar\$ the vector norm' should be '\$\textbackslash left\textbackslash\textbar\textbackslash underline a\textbackslash right\textbackslash\textbar\$ is the vector norm' etc.}
 
-Our response.
+We apologies for the mistake and have now corrected it, along with others throughout the work.
 
 \end{rebuttal}
 
