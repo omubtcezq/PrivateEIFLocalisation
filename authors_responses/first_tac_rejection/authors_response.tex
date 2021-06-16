@@ -171,7 +171,7 @@ After a large revision of our manuscript, including the suggested additions and 
 \begin{rebuttal}
 \item \reviewtext{This paper concerns the localization problem under privacy constraints. Cryptographic schemes have been devised by the authors to achieve some privacy requirements. The contribution is significant enough and the paper is well written but hard to understand for a usual reader of IEEE TAC due to sections with cryptographic background.}
 
-We thank the reviewer for their comment on our contribution and are sorry that the work was not made easier to understand. We have rearranged the paper to make both the problem tackled and the solution presented easier to follow and more concise. Additionally, we have greatly reduced the amount of cryptographic background presented, and hope that these changes make the work much easier to follow for the usual target audience of IEEE TAC.
+We thank the reviewer for their comment on our contribution and are sorry that the work was not made easier to understand. We have rearranged the paper to make both the problem tackled and the solution presented easier to follow and more concise. Additionally, we have greatly reduced the amount of cryptographic background presented, and hope that these changes make the work much easier to follow for the usual target audience of IEEE TAC. 
 
 \item \reviewtext{As a TAC paper, performance analysis in terms of estimation accuracy was expected but is actually missing.}
 
@@ -179,7 +179,7 @@ We regret that the method of analysis for our approach was not made clearer. As 
 
 \item \reviewtext{This reviewer wonders if IEEE TAC is well adapted for an efficient exposition of the authors' findings.}
 
-We agree that the state of the initial submission was not as well suited to the TAC journal as could be desired and thank the reviewer for pointing this out. For the resubmission, we have greatly reduced the cryptographic components of the work and stated our contribution and its novelty more clearly to clarify the suitability of the proposed estimation method to the TAC journal. We will additionally consider some of the heavier cryptographic computations presented for an alternative submission elsewhere.
+We understand that the state of the initial submission was not as well suited to the TAC journal as could be desired and thank the reviewer for pointing this out. Existing literature published at TAC and concerning cryptographic constructs (for example, ``Cloud-based quadratic optimization with partially homomorphic encryption'' by Andreea Alexandru et al.), has been used as reference during our revision. For the resubmission, we have greatly reduced the cryptographic components of the work and stated our contribution and its novelty more clearly to clarify the suitability of the proposed estimation method to the TAC journal. We will additionally consider some of the heavier cryptographic computations presented for an alternative submission elsewhere.
 
 \item \reviewtext{In the framework of a Control theory paper, cryptographic notions would be kept as minimum as possible in the main body of the paper or moved to Appendices.}
 
@@ -213,7 +213,7 @@ We're happy to hear that the results were found interesting and regret that the 
 
 -Introduction (2 pages) is too long and does not focus on the main ideas of the paper. There are too many reminders of classical notions.}
 
-We're sorry that the introduction was found too long and agree that it could be made shorter. We have now greatly reduced the length of the introduction and removed a lot of the cryptographic reminders throughout the work. We hope that the new layout is easier to read and better suited to the target audience of the TAC journal.
+We're sorry that the introduction was found too long and agree that it could be made shorter. We have now greatly reduced the length of the introduction and removed a lot of the cryptographic reminders throughout the work. We hope that the new layout is easier to read and follow.
 
 \item \reviewtext{-Equation (3): i from 1 to n must be added.}
 
@@ -257,39 +257,33 @@ Process model information was indeed missing and the figure hard to read. The se
 \begin{rebuttal}
 \item \reviewtext{This paper presented a theoretical framework for privacy-preserving localisation combining the encryption scheme and filtering. In particular, the private linear-combination aggregation has been adopted in the presented framework. Basically, the contribution of the paper is clearly indicated with an interesting and important topic. However, some technical problems need to be further clarified. Therefore, a major revision is necessary in my opinion.}
 
-We're glad to hear that the contribution was found interesting and important. We have made a very large revision of the work, including rewriting, reorganising and shortening the text to make the information easier to follow and better suited to the audience of the TAC journal.
+We're glad to hear that the contribution was found interesting and important. We have made a very large revision of the work, including rewriting, reorganising and shortening the text to make the information easier to follow.
 
 \item \reviewtext{1) Is any filtering method can be integrated into the presented framework? If so, can we replace the method via numerical approach such as particle filter.}
 
-% The method proposed achieves the desired security propoerties by modifying the range-only measurement model and rearranging the terms in the Extended Information Filter (EIF) during the filter update step. With this method, using the EIF is cruicial for reducing the communication of distributed participants to that which can use the introduced encryption scheme, and thus meet the security properties. 
+The method proposed achieves the desired security properties by modifying the range-only measurement model and rearranging the terms in the Extended Information Filter (EIF) during the filter update step. With this method, using the EIF is crucial for reducing participant communication to a protocol that can use the introduced encryption scheme, and thus meet the security properties. It may be possible to rearrange a particle filter to suit some other type of encryption scheme, but to the best of our knowledge, this does not yet exist.
 
-% While a particle filter that can reduce its communication to suit another type of encryption scheme may exist, it is beyond the scope of this work and would likely differ both in its required encryption scheme and in any filter or model modifications.
+During only the prediction step of the filter (performed locally by the navigator), it is possible to use any filter, including a particle filter, but we have decided to use the prediction equations of the EKF for simplicity and consistency with the presented update step.
 
 \item \reviewtext{2) How does the linear combination reflect the dynamics of the investigated system in Eq.(2)?}
   
-% TODO complete
-%The linear combination aggregation scheme is only used to encrypt communication required during computation of the EIF update step. Ideally, the encryption has no effect on the proposed filter, but in practice, minor descrepancies are introduced with the quantisation of floating-piont numbers used for encryption and homomorphic summation. The proposed filter itself requires a modified measurement function to be able to use this scheme, which is where differences in performance with a standard EIF are introduced. The system model given in ($2$) is, however, unaffected in our method, in that both it and the standard EIF assume the measured state to follow these dynamics exactly.
+The linear combination aggregation scheme is only used to encrypt the required communication during the computation of the EIF update step. Ideally, the encryption does not affect the proposed filter in any way, but in practice, minor discrepancies are introduced with the quantisation of floating-point numbers. The proposed filter itself requires a modified measurement function to use linear combination aggregation, which is where differences to the standard EIF are introduced. The system model given in ($2$) is unaffected by both encryption and measurement model modification, in that both the proposed filter and the standard EIF assume the state follows these dynamics exactly.
 
 \item \reviewtext{3) Why is the noise of the system Gaussian? In Eq.(2), function f() is known then what is the physical meaning of the Gaussian process noise?}
 
-% TODO complete
-%Thank you for pointing this out. You are right to say that the Gaussianity of additive system noise is not required by either the standard EIF or our approach and has now been removed from the manuscript.
+Thank you for pointing this out. It is correct that the Gaussianity of additive system noise is not required by either the standard EIF or our approach and has now been removed from the manuscript.
 
 \item \reviewtext{4) In the paper, the noise is depended on covariance matrix \$Q\$ which is also particularly used in Algroithm 1, however, in practice, Q is unmeasurable and unknown. How to estimate the value of Q in terms of performance guarantee.}
 
-% TODO complete
-%As we consider a linearising state estimation filter (the EKF), system noise covariance $\mat{Q}$ is 
-%Estimating the system noise covariance $\mat{Q}$ is common practice when using linearising state estimation filters such as the EKF, and a requirement for predicting a
+Estimating the second moment of the system noise, $\mat{Q}$, is the standard procedure when using linearising filters such as the EKF (see, for example, ``Bayesian Estimation and Tracking: A Practical Guide'' by Anton J. Huag), and is specific to the system being modelled. As it is possible to use a different, non-linearising, filter for the prediction step of the algorithm, it is possible to avoid having to compute $\mat{Q}$, but as we have stated above, we have presented the EKF equations for state prediction where computing it would be necassary.
 
 \item \reviewtext{5) The experimental results are limited. The comparison is essential to validate the performance of the presented algorithm. What about using the existing filtering method to demonstrate the various encryption scheme?}
 
-We agree that the results section was lacking and have rewritten it to try and make the evaluation clearer. To validate the accuracy of the algorithm, it has been compared to the industry standard EKF (reformulated as the EIF) and the comparison figure changed to make it clearer how the proposed filter performs. The computational performance is more difficult to compare. No alternative encryption scheme suitable for our filter (i.e. scheme meeting LCAO) exists, beyond the one introduced in the work. 
-
-%A possible comparison, as remarked earlier in the paper, is using a scheme meeting AO combined with a unidirectional communication protocol, but we consider this beyond the scope of the work due to no existing 
+We agree that the results section was lacking and have rewritten it to try and make the evaluation clearer. To validate the accuracy of the algorithm, it has been compared to the industry standard EKF (reformulated as the EIF) and the comparison figure changed to make it clearer that the proposed filter performs very similarly. The computational performance is more difficult to compare. Comparison with a different encryption scheme would require another scheme meeting LCAO (required to meet the security requirements), but no such scheme exists (we define the novel LCAO notion and present a scheme that meets it in the manuscript). Future work is being done on a similarly modified EIF which can used a scheme meeting Aggregator Oblivousness (AO) instead, and that could be used for such a comparison, but is beyond the scope of this work.
 
 \item \reviewtext{6) There are some typos in the manuscript please correct them, for example, page 1 Notation, '\$\textbackslash left\textbackslash\textbar\textbackslash underline a\textbackslash right\textbackslash\textbar\$ the vector norm' should be '\$\textbackslash left\textbackslash\textbar\textbackslash underline a\textbackslash right\textbackslash\textbar\$ is the vector norm' etc.}
 
-We apologies for the mistake and have now corrected it, along with others throughout the work.
+The sentence has now been corrected, along with others throughout the work.
 
 \end{rebuttal}
 
