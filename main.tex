@@ -308,7 +308,7 @@ The state evolves following a known system model, which at timestep $k$ is given
 \begin{equation}
     \vec{x}_k = \vec{f}_k(\vec{x}_{k-1})+\vec{w}_k\,, \label{eqn:system_model}
 \end{equation}
-with system noise covariance $\mathsf{Cov}[\vec{w}_k]=\mat{Q}_k$. Measurements of the system follow a measurement model dependent on sensor $i$, $0\leq i \leq n$, given by 
+with system noise that is zero mean and has covariance $\mathsf{Cov}[\vec{w}_k]=\mat{Q}_k$. Measurements of the system follow a measurement model dependent on sensor $i$, $0\leq i \leq n$, given by 
 \begin{equation}
     z_{k,i} = h_i(\vec{x}_k)+v_{k,i}\,, \label{eqn:measurement_model}
 \end{equation}
