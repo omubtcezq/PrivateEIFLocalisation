@@ -618,8 +618,7 @@ The first thing we notice when wanting to decompose $\vec{i}_{k,i}$ and $\mat{I}
         \frac{\hat{x}_{k|k-1} - s_{x,i}}{\sqrt{(\hat{x}_{k|k-1} - s_{x,i})^2 + (\hat{y}_{k|k-1} - s_{y,i})^2}} \\
         \frac{\hat{y}_{k|k-1} - s_{y,i}}{\sqrt{(\hat{x}_{k|k-1} - s_{x,i})^2 + (\hat{y}_{k|k-1} - s_{y,i})^2}} \\
         0 \\
-        \vdots \\
-        0
+        \vdots
     \end{bmatrix}\,,
 \end{equation}
 cannot be either. We, therefore, consider the modified measurement functions
@@ -644,8 +643,7 @@ and
         2\hat{x}_{k|k-1} - 2s_{x,i} \\
         2\hat{y}_{k|k-1} - 2s_{y,i} \\
         0 \\
-        \vdots \\
-        0
+        \vdots
     \end{bmatrix}\,. \label{eqn:modified_jacobian}
 \end{equation}
 Here, $h'_i$ and $\mat{H}'_{k,i}$ are linear combinations of $\hat{x}_{k|k-1}^2$, $\hat{y}_{k|k-1}^2$, $\hat{x}_{k|k-1}$ and $\hat{y}_{k|k-1}$. To show how the corresponding modified measurement vectors $\vec{i}'_{k,i}$ and matrices $\mat{I}'_{k,i}$ can be similarly rearranged and used for localisation, we also require the existence of measurements following a modified measurement model of the form
@@ -701,7 +699,7 @@ To complete the EIF update using a linear combination aggregation process, modif
         \vec{i}'_{k,i} &= \mat{H}_{k,i}^{\prime\top} r_{k,i}^{\prime-1}(z'_{k,i} - h'_i(\hat{\vec{x}}_{k|k-1}) + \mat{H}'_{k,i}\hat{\vec{x}}_{k|k-1}) \\
         &= 
         \begin{bmatrix}
-            \alpha_1^{(i)} & \alpha_2^{(i)} & 0 & \cdots & 0
+            \alpha_1^{(i)} & \alpha_2^{(i)} & 0 & \cdots
         \end{bmatrix}^\top\,,
     \end{split} \label{eqn:hrz_linear_comb}
 \end{equation}
@@ -728,11 +726,10 @@ and
         \mat{I}'_{k,i} &= \mat{H}_{k,i}^{\prime\top} r_{k,i}^{\prime-1}\mat{H}'_{k,i} \\
         &=
         \begin{bmatrix}
-            \beta_1^{(i)} & \beta_2^{(i)} & 0 & \cdots & 0 \\
-            \beta_3^{(i)} & \beta_4^{(i)} & 0 & \cdots & 0\\
-            0 & 0 & 0 & \cdots & 0 \\
-            \vdots & \vdots & \vdots & \ddots & \vdots \\
-            0 & 0 & 0 & \cdots & 0
+            \beta_1^{(i)} & \beta_2^{(i)} & 0 & \cdots \\
+            \beta_3^{(i)} & \beta_4^{(i)} & 0 & \cdots\\
+            0 & 0 & 0 & \cdots \\
+            \vdots & \vdots & \vdots & \ddots
         \end{bmatrix}\,,
     \end{split} \label{eqn:hrh_linear_comb}
 \end{equation}
@@ -1007,9 +1004,9 @@ As well as having shown the theoretical backing for the security of our scheme, 
 \begin{equation*}
     \vec{x}_{k} = 
     \begin{bmatrix}
-        1 & 0.5 & 0 & 0\\
-        0 & 1 & 0 & 0\\
-        0 & 0 & 1 & 0.5\\
+        1 & 0 & 0.5 & 0\\
+        0 & 1 & 0 & 0.5\\
+        0 & 0 & 1 & 0\\
         0 & 0 & 0 & 1
     \end{bmatrix} \cdot \vec{x}_{k-1} + \vec{w}_k\,,
 \end{equation*}
@@ -1017,10 +1014,10 @@ where noise term $\vec{w}_k \sim \mathcal{N}(\vec{0}, \mat{Q})$ and
 \begin{equation*}
     \mat{Q} = \frac{1}{10^3} \cdot
     \begin{bmatrix}
-        0.4 & 1.3 & 0 & 0\\
-        1.3 & 5.0 & 0 & 0\\
-        0 & 0 & 0.4 & 1.3\\
-        0 & 0 & 1.3 & 5.0
+        0.4 & 0 & 1.3 & 0\\
+        0 & 0.4 & 0 & 1.3\\
+        1.3 & 0 & 5.0 & 0\\
+        0 & 1.3 & 0 & 5.0
     \end{bmatrix}\,,
 \end{equation*}
 was simulated and tracked with the algorithms in section \ref{subsec:pseudocode}, using a linear Kalman filter for the navigator's local state prediction. Code was written in the C programming language, using the MPI library \cite{theopenmpiprojectOpenMPI2020} to support asynchronous computations by the sensors and navigator. The MG1 mask generation function and the SHA256 hash function, from the OpenSSL library \cite{theopensslprojectOpenSSL2020}, were used to implement the required hash function $H$, and the Libpaillier library \cite{bethencourtLibpaillier2010} was used for the Paillier encryption scheme. Additionally, GNU libraries, GSL \cite{thegsldevelopmentteamGSLGNUScientific2019} and GMP \cite{granlundGMPGNUMultiple2020}, were used for algebraic operations and multiple-precision encoded integers, respectively. All execution was performed on a 3.00GHz Intel i7-9700 CPU, running on the Windows Subsystem for Linux (WSL).
