@@ -152,9 +152,9 @@ State Estimation, Data Privacy, Sensor Fusion, Extended Kalman Filter.
 \section{Introduction} \label{sec:introduction}
 \IEEEPARstart{L}{ocalisation} methods in distributed sensor environments have long been an active topic of research \cite{pierceIntroductionLoran1946,ligginsDistributedDataFusion2012,liContributedReviewSourcelocalization2016} and have characterised many advancements of Kalman and Bayesian estimation theory \cite{mutambaraDecentralizedEstimationControl1998}. In particular, range-based localisation methods, including signal strength measurements \cite{wangConvexCombinationSource2018,heRangeFreeLocalizationSchemes2003}, acoustic ranges \cite{beutlerNewNonlinearFiltering2004} and ultra wideband ranges \cite{geziciLocalizationUltraWidebandRadios2005}, have found large application due to the prevalence of suitable sensors. In most cases, these localisation methods require the gathering of measurements centrally, where an estimate of location can be computed. With recent developments in distributed and cloud computing, uses of wireless and public communication channels for data transfer have becoming widespread, and the additional requirements of data privacy and state secrecy have become particularly relevant \cite{brennerSecretProgramExecution2011,renSecurityChallengesPublic2012}.
 
-Typical cryptographic secrecy involves hiding all transferred data such that external parties in the communication network learn no new information from acquired encryptions. This can be achieved with common symmetric and public-key encryption scheme such as AES \cite{gueronIntelAdvancedEncryption2010} and RSA \cite{rivestMethodObtainingDigital1978}, respectively. In some cases however, partial data leakage or encrypted data processing is required for achieving a desired goal which has led to several homomorphic and functional encryption schemes \cite{paillierPublicKeyCryptosystemsBased1999,shiPrivacyPreservingAggregationTimeSeries2011,joyeScalableSchemePrivacyPreserving2013,chotardDecentralizedMultiClientFunctional2018} finding uses in such signal processing or localisation tasks. In \cite{alanwarPrOLocResilientLocalization2017}, homomorphic encryption is used to make time-independent model-free location estimates where an estimator does not learn sensor measurements or locations. In \cite{aristovEncryptedMultisensorInformation2018}, similar secrecy is achieved with a linear Kalman filter when a hierarchical sensor network is present. In \cite{shiPrivacyPreservingAggregationTimeSeries2011,joyeScalableSchemePrivacyPreserving2013}, privacy-preserving aggregation schemes are presented as a means to compute total powergrid usage without disclosing individual contributions, while in \cite{alexandruEncryptedCooperativeControl2019,alexandruPrivateWeightedSum2020}, centralised and hidden weighted sum aggregations, pWSAc and pWSAh, respectively, are introduced as a means for computing local control inputs in a distributed environment without learning individual inputs.
+Typical cryptographic secrecy involves hiding all transferred data such that external parties in the communication network learn no new information from acquired encryptions. This can be achieved with common symmetric and public-key encryption scheme such as AES \cite{gueronIntelAdvancedEncryption2010} and RSA \cite{rivestMethodObtainingDigital1978}, respectively. In some cases however, partial data leakage or encrypted data processing is required for achieving a desired goal which has led to several homomorphic and functional encryption schemes \cite{paillierPublicKeyCryptosystemsBased1999,shiPrivacyPreservingAggregationTimeSeries2011,joyeScalableSchemePrivacyPreserving2013,chotardDecentralizedMultiClientFunctional2018} finding uses in such signal processing or localisation tasks. In \cite{alanwarPrOLocResilientLocalization2017}, homomorphic encryption is used to make time-independent model-free location estimates where an estimator does not learn sensor measurements or locations. In \cite{aristovEncryptedMultisensorInformation2018}, similar secrecy is achieved with a linear Kalman filter when a hierarchical sensor network is present. In \cite{shiPrivacyPreservingAggregationTimeSeries2011,joyeScalableSchemePrivacyPreserving2013}, privacy-preserving aggregation schemes are presented as a means to compute total powergrid usage without disclosing individual contributions, while in \cite{alexandruEncryptedCooperativeControl2019,alexandruPrivateWeightedSum2020}, centralised and hidden weighted sum aggregations, pWSAc and pWSAh, are introduced as a means for computing local control inputs in a distributed environment without learning individual inputs.
 
-Our contribution in this work presents a range-only localisation method meeting formal cryptographic requirements that ensure sensors keep their measurements and locations private while the navigator keeps its estimates private. We first define a novel notion for private linear combination aggregation, satisfying these cryptographic requirements, before using it to derive a filter based on the Extended Kalman Filter, with no hierarchical sensor layout assumptions. The linear combination aggregation scheme we put forward is in principle similar to the pWSAh scheme in \cite{alexandruPrivateWeightedSum2020}, however, a formal definition capturing different communication assumptions and leakages is given, crucial for cryptographic security. To the best of the authors' knowledge, no existing method for Bayesian state estimation using range-only sensors and meeting the desired privacy requirements exists.
+Our contribution in this work presents a range-only localisation method meeting formal cryptographic requirements that ensure sensors keep their measurements and locations private while the navigator keeps its estimates private. We first define a novel notion for private linear combination aggregation and an implementation that satisfies these requirements, before using it to derive a filter based on the Extended Kalman Filter with no hierarchical sensor layout assumptions. The linear combination aggregation scheme we put forward is in principle similar to the pWSAh scheme in \cite{alexandruPrivateWeightedSum2020}, however, a formal definition with different communication assumptions and leakages is given, crucial for its formal security. To the best of the authors' knowledge, no existing method for Bayesian state estimation using range-only sensors and meeting the desired privacy requirements exists.
 
 We motivate this scenario with the example of vehicle localisation in the presence of privately owned measurement stations. While the intention of measurement stations is the accurate navigation of passing vehicles, it may be reasonable to desire identifying location or hardware details to remain unknown to the other present stations and the navigator. Similarly, a navigator may not wish to disclose their most accurate location estimates to untrusted third-party measurers.
 
@@ -257,15 +257,16 @@ At every \textit{instance} $t$ (used to distinguish from an estimation \textit{t
     \draw [gray] (0,0.75) rectangle (6.5,-4.25);
 \end{tikzpicture}
 \caption{Required linear combination aggregation steps at instance $t$.}
+\vspace{-\baselineskip}
 \label{fig:agg_steps}
 \end{figure}
 In addition, we note that an alternative approach to the two-step protocol is computing $\sum^{m}_{j=1}(\omega_j^{(t)}\sum^{n}_{i=1} a_{i,j}^{(t)})$ at the navigator, requiring only values $a_{i,j}^{(t)}, j\in\{1,\dots,m\}$ to be sent from each sensor $i$. We justify the use of bi-directional communication by reducing communication costs when the number of weights is larger than the number of sensors, $m>n$, and by sending fewer weights in the presence of repeats, as will be shown to be the case in section \ref{sec:priv_localization}.
 
-Before giving a formal definition for the construction and security of our desired encryption scheme, we make the following assumptions on the capabilities of the navigator and sensors.
+Before giving a formal definition for the construction and security of our desired encryption scheme, we make the following assumptions on the capabilities of the participants.
 \begin{LaTeXdescription}
     \item[Global Navigator Broadcast] We assume that broadcast information from the navigator is received by \textit{all} sensors involved in the protocol.
     \item[Consistent Navigator Broadcast] We assume that broadcast information from the navigator is received equally by all sensors. This means the navigator may not send different weights to individual sensors during a single instance $t$.
-    \item[Honest-but-Curious Sensors] We adopt the honest-but-curious attacker model for all involved sensors, meaning they are assumed to follow the localisation procedure correctly but may store or use any gained sensitive information.
+    \item[Honest-but-Curious Sensors] We adopt the honest-but-curious attacker model for all involved sensors, meaning that they follow the localisation procedure correctly but may store or use any gained sensitive information.
 \end{LaTeXdescription}
 We justify the global broadcast assumption by noting that any subset of sensors within the range of the navigator can be considered a complete group and treated as the global set for estimation purposes, generalising the method, while the wide-spread use of cheap non-directional antennas supports the assumption of consistent broadcasts. The final assumption refers to the known problem of misbehaving sensors \cite{lazosSeRLocSecureRangeindependent2004,ben-galOutlierDetection2005}, often requiring additional complicated detection mechanisms, and will not be considered in this work.
 
@@ -276,7 +277,7 @@ We are now ready to define the type of encryption scheme we want for the specifi
     \item[$\mathsf{CombEnc}(t, pk_0, sk_i, \mathcal{E}_{pk_0}(\omega_1^{(t)}),\shrtdots,\mathcal{E}_{pk_0}(\omega_m^{(t)}), a^{(t)}_{i,1},\shrtdots,a^{(t)}_{i,m})$] At instance $t$, sensor $i$ computes and obtains the encrypted linear combination $l^{(t)}_i = \mathcal{E}_{pk_0,sk_i}(\sum^m_{j=1}a^{(t)}_{i,j}\omega^{(t)}_j)$ using its secret key $sk_i$.
     \item[$\mathsf{AggDec}(t, pk_0, sk_0, l^{(t)}_1,\shrtdots,l^{(t)}_n)$] At instance $t$, the navigator computes the aggregation of linear combinations $\sum^{n}_{i=1}l_i^{(t)}=\sum^{n}_{i=1}\sum^{m}_{j=1} a^{(t)}_{i,j}\omega^{(t)}_j$ using its public and private keys $pk_0$, $sk_0$.
 \end{LaTeXdescription}
-The security notions we want the above algorithms to meet reflect the previously stated estimation privacy goals. The navigator should learn no information from individual sensors while sensors should learn no information from the navigator or any other sensors. In the context of the introduced communication protocol, this can be summarised as the following notions.
+The security notions we want these algorithms to meet reflect the previously stated estimation privacy goals. The navigator should learn no information from individual sensors while sensors should learn no information from the navigator or any other sensors. In the context of the introduced communication protocol, this can be summarised as the following notions.
 \begin{LaTeXdescription}
     \item[Indistinguishable Weights] No colluding subset of sensors gains any new knowledge about the navigator weights $\omega^{(t)}_j,\,j\in\{1,\dots,m\}$ when receiving only their encryptions from the current and previous instances, and having the ability to encrypt plaintexts of their choice.
     \item[Linear Combination Aggregator Obliviousness] No colluding subset \textit{excluding} the navigator gains additional information about the remaining sensor values to be weighted, $a^{(t)}_{i,j},\,j\in\{1,\dots,m\}$, where sensor $i$ is not colluding, given only encryptions of their linear combinations $l_i$ from the current and previous instances. Any colluding subset \textit{including} the navigator learns only the sum of all linear combinations weighted by weights of their choice, $\sum^{n}_{i=1}l_i^{(t)}=\sum^{n}_{i=1}\sum^{m}_{j=1} a^{(t)}_{i,j}\omega^{(t)}_j$.
@@ -308,7 +309,7 @@ This state evolves following some known system model, which at timestep $k$ can 
 \begin{equation}
     \vec{x}_k = \vec{f}_k(\vec{x}_{k-1}, \vec{w}_k)\,, \label{eqn:system_model}
 \end{equation}
-with noise term $\vec{w}_k$. Measurements of the system follow a measurement model dependent on sensor $i\in\{1,\dots,n\}$, given by 
+with noise term $\vec{w}_k$. Measurements of $\vec{x}_k$ follow a measurement model dependent on sensor $i\in\{1,\dots,n\}$, given by 
 \begin{equation}
     z_{k,i} = h_i(\vec{x}_k)+v_{k,i}\,, \label{eqn:measurement_model}
 \end{equation}
@@ -442,7 +443,7 @@ We will consider a subset of rational numbers in terms of a range $M \in \mathbb
 \begin{equation}
     \mathbb{Q}_{M,\phi} = \left\{q \,\middle|\, \phi q \in \mathbb{N} \wedge -\left\lfloor\frac{M}{2}\right\rfloor \leq \phi q < \left\lfloor\frac{M}{2}\right\rfloor \right\}\,,
 \end{equation}
-and we can quantize any real number $a$ by taking the nearest rational $q \in \mathbb{Q}_{M,\phi}$, that is, $\argmin_{q\in\mathbb{Q}_{M,\phi}} |a-q|$. In this form, mapping rationals $\mathbb{Q}_{M,\phi}$ to an encryption range $\mathbb{Z}_N$ is achieved by choosing $M=N$ and handling negatives by modulo arithmetic. Additionally, we note that the Q number format requires a precision factor $\phi$ to be removed after each encoded multiplication. This is captured by a third parameter $d$; the number of multiplication factors to add or remove from encodings.
+and we can quantize any real number $a$ by taking the nearest rational $q \in \mathbb{Q}_{M,\phi}$, that is, $\argmin_{q\in\mathbb{Q}_{M,\phi}} |a-q|$. In this form, mapping rationals $\mathbb{Q}_{M,\phi}$ to an encryption range $\mathbb{Z}_N$ is achieved by choosing $M=N$ and handling negatives by modulo arithmetic. Additionally, we note that the Q number format requires a precision factor $\phi$ to be removed after each encoded multiplication. This is captured by a third parameter $d$; the number of precision factors present in encodings.
 
 The function for \textit{combined} quantization and encoding, $\mathsf{E}_{M,\phi,d}(a)$, of a given number $a \in \mathbb{R}$ and with an integer range $\mathbb{Z}_M$, precision $\phi$ and scaling for $d$ prior encoded multiplications is given by
 \begin{equation}
@@ -496,12 +497,7 @@ In practice, $N$ is typically very large ($N>2^{1024}$) and this condition can b
 \section{Private Linear Combination Aggregation Scheme} \label{sec:lcao_scheme}
 In this section, we introduce an encryption scheme meeting the desired security properties in section \ref{subsec:crypto_problem}. The scheme is a combination of the Paillier and Joye-Libert schemes and provides encrypted weights meeting IND-CPA and encrypted aggregation meeting the notion of LCAO defined in section \ref{subsec:crypto_problem}. Similarly to its constituents, the scheme bases its security on the DCRA and, as with the Joye-Libert scheme, requires a trusted party for initial key generation and distribution. 
 
-A difference, however, is that we intend to use our scheme for the aggregation of multidimensional data from a localisation estimator. As the scheme is only defined for the aggregation of scalar inputs, we compute 
-
-the concatenation $t_{k,\tau}=k\mathbin\|\tau$ 
-
-
-The four algorithms defining our scheme are given as follows.
+As aggregation is typically performed on scalar inputs, we extend our notation for the context of multidimensional estimation data by letting an instance $t_{k,\tau}$ uniquely capture the scalar aggregation during an estimation timestep $k$ for a single element with position index $\tau$. To achieve this in practice, any injective function can be used, such as the concatenation $t_{k,\tau}=k\mathbin\|\tau$. The four algorithms defining our scheme are given as follows.
 \begin{LaTeXdescription}
     \item[$\mathsf{Setup}(\kappa)$] On input parameter $\kappa$, generate two equal length, sufficiently large, primes $p$ and $q$, and compute $N=pq$. Define a hash function $H:\mathbb{Z} \rightarrow \mathbb{Z}_{N^2}^*$, choose a the number of weights to combine, $m>1$, and set public parameter $\mathsf{pub}=H$, navigator public key $pk_0 = N$ and navigator private key $sk_0=(p,q)$. Sensor secret keys are generated by choosing $sk_i,\,i\in\{1,\dots,n-1\}$ uniformly from $\mathbb{Z}_{N^2}$ and setting the last key as $sk_n = -\sum^{n-1}_{i=1}sk_i \pmod{N^2}$.
  
@@ -511,53 +507,58 @@ The four algorithms defining our scheme are given as follows.
     \end{equation}
     for a randomly chosen $\rho \in \mathbb{Z}_N$.
 
-    \item[$\mathsf{CombEnc}(t, pk_0, sk_i, \mathcal{E}_{pk_0}(\omega_1^{(t)}),\shrtdots,\mathcal{E}_{pk_0}(\omega_m^{(t)}), a^{(t)}_{i,1},\shrtdots,a^{(t)}_{i,m})$] Encrypted linear combination at instance $t$ is computed as 
+    \item[$\mathsf{CombEnc}(t_{k,\tau}, pk_0, sk_i, \mathcal{E}_{pk_0}(\omega_j^{(k,\tau)}), a^{(k,\tau)}_{i,j}),\ j\in\{1\dots m\}$] Encrypted linear combination at instance $t_{k,\tau}$ is computed as 
     \begin{equation}
-        l^{(t)}_i = H(t)^{sk_i}\prod^{m}_{j=1}\mathcal{E}_{pk_0}(\omega^{(t)}_j)^{a^{(t)}_{i,j}} \pmod{N^2}\,,\label{eqn:our_scheme_lin_comb}
+        l^{(k,\tau)}_i = H(t_{k,\tau})^{sk_i}\prod^{m}_{j=1}\mathcal{E}_{pk_0}(\omega^{(k,\tau)}_j)^{a^{(k,\tau)}_{i,j}} \pmod{N^2}\,,\label{eqn:our_scheme_lin_comb}
     \end{equation}
     and makes use of the homomorphic property \eqref{eqn:paillier_hom_mult}. Correctness follows from
     \begin{equation*}
         \begin{split}
-             l^{(t)}_i &= H(t)^{sk_i}\prod^{m}_{j=1}\mathcal{E}_{pk_0}(\omega^{(t)}_j)^{a^{(t)}_{i,j}} \pmod{N^2} \\
-            &= H(t)^{sk_i}\prod^{m}_{j=1}\mathcal{E}_{pk_0}(a^{(t)}_{i,j}\omega^{(t)}_j) \pmod{N^2} \\
-            &= H(t)^{sk_i}\prod^{m}_{j=1}(N+1)^{a^{(t)}_{i,j}\omega^{(t)}_j} \rho^{N}_{j} \pmod{N^2} \\
-            &= H(t)^{sk_i}(N+1)^{\sum^{m}_{j=1}a^{(t)}_{i,j}\omega^{(t)}_j} \rho_{i}^{N} \pmod{N^2}\,,
+            l^{(k,\tau)}_i &= H(t_{k,\tau})^{sk_i}\prod^{m}_{j=1}\mathcal{E}_{pk_0}(\omega^{(k,\tau)}_j)^{a^{(k,\tau)}_{i,j}} \pmod{N^2} \\
+            &= H(t_{k,\tau})^{sk_i}\prod^{m}_{j=1}\mathcal{E}_{pk_0}(a^{(k,\tau)}_{i,j}\omega^{(k,\tau)}_j) \pmod{N^2} \\
+            &= H(t_{k,\tau})^{sk_i}\cdot \\
+            &\qquad \prod^{m}_{j=1}(N+1)^{a^{(k,\tau)}_{i,j}\omega^{(k,\tau)}_j} \rho^{N}_{j} \pmod{N^2} \\
+            &= H(t_{k,\tau})^{sk_i}\cdot \\
+            &\qquad (N+1)^{\sum^{m}_{j=1}a^{(k,\tau)}_{i,j}\omega^{(k,\tau)}_j} \rho_{i}^{N} \pmod{N^2}\,,
         \end{split}
     \end{equation*}
-    for some values $\rho_i,\rho_j \in \mathbb{Z}_N,\,j\in\{1,\dots,m\}$. Here, $\rho_i^N$ and $H(t)^{sk_i}$ can be considered the noise terms corresponding to the two levels of encryption from $pk_0$ and $sk_i$, respectively.
+    for some values $\rho_i,\rho_j \in \mathbb{Z}_N,\,j\in\{1,\dots,m\}$. Here, $\rho_i^N$ and $H(t_{k,\tau})^{sk_i}$ can be considered the noise terms corresponding to the two levels of encryption from $pk_0$ and $sk_i$, respectively.
 
-    \item[$\mathsf{AggDec}(t, pk_0, sk_0, l^{(t)}_1,\shrtdots,l^{(t)}_n)$] Aggregation is computed as $l^{(t)} = \prod^n_{i=1}l^{(t)}_i \pmod{N^2}$, removing the aggregation noise terms, and is followed by Paillier scheme decryption
+    \item[$\mathsf{AggDec}(t_{k,\tau}, pk_0, sk_0, l^{(k,\tau)}_1,\shrtdots,l^{(k,\tau)}_n)$] Aggregation is computed as $l^{(k,\tau)} = \prod^n_{i=1}l^{(k,\tau)}_i \pmod{N^2}$, removing the aggregation noise terms, and is followed by Paillier scheme decryption
     \begin{equation}
         \begin{split}
-            \sum^{n}_{i=1}\sum^{m}_{j=1}&a^{(t)}_{i,j}\omega^{(t)}_j =\\
-            &\frac{L((l^{(t)})^\lambda\pmod{N^2})}{L((N+1)^\lambda\pmod{N^2})} \pmod{N}\,,
+            \sum^{n}_{i=1}\sum^{m}_{j=1}&a^{(k,\tau)}_{i,j}\omega^{(k,\tau)}_j =\\
+            &\frac{L((l^{(k,\tau)})^\lambda\pmod{N^2})}{L((N+1)^\lambda\pmod{N^2})} \pmod{N}\,,
         \end{split} \label{eqn:our_scheme_decrypt}
     \end{equation}
     with $\lambda = \mathsf{lcm}(p-1, q-1)$ and $L(u) = \frac{u-1}{N}$. The correctness of the aggregation can be seen from
     \begin{align*}
-        l^{(t)} &= \prod^n_{i=1}H(t)^{sk_i}(N+1)^{\sum^{m}_{j=1}a_{i,j}\omega_j}\rho_i^N \pmod{N^2} \\
         \begin{split}
-            &= H(t)^{\sum^n_{i=1}sk_i}\cdot \\
-            &\qquad\qquad \prod^n_{i=1}(N+1)^{\sum^{m}_{j=1}a^{(t)}_{i,j}\omega^{(t)}_j}\rho_i^N \pmod{N^2}
+        l^{(k,\tau)} &= \prod^n_{i=1}H(t_{k,\tau})^{sk_i}\cdot \\
+        &\qquad (N+1)^{\sum^{m}_{j=1}a^{(k,\tau)}_{i,j}\omega^{(k,\tau)}_j}\rho_i^N \pmod{N^2}
         \end{split}\\
-        &= (N+1)^{\sum^n_{i=1}\sum^{m}_{j=1}a^{(t)}_{i,j}\omega^{(t)}_j}\rho'^N \pmod{N^2}\,,
+        \begin{split}
+            &= H(t_{k,\tau})^{\sum^n_{i=1}sk_i}\cdot \\
+            &\qquad \prod^n_{i=1}(N+1)^{\sum^{m}_{j=1}a^{(k,\tau)}_{i,j}\omega^{(k,\tau)}_j}\rho_i^N \pmod{N^2}
+        \end{split}\\
+        &= (N+1)^{\sum^n_{i=1}\sum^{m}_{j=1}a^{(k,\tau)}_{i,j}\omega^{(k,\tau)}_j}\rho'^N \pmod{N^2}\,,
     \end{align*}
     for some values $\rho_i,\rho' \in \mathbb{Z}_N,\,i\in\{1,\dots,n\}$.
 \end{LaTeXdescription}
-Additionally, we note that in the above construction, all weights $\omega^{(t)}_j$ and values $a^{(t)}_{i,j}$ are integers and the resulting linear combinations and aggregation are computed modulo $N$. 
+Additionally, we note that in the above construction, all weights $\omega^{(k,\tau)}_j$ and values $a^{(k,\tau)}_{i,j}$ are integers and the resulting linear combinations and aggregation are computed modulo $N$. 
 
 The security proof of this scheme must show that both encrypted weights meet IND-CPA and encrypted aggregation meets LCAO. As weights are encrypted with the Paillier encryption scheme, the first requirement is already met. To show that aggregation meets LCAO, a reduction proof is given in appendix \ref{app:proof}.
 
 \begin{remark}
-    Given the construction of the scheme above, it can be seen that any weights $\omega^{(t)}_j$, whose values are known at each sensor, do not need to be broadcast by the navigator. In this case, sensors can replace
+    Given the construction of the scheme above, it can be seen that any weights $\omega^{(k,\tau)}_j$, whose values are known at each sensor, do not need to be broadcast by the navigator. In this case, sensors can replace
     \begin{equation}
-        \mathcal{E}_{pk_0}(\omega^{(t)}_j)^{a^{(t)}_{i,j}} = (N+1)^{\omega^{(t)}_ja^{(t)}_{i,j}}\rho_j^N \pmod{N^2}
+        \mathcal{E}_{pk_0}(\omega^{(k,\tau)}_j)^{a^{(k,\tau)}_{i,j}} = (N+1)^{\omega^{(k,\tau)}_ja^{(k,\tau)}_{i,j}}\rho_j^N \pmod{N^2}
     \end{equation}
     in \eqref{eqn:our_scheme_lin_comb}, by
     \begin{equation}
-        (N+1)^{\omega^{(t)}_ja^{(t)}_{i,j}} \pmod{N^2}\,.
+        (N+1)^{\omega^{(k,\tau)}_ja^{(k,\tau)}_{i,j}} \pmod{N^2}\,.
     \end{equation}
-    This is due to the removal of $\rho_j^N$ terms during decryption and can be used to reduce the navigator's broadcast communication cost by the number of weights $\omega^{(t)}_j$ that do not hold any information private to the navigator and are known by the sensors in advance.
+    This is due to the removal of $\rho_j^N$ terms during decryption and can be used to reduce the navigator's broadcast communication cost by the number of weights $\omega^{(k,\tau)}_j$ that do not hold any information private to the navigator and are known by the sensors in advance.
 \end{remark}
 
 % 
@@ -604,7 +605,7 @@ and the measurement matrix
 \begin{equation}
     \mat{I}_{k,i} = \mat{H}^\top_{k,i} r^{-1}_i \mat{H}_{k,i}\,, \label{eqn:measurement_mat}
 \end{equation}
-namely, their measurements $z_{k,i}$, measurement variances $r_{k,i}$ and locations $\vec{s}_i$; captured in measurement functions $h_i$ and Jacobians $\mat{H}_{k,i}$. $\vec{i}_{k,i}$ and $\mat{I}_{k,i}$, however, also require the current predicted state estimate $\hat{\vec{x}}_{k|k-1}$ to be computed (in $h_i$ and $\mat{H}_{k,i}$). For this reason, our goal is to reformulate \eqref{eqn:measurement_vec} and \eqref{eqn:measurement_mat} to be computable at each sensor $i$ as a linear combination of functions of the navigator state estimate (the navigator weights), to be subsequently aggregated at the navigator. Application of the linear combination aggregation scheme proposed would in turn guarantee that sensors do not learn the navigator state, and that the navigator learns only the aggregation required for updating its state estimate in \eqref{eqn:eif_info_vec_update} and \eqref{eqn:eif_info_mat_update}.
+namely, their measurements $z_{k,i}$, measurement variances $r_{k,i}$ and locations $\vec{s}_i$; captured in measurement functions $h_i$ and Jacobians $\mat{H}_{k,i}$. $\vec{i}_{k,i}$ and $\mat{I}_{k,i}$, however, also require the current predicted state estimate $\hat{\vec{x}}_{k|k-1}$ to be computed (in $h_i$ and $\mat{H}_{k,i}$). For this reason, our goal is to reformulate \eqref{eqn:measurement_vec} and \eqref{eqn:measurement_mat} to be computable at each sensor $i$ as a linear combination of functions of the navigator state estimate (the navigator weights), to be subsequently aggregated at the navigator. Application of the linear combination aggregation scheme proposed would in turn guarantee that sensors do not learn the navigator state, and the navigator learns only the aggregation required for updating its state estimate in \eqref{eqn:eif_info_vec_update} and \eqref{eqn:eif_info_mat_update}.
 
 % 
 % ########     ###    ##    ##  ######   ########    ##     ##  #######  ########  
@@ -674,7 +675,7 @@ with a new noise term $2h_i(\vec{x}_k)v_{k,i} + v_{k,i}^2$, now dependent on the
         &= h'_i(\vec{x}_k) + v'_{k,i}\,,
     \end{split} \label{eqn:modified_measurement}
 \end{equation}
-with now zero-mean noise $v'_{k,i} = 2h_i(\vec{x}_k)v_{k,i} + v_{k,i}^2 - r_{k,i}$. The noise in this case (again a function of Gaussian term $v_{k,i}$) has variance 
+with now zero-mean noise $v'_{k,i} = 2h_i(\vec{x}_k)v_{k,i} + v_{k,i}^2 - r_{k,i}$. The noise in this case (again a function of $v_{k,i}$) has variance 
 \begin{equation}
     \mathsf{Var}[v'_{k,i}] = 4h_i(\vec{x}_k)^2r_{k,i} + 2r_{k,i}^2 \label{eqn:modified_measurement_variance}
 \end{equation}
@@ -706,21 +707,21 @@ To complete the EIF update using a linear combination aggregation process, modif
         \vec{i}'_{k,i} &= \mat{H}_{k,i}^{\prime\top} r_{k,i}^{\prime-1}(z'_{k,i} - h'_i(\hat{\vec{x}}_{k|k-1}) + \mat{H}'_{k,i}\hat{\vec{x}}_{k|k-1}) \\
         &= 
         \begin{bmatrix}
-            \alpha_1^{(i)} & \alpha_2^{(i)} & 0 & \cdots
+            \alpha_i^{(k,1)} & \alpha_i^{(k,2)} & 0 & \cdots
         \end{bmatrix}^\top\,,
     \end{split} \label{eqn:hrz_linear_comb}
 \end{equation}
 with
 \begin{align*}
     \begin{split}
-        \alpha_1^{(i)} &= (2r_{k,i}^{\prime-1})\hat{x}_{k|k-1}^3 + (2r_{k,i}^{\prime-1})\hat{x}_{k|k-1}\hat{y}_{k|k-1}^2 \\
+        \alpha_i^{(k,1)} &= (2r_{k,i}^{\prime-1})\hat{x}_{k|k-1}^3 + (2r_{k,i}^{\prime-1})\hat{x}_{k|k-1}\hat{y}_{k|k-1}^2 \\
         &\quad+ (-r_{k,i}^{\prime-1}s_{x,i})\hat{x}_{k|k-1}^2 + (-2r_{k,i}^{\prime-1}s_{x,i})\hat{y}_{k|k-1}^2 \\
         &\quad+ (2r_{k,i}^{\prime-1}z'_{k,i})\hat{x}_{k|k-1} + (-2r_{k,i}^{\prime-1}s_{x,i}^2)\hat{x}_{k|k-1}\\
         &\quad+ (-2r_{k,i}^{\prime-1}s_{y,i}^2)\hat{x}_{k|k-1} + (2r_{k,i}^{\prime-1}s_{x,i}^3) \\
         &\quad+ (2r_{k,i}^{\prime-1}s_{x,i}s_{y,i}^2) + (-2r_{k,i}^{\prime-1}s_{x,i} z'_{k,i})\ \textrm{and}
     \end{split}\\
     \begin{split}
-        \alpha_2^{(i)} &= (2r_{k,i}^{\prime-1})\hat{y}_{k|k-1}^3 + (2r_{k,i}^{\prime-1})\hat{x}_{k|k-1}^2\hat{y}_{k|k-1} \\
+        \alpha_i^{(k,2)} &= (2r_{k,i}^{\prime-1})\hat{y}_{k|k-1}^3 + (2r_{k,i}^{\prime-1})\hat{x}_{k|k-1}^2\hat{y}_{k|k-1} \\
         &\quad+ (-2r_{k,i}^{\prime-1}s_{y,i})\hat{x}_{k|k-1}^2 + (-2r_{k,i}^{\prime-1}s_{y,i})\hat{y}_{k|k-1}^2 \\
         &\quad+ (2r_{k,i}^{\prime-1}z'_{k,i})\hat{y}_{k|k-1} + (-2r_{k,i}^{\prime-1}s_{x,i}^2)\hat{y}_{k|k-1} \\
         &\quad+ (-2r_{k,i}^{\prime-1}s_{y,i}^2)\hat{y}_{k|k-1} + (2r_{k,i}^{\prime-1}s_{y,i}s_{x,i}^2) \\
@@ -733,8 +734,8 @@ and
         \mat{I}'_{k,i} &= \mat{H}_{k,i}^{\prime\top} r_{k,i}^{\prime-1}\mat{H}'_{k,i} \\
         &=
         \begin{bmatrix}
-            \beta_1^{(i)} & \beta_2^{(i)} & 0 & \cdots \\
-            \beta_3^{(i)} & \beta_4^{(i)} & 0 & \cdots\\
+            \alpha_i^{(k,3)} & \alpha_i^{(k,4)} & 0 & \cdots \\
+            \alpha_i^{(k,5)} & \alpha_i^{(k,6)} & 0 & \cdots\\
             0 & 0 & 0 & \cdots \\
             \vdots & \vdots & \vdots & \ddots
         \end{bmatrix}\,,
@@ -742,13 +743,13 @@ and
 \end{equation}
 with
 \begin{align*}
-    \beta_1^{(i)} &= (4r_{k,i}^{\prime-1})\hat{x}_{k|k-1}^2 + (-8r_{k,i}^{\prime-1}s_{x,i})\hat{x}_{k|k-1} + (4r_{k,i}^{\prime-1}s_{x,i}^2)\,, \\
+    \alpha_i^{(k,3)} &= (4r_{k,i}^{\prime-1})\hat{x}_{k|k-1}^2 + (-8r_{k,i}^{\prime-1}s_{x,i})\hat{x}_{k|k-1} + (4r_{k,i}^{\prime-1}s_{x,i}^2)\,, \\
     \begin{split}
-        \beta_2^{(i)} &= (4r_{k,i}^{\prime-1})\hat{x}_{k|k-1}\hat{y}_{k|k-1} + (-4r_{k,i}^{\prime-1}s_{y,i})\hat{x}_{k|k-1}  \\
+        \alpha_i^{(k,4)} &= (4r_{k,i}^{\prime-1})\hat{x}_{k|k-1}\hat{y}_{k|k-1} + (-4r_{k,i}^{\prime-1}s_{y,i})\hat{x}_{k|k-1}  \\
         &\qquad+ (-4r_{k,i}^{\prime-1}s_{x,i})\hat{y}_{k|k-1} + (4r_{k,i}^{\prime-1}s_{x,i}s_{y,i})\,,
     \end{split}\\
-    \beta_3^{(i)} &= \beta_{12}\ \textrm{and} \\
-    \beta_4^{(i)} &= (4r_{k,i}^{\prime-1})\hat{y}_{k|k-1}^2 + (-8r_{k,i}^{\prime-1}s_{y,i})\hat{y}_{k|k-1} + (4r_{k,i}^{\prime-1}s_{y,i}^2)\,.
+    \alpha_i^{(k,5)} &= \beta_{12}\ \textrm{and} \\
+    \alpha_i^{(k,6)} &= (4r_{k,i}^{\prime-1})\hat{y}_{k|k-1}^2 + (-8r_{k,i}^{\prime-1}s_{y,i})\hat{y}_{k|k-1} + (4r_{k,i}^{\prime-1}s_{y,i}^2)\,.
 \end{align*}
 The above rearrangements give $\vec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ as linear comabinations of elements in
 \begin{equation}
@@ -770,12 +771,6 @@ respectively.
     The above has been derived for two-dimensional localisation but can be similarly derived for three-dimensional case. However, the number of weights increases combinatorially with the number of dimensions, thus affecting the cost of communication as well.
 \end{remark}
 
-The final step required for computing \eqref{eqn:hrz_linear_comb} and \eqref{eqn:hrh_linear_comb} at the sensors and \eqref{eqn:eif_modified_vec_update} and \eqref{eqn:eif_modified_mat_update} at the navigator, using the proposed LCAO scheme, is handling the unique instance variables $t$ in the context of estimation timesteps $k$. We do this by performing the linear combination aggregation process of \eqref{eqn:hrz_linear_comb} and \eqref{eqn:hrh_linear_comb} for each element independently and setting $t$ to the concatenation
-\begin{equation}
-    t=k\mathbin\|v\mathbin\|w\mathbin\|\tau\,,
-\end{equation}
-for elements in row $v$ and column $w$, and with $\tau=0$ for elements in $\vec{i}'_{k,i}$ and $\tau=1$ otherwise. This results in elementwise encryptions, and six aggregations at each timestep $k$ (in the two-dimensional case).
-
 % 
 %    ###    ##        ######   
 %   ## ##   ##       ##    ##  
@@ -789,13 +784,13 @@ for elements in row $v$ and column $w$, and with $\tau=0$ for elements in $\vec{
 \subsection{Pseudocode} \label{subsec:pseudocode}
 Measurement modification, real number encoding and linear combination aggregation are all required to compute the modified EIF from the previous section in a privacy-preserving manner. In this section, we summarise this entire localisation process and give the pseudocode for its execution. For brevity, we will assume $\phi$ and $M=N$ from section \ref{subsec:encoding} to be public information and thus simplify the encoding notation $\mathsf{E}_{N,\phi,d}(\cdot)$ to $\mathsf{E}_{d}(\cdot)$. The privacy-preserving localization filter consists of the following steps.
 \begin{LaTeXdescription}
-    \item[Setup] Run only once, the $\mathsf{Setup}$ algorithm from section \ref{sec:lcao_scheme} is run by a trusted third party, $N$ and $H$ are made public, and the navigator and sensor secret keys, $sk_0=\lambda=\mathsf{lcm}(p-1, q-1)$ and $sk_i$, $i\in\{1,\dots,n\}$, are distributed accordingly. 
+    \item[Setup] The $\mathsf{Setup}$ algorithm from section \ref{sec:lcao_scheme} is run only once by a trusted third party, $N$ and $H$ are made public, and the navigator and sensor secret keys, $sk_0=\lambda=\mathsf{lcm}(p-1, q-1)$ and $sk_i$, $i\in\{1,\dots,n\}$, are distributed accordingly. 
 
     \item[Prediction] At each timestep $k$, the navigator computes the prediction of the current state and its covariance with a local filter before encrypting weights \eqref{eqn:weights_to_broadcast} with algorithm $\mathsf{Enc}$ and broadcasting them to the sensors. This is given by algorithm \ref{alg:nav_prediction}.
 
-    \item[Measurement] At each timestep $k$, sensors modify their measurements with \eqref{eqn:modified_measurement} and \eqref{eqn:modified_measurement_variance_estimate} before computing $\vec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ using algorithm $\mathsf{CombEnc}$ for each element and sending them back to the navigator. This is given by algorithm \ref{alg:measurement_info}.
+    \item[Measurement] At each timestep $k$, sensors modify their measurements with \eqref{eqn:modified_measurement} and \eqref{eqn:modified_measurement_variance_estimate} before computing encryptions of $\vec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ using algorithm $\mathsf{CombEnc}$ for each element and sending them back to the navigator. This is given by algorithm \ref{alg:measurement_info}.
 
-    \item[Update] At each timestep $k$, the navigator aggregates and decrypts recieved measurement vectors and matrices with algorithm $\mathsf{AggDec}$, before computing the modified EIF update equations \eqref{eqn:eif_modified_vec_update} and \eqref{eqn:eif_modified_mat_update}. This is given by algorithm \ref{alg:nav_update}.
+    \item[Update] At each timestep $k$, the navigator aggregates and decrypts recieved measurement vectors and matrices with algorithm $\mathsf{AggDec}$, before computing the EIF update equations \eqref{eqn:eif_modified_vec_update} and \eqref{eqn:eif_modified_mat_update}. This is given by algorithm \ref{alg:nav_update}.
 \end{LaTeXdescription}
 
 \begin{algorithm}[htbp]
@@ -831,8 +826,8 @@ Measurement modification, real number encoding and linear combination aggregatio
         \State Recieve weight in the form above
     \EndFor
 
-    \State Let $\bm{\alpha}_{v}^{(i)}$ represent the encryption of $\alpha_{v}^{(i)}$ in \eqref{eqn:hrz_linear_comb}
-    \State $\bm{\alpha}_{1}^{(i)} \gets \mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{x}^3_{k|k-1}))^{\mathsf{E}_{0}(2r_{k,i}^{\prime-1})}\cdot$\par
+    \State Let $\bm{\alpha}_{i}^{(k,\tau)}$ represent the encryption of $\alpha_{i}^{(k,\tau)}$ in \eqref{eqn:hrz_linear_comb} and \eqref{eqn:hrh_linear_comb}
+    \State $\bm{\alpha}_{i}^{(k,1)} \gets \mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{x}^3_{k|k-1}))^{\mathsf{E}_{0}(2r_{k,i}^{\prime-1})}\cdot$\par
     \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{x}_{k|k-1}\hat{y}^2_{k|k-1}))^{\mathsf{E}_{0}(2r_{k,i}^{\prime-1})}\cdot$\par
     \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{x}^2_{k|k-1}))^{\mathsf{E}_{0}(-r_{k, i}^{\prime-1}s_{x,i})}\cdot$\par
     \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{y}^2_{k|k-1}))^{\mathsf{E}_{0}(-2r_{k, i}^{\prime-1}s_{x,i})}\cdot$\par
@@ -842,20 +837,10 @@ Measurement modification, real number encoding and linear combination aggregatio
     \ $(N+1)^{\mathsf{E}_{1}(2r_{k,i}^{\prime-1}s_{x,i}^3)}
     (N+1)^{\mathsf{E}_{1}(2r_{k,i}^{\prime-1}s_{x,i}s_{y,i}^2)}\cdot$\par
     \ $(N+1)^{\mathsf{E}_{1}(-2r_{k, i}^{\prime-1}s_{x,i}z_{k,i}')}
-    H(k\mathbin\|1\mathbin\|1\mathbin\|0)\pmod{N^2}$
-    \State Compute $\bm{\alpha}_{2}^{(i)}$ using \eqref{eqn:hrz_linear_comb}, \eqref{eqn:our_scheme_lin_comb} and the remark from section \ref{sec:lcao_scheme} in the form above
-    \For{$v \gets 1$ to $2$}
-        \State Send $\bm{\alpha}_{v}^{(i)}$ to the navigator
-    \EndFor
-
-    \State Let $\bm{\beta}_{w}^{(i)}$ represent an encryption of $\beta_{w}^{(i)}$ in \eqref{eqn:hrh_linear_comb}
-    \State $\bm{\beta}_{1}^{(i)} \gets \mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{x}^2_{k|k-1}))^{\mathsf{E}_{0}(4r_{k,i}^{\prime-1})}\cdot$\par
-    \ $\mathcal{E}_{pk_0}(\mathsf{E}_{0}(\hat{x}_{k|k-1}))^{\mathsf{E}_{0}(-8r_{k, i}^{\prime-1}s_{x,i})}\cdot$\par
-    \ $(N+1)^{\mathsf{E}_{1}(4r_{k,i}^{\prime-1}s_{x,i}^2)}\cdot$\par
-    \ $H(k\mathbin\|1\mathbin\|1\mathbin\|1)\pmod{N^2}$
-    \State Compute remaining $\bm{\beta}_{w}^{(i)}$ using \eqref{eqn:hrh_linear_comb}, \eqref{eqn:our_scheme_lin_comb} and the remark from section \ref{sec:lcao_scheme} in the form above
-    \For{$w \gets 1$ to $4$}
-        \State Send $\bm{\beta}_{w}^{(i)}$ to the navigator
+    H(k\mathbin\|1)\pmod{N^2}$
+    \State Compute remaining $\bm{\alpha}_{i}^{(k,\tau)}$ using \eqref{eqn:hrz_linear_comb}, \eqref{eqn:hrh_linear_comb}, \eqref{eqn:our_scheme_lin_comb} and the remark from section \ref{sec:lcao_scheme} in the form above
+    \For{$\tau \gets 1$ to $6$}
+        \State Send $\bm{\alpha}_{i}^{(k,\tau)}$ to the navigator
     \EndFor
     \EndProcedure
 \end{algorithmic}
@@ -866,29 +851,17 @@ Measurement modification, real number encoding and linear combination aggregatio
 \begin{algorithmic}[1]
     \Procedure{Update}{$\hat{\vec{x}}_{k|k-1}$, $\mat{P}_{k|k-1}$, $N$, $\lambda$}
     
-    \For{$v \gets 1$ to $2$}
-        \State Receive $\bm{\alpha}_{v}^{(i)}$ from each sensor $i\in\{1,\dots,n\}$
+    \For{$\tau \gets 1$ to $6$}
+        \State Receive $\bm{\alpha}_{i}^{(k,\tau)}$ from each sensor $i\in\{1,\dots,n\}$
     \EndFor
 
-    \For{$w \gets 1$ to $4$}
-        \State Receive $\bm{\beta}_{w}^{(i)}$ from each sensor $i\in\{1,\dots,n\}$
+    \State Let $\bm{\alpha}^{(k,\tau)}$ represent an encryption of $\sum_{i=1}^n\alpha_{i}^{(k,\tau)}$
+    \For{$\tau \gets 1$ to $6$}
+        \State $\bm{\alpha}^{(k,\tau)} \gets \prod_{i=1}^n\bm{\alpha}_{i}^{(k,\tau)}$
+        \State Compute $\mathcal{D}_{sk_0}(\bm{\alpha}^{(k,\tau)})$ with $\lambda$ by \eqref{eqn:our_scheme_decrypt}
+        \State Compute $\mathsf{E}^{-1}_{1}(\mathcal{D}_{sk_0}(\bm{\alpha}^{(k,\tau)}))$ by \eqref{eqn:decode}
     \EndFor
-
-    \State Let $\bm{\alpha}_{v}$ represent an encryption of $\sum_{i=1}^n\alpha_{v}^{(i)}$
-    \For{$v \gets 1$ to $2$}
-        \State $\bm{\alpha}_{v} \gets \prod_{i=1}^n\bm{\alpha}_{v}^{(i)}$
-        \State Compute $\mathcal{D}_{sk_0}(\bm{\alpha}_{v})$ with $\lambda$ by \eqref{eqn:our_scheme_decrypt}
-        \State Compute $\mathsf{E}^{-1}_{1}(\mathcal{D}_{sk_0}(\bm{\alpha}_{v}))$ by \eqref{eqn:decode}
-    \EndFor
-    \State Construct $\sum_{i=1}^n\vec{i}'_{k,i}$ from decoded decryptions above
-
-    \State Let $\bm{\beta}_{w}$ represent an encryption of $\sum_{i=1}^n\beta_{w}^{(i)}$
-    \For{$w \gets 1$ to $4$}
-            \State $\bm{\beta}_{w} \gets \prod_{i=1}^n\bm{\beta}_{w}^{(i)}$
-            \State Compute $\mathcal{D}_{sk_0}(\bm{\beta}_{w})$ with $\lambda$ by \eqref{eqn:our_scheme_decrypt}
-            \State Compute $\mathsf{E}^{-1}_{1}(\mathcal{D}_{sk_0}(\bm{\beta}_{w}))$ by \eqref{eqn:decode}
-    \EndFor
-    \State Construct $\sum_{i=1}^n\mat{I}'_{k,i}$ from decoded decryptions above
+    \State Construct $\sum_{i=1}^n\vec{i}'_{k,i}$ and $\sum_{i=1}^n\mat{I}'_{k,i}$ from decoded decryptions above
 
     \State $\hat{\vec{y}}_{k|k} \gets \mat{P}_{k|k-1}^{-1}\hat{\vec{x}}_{k|k-1} + \sum_{i=1}^n\vec{i}'_{k,i}$
     \State $\mat{Y}_{k|k} \gets \mat{P}_{k|k-1}^{-1} + \sum_{i=1}^n\mat{I}'_{k,i}$
@@ -972,6 +945,7 @@ Algorithms \ref{alg:nav_prediction}, \ref{alg:measurement_info} and \ref{alg:nav
     \node at (3.25,-5.125) {$\hat{\vec{x}}_{k|k}$, $\mat{P}_{k|k}$};
 \end{tikzpicture}
 \caption{Procedure at timestep $k$ for the proposed privacy-preserving EIF.}
+\vspace{-\baselineskip}
 \label{fig:alg_steps}
 \end{figure}
 
@@ -986,11 +960,11 @@ Algorithms \ref{alg:nav_prediction}, \ref{alg:measurement_info} and \ref{alg:nav
 % 
 
 \subsection{Leakage} \label{subsec:leakage}
-With the privacy-preserving EIF defined in the previous section, we can now interpret the aggregation leakage of an LCAO scheme in the context of range sensor localisation. The leakage function from the $\mathsf{AggDec}$ algorithm corresponds to the information vector and matrix sums, $\sum_{i=1}^n\vec{i}'_{k,i}$ and $\sum_{i=1}^n\mat{I}'_{k,i}$, respectively. However, recalling that a compromised navigator can also learn the individual sums weighted by the same weight, $\{\sum_{i=1}^n2r^{-1}_{k,i},\ \sum_{i=1}^n-r^{-1}_{k,i}s_{x,i},\ \sum_{i=1}^n-2r^{-1}_{k,i}s_{x,i},\ \dots\}$ can be leaked as well. From these leaked sums, we can see that private sensor information, $z'_{k,i}$, $r'_{k,i}$ and $\vec{s}_i$, is present only in their complete sums
+With the privacy-preserving EIF defined in the previous section, we can now interpret the aggregation leakage of an LCAO scheme in the context of range sensor localisation. The leakage function from the $\mathsf{AggDec}$ algorithm corresponds to the information vector and matrix sums, $\sum_{i=1}^n\vec{i}'_{k,i}$ and $\sum_{i=1}^n\mat{I}'_{k,i}$, respectively. However, recalling that a compromised navigator can learn the individual sums weighted by the same weight, $\{\sum_{i=1}^n2r^{-1}_{k,i},\ \sum_{i=1}^n-r^{-1}_{k,i}s_{x,i},\ \sum_{i=1}^n-2r^{-1}_{k,i}s_{x,i},\ \dots\}$ can be leaked as well. From this leakage, we can see that private sensor information, $z'_{k,i}$, $r'_{k,i}$ and $\vec{s}_i$, is present only in their complete sums
 \begin{equation}
     \sum_{i=1}^nz'_{k,i}\,,\ \sum_{i=1}^nr'_{k,i}\,,\ \sum_{i=1}^ns_{x,i}\ \textrm{and}\ \sum_{i=1}^ns_{y,i}\,,\label{eqn:localisation_leakage}
 \end{equation}
-which in practice correspond to their averages. We can therefore say, in the context of our proposed localisation method, LCAO leakage corresponds to the averages of sensor private information, while individual sensor information remains private.
+which in practice correspond to their averages. Therefore, in the context of our proposed localisation method, LCAO leakage corresponds to the averages of sensor private information, while individual sensor information remains private.
 
 % 
 %  .d8888b. 8888888 888b     d888 
@@ -1041,6 +1015,7 @@ To demonstrate the accuracy of the method, we have compared the root mean square
     \centering
     \includegraphics{images/layout_errors.pdf}
     \caption{Average RMSE of our privacy-preserving filter and the standard EIF for different layouts.}
+    \vspace{-\baselineskip}
     \label{fig:sim_layout_errors}
 \end{figure}
 From these results, we can see the similarity in filter performance between the privacy-preserving method and that of the traditional EIF. We can also see that the varying average distances between sensors and navigator have little impact on the differences in performance. We can attribute the similarity in MSE to the conservativeness of estimated modified measurement variances $r'_{k,i}$, resulting in few additional filter divergences, and to the high fractional precision factor, keeping computations consistent with the floating-point arithmetic of the EIF.
@@ -1050,6 +1025,7 @@ In addition to filter error, computational performance is important to consider 
     \centering
     \includegraphics{images/timing.pdf}
     \caption{Runtimes for varying key sizes and numbers of sensors.}
+    \vspace{-\baselineskip}
     \label{fig:sim_timing}
 \end{figure}
 We can see from the figure that the predominant computational costs stem from cryptographic computations and are directly dependent on the chosen key size. The key size should be chosen such that sufficient security is achieved, and the current recommendation, when relying on the DCRA for security (difficulty of factorising $N$), is the use of $2048$ bit length keys \cite{barkerRecommendationPairwiseKey2019}. For our implementation of the filter, this results in a filter update computation duration of roughly $1.6s$.
@@ -1216,14 +1192,17 @@ for \textit{all} negligible functions $\eta_1$, $\eta_2$ and security parameter 
 %                                         
 % 
 
+%\vspace{-4\baselineskip}
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{images/marko_ristic}}]{Marko Ristic}
 received his software engineering diploma in 2018 at the University of Melbourne, Australia. In 2019, he began work as a researcher at the Intelligent Sensor-Actuator-Systems Laboratory, Karlsruhe Institute of Technology (KIT), Germany, and since 2021, he has been pursuing a Ph.D. at the Autonomous Multisensor Systems (AMS) group, Otto von Guericke University, Germany. His research interests include encrypted and privacy-preserving signal processing, focusing on state estimation, sensor fusion, and distributed localisation.
 \end{IEEEbiography}
 
+%\vspace{-4\baselineskip}
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{images/benjamin_noack}}]{Benjamin Noack}
 is a professor of Computer Science at the Otto von Guericke University Magdeburg in Germany and head of the Autonomous Multisensor Systems (AMS) group. He received his diploma in computer science from the Karlsruhe Institute of Technology (KIT), Germany, in 2009. Afterward, he obtained his Ph.D. in 2013 at the Intelligent Sensor–Actuator-Systems Laboratory, Karlsruhe Institute of Technology (KIT), Germany. His research interests are in the areas of multi-sensor data fusion, distributed and decentralized Kalman filtering, combined stochastic and set-membership approaches to state estimation, and event-based systems.
 \end{IEEEbiography}
 
+%\vspace{-4\baselineskip}
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{images/uwe_d_hanebeck}}]{Uwe D. Hanebeck}
 is a chaired professor of Computer Science at the Karlsruhe Institute of Technology (KIT) in Germany and director of the Intelligent Sensor–Actuator-Systems Laboratory (ISAS). He obtained his Ph.D. degree in 1997 and his habilitation degree in 2003, both in Electrical Engineering from the Technical University in Munich, Germany. His research interests are in the areas of information fusion, nonlinear state estimation, stochastic modeling, system identification, and control with a strong emphasis on theory-driven approaches based on stochastic system theory and uncertainty models. He is author and coauthor of more than 500 publications in various high-ranking journals and conferences and an IEEE Fellow.
 \end{IEEEbiography}
