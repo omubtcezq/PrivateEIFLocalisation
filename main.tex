@@ -47,7 +47,7 @@
 % Tikz settings
 \usetikzlibrary{math}
 
-% Tikz reused pics
+% Tikz reused commands
 \tikzset{
    plane/.pic = {
     \draw[fill]  plot[smooth, tension=0.6] coordinates {
@@ -83,6 +83,8 @@
         } -- cycle;
    }
 }
+\definecolor{pyplotblue}{RGB}{31,119,180}
+\definecolor{pyplotorange}{RGB}{255,127,14}
 
 % Used to make a few encryption functions fit in one line
 \newcommand\shrtdots{\!...}
@@ -158,7 +160,7 @@ Our contribution in this work presents a range-only localisation method meeting 
 
 We motivate this scenario with the example of vehicle localisation in the presence of privately owned measurement stations. While the intention of measurement stations is the accurate navigation of passing vehicles, it may be reasonable to desire identifying location or hardware details to remain unknown to the other present stations and the navigator. Similarly, a navigator may not wish to disclose their most accurate location estimates to untrusted third-party measurers.
 
-In section \ref{sec:problem_statement}, we introduce both the cryptographic and estimation problems considered in this work, before giving some relevant preliminaries in section \ref{sec:preliminaries}. Section \ref{sec:lcao_scheme} proposes a cryptographic scheme meeting our desired security properties and section \ref{sec:priv_localization} gives a solution to the estimation problem making use of this scheme. Simulation results are discussed in section \ref{sec:sim_and_results} and concluding remarks are made in section \ref{sec:conclusion}.
+In section \ref{sec:problem_statement}, we introduce both the cryptographic and estimation problems considered in this work, before giving some relevant preliminaries in section \ref{sec:preliminaries}. Section \ref{sec:lcao_scheme} proposes a cryptographic scheme meeting our desired security properties and section \ref{sec:priv_localisation} gives a solution to the estimation problem making use of this scheme. Simulation results are discussed in section \ref{sec:sim_and_results} and concluding remarks are made in section \ref{sec:conclusion}.
 
 % 
 % ##    ##  #######  ########    ###    ######## ####  #######  ##    ## 
@@ -203,7 +205,7 @@ To give a formal cryptographic requirement in a distributed setting, we must fir
 % 
 
 \subsection{Formal Cryptographic Problem} \label{subsec:crypto_problem}
-The communication between the navigator and sensors in our estimation problem will be decomposed into a simple two-step bi-directional protocol that will simplify defining formal security. In section \ref{sec:priv_localization}, we will show how this protocol is sufficient to compute the location estimate at a navigator while meeting our desired privacy goals. The communication protocol is as follows.
+The communication between the navigator and sensors in our estimation problem will be decomposed into a simple two-step bi-directional protocol that will simplify defining formal security. In section \ref{sec:priv_localisation}, we will show how this protocol is sufficient to compute the location estimate at a navigator while meeting our desired privacy goals. The communication protocol is as follows.
 
 At every \textit{instance} $t$ (used to distinguish from an estimation \textit{timestep}), the navigator first broadcasts $m$ weights $\omega_j^{(t)}, j\in\{1,\dots,m\}$ to all sensors $i\in\{1,\dots,n\}$, who individually compute linear combinations $l^{(t)}_i=\sum^m_{j=1}a_{j,i}^{(t)}\omega_i^{(t)}$ based on their measurement data $a_{j,i}$. Linear combinations are then sent back to the navigator, who computes their sum $\sum^n_{i=1}l^{(t)}_{i}$. This two-step linear combination aggregation protocol has been visually displayed in figure \ref{fig:agg_steps}.
 \begin{figure}[htbp]
@@ -212,14 +214,14 @@ At every \textit{instance} $t$ (used to distinguish from an estimation \textit{t
     % Step 1
     \node at (3.25,5.5) {1. Broadcast and Combination Step};
     % Navigator
-    \fill (3.25,4.75) [green!80!black!60] ellipse (0.4 and 0.4);
+    \fill (3.25,4.75) [pyplotblue!70] ellipse (0.4 and 0.4);
     \pic[xscale=0.22,yscale=0.3] at (3.25,4.9225) {plane};
     % Sensors
     \node at (1.5,1.375) {Sensor $1$};
-    \fill [blue!80!black!40] (0.25,1.625) rectangle (2.875,2.625);
+    \fill [pyplotorange!70] (0.25,1.625) rectangle (2.875,2.625);
     \node at (1.625,2.125) {$\displaystyle l_1^{(t)} \!=\! \sum^m_{j=1}a_{1,j}^{(t)}\omega_j^{(t)}$};
     \node at (5,1.375) {Sensor $n$};
-    \fill [blue!80!black!40] (3.625,1.625) rectangle (6.25,2.625);
+    \fill [pyplotorange!70] (3.625,1.625) rectangle (6.25,2.625);
     \node at (5,2.125) {$\displaystyle l_n^{(t)} \!=\! \sum^m_{j=1}a_{n,j}^{(t)}\omega_j^{(t)}$};
     \fill [black] (3.5,2.125) circle (0.05);
     \fill [black] (3,2.125) circle (0.05);
@@ -233,14 +235,14 @@ At every \textit{instance} $t$ (used to distinguish from an estimation \textit{t
     % Step 2
     \node at (3.25,0.25) {2. Aggregation Step};
     % Navigator
-    \fill [green!80!black!60] (1.375,-2) rectangle (5.125,-0.25);
+    \fill [pyplotblue!70] (1.375,-2) rectangle (5.125,-0.25);
     \pic[xscale=0.22,yscale=0.3] at (3.25,-0.4775) {plane};
     \node at (3.25,-1.375) {$\displaystyle \sum^{n}_{i=1}\sum^{m}_{j=1} a_{i,j}^{(t)}\omega_j^{(t)} = \sum^n_{i=1}l^{(t)}_{i}$};
     % Sensors
     \node at (1.25,-3.875) {Sensor $1$};
-    \fill  (5.25,-3.25) [blue!80!black!40] ellipse (0.4 and 0.4);
+    \fill  (5.25,-3.25) [pyplotorange!70] ellipse (0.4 and 0.4);
     \node at (5.25,-3.875) {Sensor $n$};
-    \fill  (1.25,-3.25) [blue!80!black!40] ellipse (0.4 and 0.4);
+    \fill  (1.25,-3.25) [pyplotorange!70] ellipse (0.4 and 0.4);
     \fill [black] (2.75,-3.25) circle (0.05);
     \fill [black] (3.75,-3.25) circle (0.05);
     \fill [black] (3.25,-3.25) circle (0.05);
@@ -257,10 +259,9 @@ At every \textit{instance} $t$ (used to distinguish from an estimation \textit{t
     \draw [gray] (0,0.75) rectangle (6.5,-4.25);
 \end{tikzpicture}
 \caption{Required linear combination aggregation steps at instance $t$.}
-\vspace{-\baselineskip}
 \label{fig:agg_steps}
 \end{figure}
-In addition, we note that an alternative approach to the two-step protocol is computing $\sum^{m}_{j=1}(\omega_j^{(t)}\sum^{n}_{i=1} a_{i,j}^{(t)})$ at the navigator, requiring only values $a_{i,j}^{(t)}, j\in\{1,\dots,m\}$ to be sent from each sensor $i$. We justify the use of bi-directional communication by reducing communication costs when the number of weights is larger than the number of sensors, $m>n$, and by sending fewer weights in the presence of repeats, as will be shown to be the case in section \ref{sec:priv_localization}.
+In addition, we note that an alternative approach to the two-step protocol is computing $\sum^{m}_{j=1}(\omega_j^{(t)}\sum^{n}_{i=1} a_{i,j}^{(t)})$ at the navigator, requiring only values $a_{i,j}^{(t)}, j\in\{1,\dots,m\}$ to be sent from each sensor $i$. We justify the use of bi-directional communication by reducing communication costs when the number of weights is larger than the number of sensors, $m>n$, and by sending fewer weights in the presence of repeats, as will be shown to be the case in section \ref{sec:priv_localisation}.
 
 Before giving a formal definition for the construction and security of our desired encryption scheme, we make the following assumptions on the capabilities of the participants.
 \begin{LaTeXdescription}
@@ -279,10 +280,10 @@ We are now ready to define the type of encryption scheme we want for the specifi
 \end{LaTeXdescription}
 The security notions we want these algorithms to meet reflect the previously stated estimation privacy goals. The navigator should learn no information from individual sensors while sensors should learn no information from the navigator or any other sensors. In the context of the introduced communication protocol, this can be summarised as the following notions.
 \begin{LaTeXdescription}
-    \item[Indistinguishable Weights] No colluding subset of sensors gains any new knowledge about the navigator weights $\omega^{(t)}_j,\,j\in\{1,\dots,m\}$ when receiving only their encryptions from the current and previous instances, and having the ability to encrypt plaintexts of their choice.
+    \item[Indistinguishable Weights] No colluding subset of sensors gains any new knowledge about the navigator weights $\omega^{(t)}_j,\,j\in\{1,\dots,m\}$ when receiving only their encryptions from the current and previous instances and having the ability to encrypt plaintexts of their choice.
     \item[Linear Combination Aggregator Obliviousness] No colluding subset \textit{excluding} the navigator gains additional information about the remaining sensor values to be weighted, $a^{(t)}_{i,j},\,j\in\{1,\dots,m\}$, where sensor $i$ is not colluding, given only encryptions of their linear combinations $l_i$ from the current and previous instances. Any colluding subset \textit{including} the navigator learns only the sum of all linear combinations weighted by weights of their choice, $\sum^{n}_{i=1}l_i^{(t)}=\sum^{n}_{i=1}\sum^{m}_{j=1} a^{(t)}_{i,j}\omega^{(t)}_j$.
 \end{LaTeXdescription}
-While indistinguishable weights can be achieved by encrypting weights with an encryption scheme meeting the notion of Indistinguishability under the Chosen Ciphertext Attack (IND-CPA) \cite{katzIntroductionModernCryptography2008}, the novel notion of Linear Combination Aggregator Obliviousness (LCAO) has been formalised as a typical cryptographic game between attacker and challenger in appendix \ref{app:lcao}. Lastly, we conclude the cryptographic problem definition with the following important remark.
+While indistinguishable weights can be achieved by encrypting weights with an encryption scheme meeting the notion of Indistinguishability under the Chosen Plaintext Attack (IND-CPA) \cite{katzIntroductionModernCryptography2008}, the novel notion of Linear Combination Aggregator Obliviousness (LCAO) has been formalised as a typical cryptographic game between attacker and challenger in appendix \ref{app:lcao}. Lastly, we conclude the cryptographic problem definition with the following important remark.
 \begin{remark}
     A leakage function including weights from the navigator requires extra care to be taken when giving its definition. If an attacker compromises the navigator, they have control over the weights, and therefore the leakage function. We note that in the leakage function above, $\sum^n_{i=1}\sum^m_{j=1}a^{(t)}_{i,j}\omega^{(t)}_j$, an individual sum weighted by the same weight may be learned by an attacker, \textit{e.g.}, $\sum^n_{i=1}a^{(t)}_{i,1}$ given weights $(1,0,\dots,0)$, but that individual sensor values $a^{(t)}_{i,j}$ remain private due to the assumption of a consistent broadcast.
 \end{remark}
@@ -392,7 +393,7 @@ In addition to encryption and decryption, the following homomorphic functions ar
 %  ######             ##    
 % 
 
-\subsection{Joye-Libert Privacy-preserving Aggregation Scheme} \label{subsec:joye_libert_scheme}
+\subsection{Joye-Libert Privacy-Preserving Aggregation Scheme} \label{subsec:joye_libert_scheme}
 The Joye-Libert privacy-preserving aggregation scheme \cite{joyeScalableSchemePrivacyPreserving2013} is a scheme defined on time-series data and meets the security notion of Aggregator Obliviousness (AO) \cite{shiPrivacyPreservingAggregationTimeSeries2011}. Similarly to the Paillier scheme, it bases its security on the DCRA. A notable difference to a public-key encryption scheme is its need for a trusted party to perform the initial key generation and distribution.
 
 Key generation is computed by first choosing two equal length and sufficiently large primes $p$ and $q$, and computing $N=pq$. A hash function $H:\mathbb{Z} \rightarrow \mathbb{Z}_{N^2}^*$ is defined and the public key is set to $(N, H)$. $n$ private keys are generated by choosing $sk_i,\,i\in\{1,\dots,n\}$, uniformly from $\mathbb{Z}_{N^2}$ and distributing them to $n$ participants (whose values are to be aggregated), while the last key is set as
@@ -445,7 +446,7 @@ We will consider a subset of rational numbers in terms of a range $M \in \mathbb
 \end{equation}
 and we can quantize any real number $a$ by taking the nearest rational $q \in \mathbb{Q}_{M,\phi}$, that is, $\argmin_{q\in\mathbb{Q}_{M,\phi}} |a-q|$. In this form, mapping rationals $\mathbb{Q}_{M,\phi}$ to an encryption range $\mathbb{Z}_N$ is achieved by choosing $M=N$ and handling negatives by modulo arithmetic. Additionally, we note that the Q number format requires a precision factor $\phi$ to be removed after each encoded multiplication. This is captured by a third parameter $d$; the number of precision factors present in encodings.
 
-The function for \textit{combined} quantization and encoding, $\mathsf{E}_{M,\phi,d}(a)$, of a given number $a \in \mathbb{R}$ and with an integer range $\mathbb{Z}_M$, precision $\phi$ and scaling for $d$ prior encoded multiplications is given by
+The function for \textit{combined} quantisation and encoding, $\mathsf{E}_{M,\phi,d}(a)$, of a given number $a \in \mathbb{R}$ and with an integer range $\mathbb{Z}_M$, precision $\phi$ and scaling for $d$ prior encoded multiplications is given by
 \begin{equation}
     \mathsf{E}_{M,\phi,d}(a) = \left\lfloor \phi^{d+1} a \right\rceil \pmod{M}\,. \label{eqn:encode}
 \end{equation}
@@ -474,7 +475,7 @@ and
 \end{equation}
 noting that when $M=N$, the operations and modulus correspond with those in the Paillier homomorphic operations \eqref{eqn:paillier_hom_add}, \eqref{eqn:paillier_hom_plain_add} and \eqref{eqn:paillier_hom_mult}, and the Joye-Libert sum \eqref{eqn:agg_decryption}.
 
-In general, the choice of a large precision parameter $\phi$ may reduce quantization errors introduced in \eqref{eqn:encode}, but risks overflow after too many multiplications. Given the largest number of encoded multiplications, $d_{max}$, and the largest value to be encoded $a_{max}$, the parameter should be chosen such that
+In general, the choice of a large precision parameter $\phi$ may reduce quantisation errors introduced in \eqref{eqn:encode}, but risks overflow after too many multiplications. Given the largest number of encoded multiplications, $d_{max}$, and the largest value to be encoded $a_{max}$, the parameter should be chosen such that
 \begin{equation}
     \left|\phi^{d_{max}+1}a_{max}\right| < \left\lfloor \frac{M}{2} \right\rfloor\,.
 \end{equation}
@@ -497,7 +498,7 @@ In practice, $N$ is typically very large ($N>2^{1024}$) and this condition can b
 \section{Private Linear Combination Aggregation Scheme} \label{sec:lcao_scheme}
 In this section, we introduce an encryption scheme meeting the desired security properties in section \ref{subsec:crypto_problem}. The scheme is a combination of the Paillier and Joye-Libert schemes and provides encrypted weights meeting IND-CPA and encrypted aggregation meeting the notion of LCAO defined in section \ref{subsec:crypto_problem}. Similarly to its constituents, the scheme bases its security on the DCRA and, as with the Joye-Libert scheme, requires a trusted party for initial key generation and distribution. 
 
-As aggregation is typically performed on scalar inputs, we extend our notation for the context of multidimensional estimation data by letting an instance $t_{k,\tau}$ uniquely capture the scalar aggregation during an estimation timestep $k$ for a single element with position index $\tau$. To achieve this in practice, any injective function can be used, such as the concatenation $t_{k,\tau}=k\mathbin\|\tau$. The four algorithms defining our scheme are given as follows.
+As aggregation is typically performed on scalar inputs, we extend our notation to the context of multidimensional estimation data by letting an instance $t_{k,\tau}$ uniquely capture the scalar aggregation during an estimation timestep $k$ for a single element with position index $\tau$. To achieve this in practice, any injective function can be used, such as the concatenation $t_{k,\tau}=k\mathbin\|\tau$. The four algorithms defining our scheme are given as follows.
 \begin{LaTeXdescription}
     \item[$\mathsf{Setup}(\kappa)$] On input parameter $\kappa$, generate two equal length, sufficiently large, primes $p$ and $q$, and compute $N=pq$. Define a hash function $H:\mathbb{Z} \rightarrow \mathbb{Z}_{N^2}^*$, choose a the number of weights to combine, $m>1$, and set public parameter $\mathsf{pub}=H$, navigator public key $pk_0 = N$ and navigator private key $sk_0=(p,q)$. Sensor secret keys are generated by choosing $sk_i,\,i\in\{1,\dots,n-1\}$ uniformly from $\mathbb{Z}_{N^2}$ and setting the last key as $sk_n = -\sum^{n-1}_{i=1}sk_i \pmod{N^2}$.
  
@@ -547,7 +548,7 @@ As aggregation is typically performed on scalar inputs, we extend our notation f
 \end{LaTeXdescription}
 Additionally, we note that in the above construction, all weights $\omega^{(k,\tau)}_j$ and values $a^{(k,\tau)}_{i,j}$ are integers and the resulting linear combinations and aggregation are computed modulo $N$. 
 
-The security proof of this scheme must show that both encrypted weights meet IND-CPA and encrypted aggregation meets LCAO. As weights are encrypted with the Paillier encryption scheme, the first requirement is already met. To show that aggregation meets LCAO, a reduction proof is given in appendix \ref{app:proof}.
+The security proof of this scheme must both show that encrypted weights meet IND-CPA and that encrypted aggregation meets LCAO. As weights are encrypted with the Paillier encryption scheme, the first requirement is already met. To show that aggregation meets LCAO, a reduction proof is given in appendix \ref{app:proof}.
 
 \begin{remark}
     Given the construction of the scheme above, it can be seen that any weights $\omega^{(k,\tau)}_j$, whose values are known at each sensor, do not need to be broadcast by the navigator. In this case, sensors can replace
@@ -575,7 +576,7 @@ The security proof of this scheme must show that both encrypted weights meet IND
 %                                                                               
 % 
 
-\section{Privacy-Preserving Localization} \label{sec:priv_localization}
+\section{Privacy-Preserving Localisation} \label{sec:priv_localisation}
 With a concrete scheme meeting the LCAO notion, we can now put forward a localisation filter with communication that can be reformulated to the required protocol. To produce an estimate of the state $\vec{x}_k$, we make use of an algebraic reformulation of the Extended Kalman Filter (EKF), the Extended Information Filter (EIF) \cite{maybeckStochasticModelsEstimation1982}, which reduces the filter update step to a single summation. The EIF update step requires the predicted state estimate $\hat{\vec{x}}_{k|k-1}$ and estimate covariance $\mat{P}_{k|k-1}$ in the information vector and matrix forms
 \begin{equation}
     \hat{\vec{y}}_{k|k-1} = \mat{P}_{k|k-1}^{-1}\hat{\vec{x}}_{k|k-1} \quad\textrm{and}\quad \mat{Y}_{k|k-1} = \mat{P}_{k|k-1}^{-1}\,,
@@ -605,7 +606,7 @@ and the measurement matrix
 \begin{equation}
     \mat{I}_{k,i} = \mat{H}^\top_{k,i} r^{-1}_i \mat{H}_{k,i}\,, \label{eqn:measurement_mat}
 \end{equation}
-namely, their measurements $z_{k,i}$, measurement variances $r_{k,i}$ and locations $\vec{s}_i$; captured in measurement functions $h_i$ and Jacobians $\mat{H}_{k,i}$. $\vec{i}_{k,i}$ and $\mat{I}_{k,i}$, however, also require the current predicted state estimate $\hat{\vec{x}}_{k|k-1}$ to be computed (in $h_i$ and $\mat{H}_{k,i}$). For this reason, our goal is to reformulate \eqref{eqn:measurement_vec} and \eqref{eqn:measurement_mat} to be computable at each sensor $i$ as a linear combination of functions of the navigator state estimate (the navigator weights), to be subsequently aggregated at the navigator. Application of the linear combination aggregation scheme proposed would in turn guarantee that sensors do not learn the navigator state, and the navigator learns only the aggregation required for updating its state estimate in \eqref{eqn:eif_info_vec_update} and \eqref{eqn:eif_info_mat_update}.
+namely, their measurements $z_{k,i}$, measurement variances $r_{k,i}$ and locations $\vec{s}_i$; captured in measurement functions $h_i$ and Jacobians $\mat{H}_{k,i}$. However, $\vec{i}_{k,i}$ and $\mat{I}_{k,i}$ also require the current predicted state estimate $\hat{\vec{x}}_{k|k-1}$ to be computed (in $h_i$ and $\mat{H}_{k,i}$). For this reason, our goal is to reformulate \eqref{eqn:measurement_vec} and \eqref{eqn:measurement_mat} to be computable at each sensor $i$ as a linear combination of functions of the navigator state estimate (the navigator weights), to be subsequently aggregated at the navigator. Application of the linear combination aggregation scheme proposed would in turn guarantee that sensors do not learn the navigator state, and the navigator learns only the aggregation required for updating its state estimate in \eqref{eqn:eif_info_vec_update} and \eqref{eqn:eif_info_mat_update}.
 
 % 
 % ########     ###    ##    ##  ######   ########    ##     ##  #######  ########  
@@ -701,7 +702,7 @@ The modified measurement model \eqref{eqn:modified_measurement_model} can now be
 % 
 
 \subsection{Localisation} \label{subsec:localisation}
-To complete the EIF update using a linear combination aggregation process, modified measurement vectors $\vec{i}'_{k,i}$ and matrices $\mat{I}'_{k,i}$, using the modified measurement model \eqref{eqn:modified_measurement_model}, can be rearragned as follows.
+To complete the EIF update as a linear combination aggregation, modified vectors $\vec{i}'_{k,i}$ and matrices $\mat{I}'_{k,i}$, using the modified measurement model \eqref{eqn:modified_measurement_model}, can be rearragned as follows.
 \begin{equation}
     \begin{split}
         \vec{i}'_{k,i} &= \mat{H}_{k,i}^{\prime\top} r_{k,i}^{\prime-1}(z'_{k,i} - h'_i(\hat{\vec{x}}_{k|k-1}) + \mat{H}'_{k,i}\hat{\vec{x}}_{k|k-1}) \\
@@ -748,7 +749,7 @@ with
         \alpha_i^{(k,4)} &= (4r_{k,i}^{\prime-1})\hat{x}_{k|k-1}\hat{y}_{k|k-1} + (-4r_{k,i}^{\prime-1}s_{y,i})\hat{x}_{k|k-1}  \\
         &\qquad+ (-4r_{k,i}^{\prime-1}s_{x,i})\hat{y}_{k|k-1} + (4r_{k,i}^{\prime-1}s_{x,i}s_{y,i})\,,
     \end{split}\\
-    \alpha_i^{(k,5)} &= \beta_{12}\ \textrm{and} \\
+    \alpha_i^{(k,5)} &= \alpha_i^{(k,4)}\ \textrm{and} \\
     \alpha_i^{(k,6)} &= (4r_{k,i}^{\prime-1})\hat{y}_{k|k-1}^2 + (-8r_{k,i}^{\prime-1}s_{y,i})\hat{y}_{k|k-1} + (4r_{k,i}^{\prime-1}s_{y,i}^2)\,.
 \end{align*}
 The above rearrangements give $\vec{i}'_{k,i}$ and $\mat{I}'_{k,i}$ as linear comabinations of elements in
@@ -768,7 +769,7 @@ and
 \end{equation}
 respectively.
 \begin{remark}
-    The above has been derived for two-dimensional localisation but can be similarly derived for three-dimensional case. However, the number of weights increases combinatorially with the number of dimensions, thus affecting the cost of communication as well.
+    The above has been derived for two-dimensional localisation but can be similarly derived for the three-dimensional case. However, the number of weights increases combinatorially with the number of dimensions, thus affecting the cost of communication as well.
 \end{remark}
 
 % 
@@ -782,9 +783,9 @@ respectively.
 % 
 
 \subsection{Pseudocode} \label{subsec:pseudocode}
-Measurement modification, real number encoding and linear combination aggregation are all required to compute the modified EIF from the previous section in a privacy-preserving manner. In this section, we summarise this entire localisation process and give the pseudocode for its execution. For brevity, we will assume $\phi$ and $M=N$ from section \ref{subsec:encoding} to be public information and thus simplify the encoding notation $\mathsf{E}_{N,\phi,d}(\cdot)$ to $\mathsf{E}_{d}(\cdot)$. The privacy-preserving localization filter consists of the following steps.
+Measurement modification, real number encoding and linear combination aggregation are all required to compute the modified EIF from the previous section in a privacy-preserving manner. In this section, we summarise this entire localisation process and give the pseudocode for its execution. For brevity, we will assume $\phi$ and $M=N$ from section \ref{subsec:encoding} to be public information and thus simplify the encoding notation $\mathsf{E}_{N,\phi,d}(\cdot)$ to $\mathsf{E}_{d}(\cdot)$. The privacy-preserving localisation filter consists of the following steps.
 \begin{LaTeXdescription}
-    \item[Setup] The $\mathsf{Setup}$ algorithm from section \ref{sec:lcao_scheme} is run only once by a trusted third party, $N$ and $H$ are made public, and the navigator and sensor secret keys, $sk_0=\lambda=\mathsf{lcm}(p-1, q-1)$ and $sk_i$, $i\in\{1,\dots,n\}$, are distributed accordingly. 
+    \item[Setup] The $\mathsf{Setup}$ algorithm from section \ref{sec:lcao_scheme} is run only once by a trusted party, $N$ and $H$ are made public, and the navigator and sensor secret keys, $sk_0=\lambda=\mathsf{lcm}(p-1, q-1)$ and $sk_i$, $i\in\{1,\dots,n\}$, are distributed accordingly. 
 
     \item[Prediction] At each timestep $k$, the navigator computes the prediction of the current state and its covariance with a local filter before encrypting weights \eqref{eqn:weights_to_broadcast} with algorithm $\mathsf{Enc}$ and broadcasting them to the sensors. This is given by algorithm \ref{alg:nav_prediction}.
 
@@ -881,14 +882,14 @@ Algorithms \ref{alg:nav_prediction}, \ref{alg:measurement_info} and \ref{alg:nav
     \node at (3.25,7.5) {\small 1. Prediction};
 
     % Navigator
-    \fill  [green!80!black!60] (2,7) rectangle (4.5,5.75);
+    \fill  [pyplotblue!70] (2,7) rectangle (4.5,5.75);
     \pic[xscale=0.22,yscale=0.3] at (3.25,6.7975) {plane};
     \node at (3.25,6.0625) {$\hat{\vec{x}}_{k|k-1}$, $\mat{P}_{k|k-1}$};
     
     % Sensors
-    \fill  (1.25,4) [blue!80!black!40] ellipse (0.4 and 0.4);
+    \fill  (1.25,4) [pyplotorange!70] ellipse (0.4 and 0.4);
     \node at (1.25,3.375) {Sensor $1$};
-    \fill  (5.25,4) [blue!80!black!40] ellipse (0.4 and 0.4);
+    \fill  (5.25,4) [pyplotorange!70] ellipse (0.4 and 0.4);
     \node at (5.25,3.375) {Sensor $n$};
         
     \fill [black] (2.75,4) circle (0.05);
@@ -908,13 +909,13 @@ Algorithms \ref{alg:nav_prediction}, \ref{alg:measurement_info} and \ref{alg:nav
     \node at (3.25,2.25) {\small 2. Measurement};
     
     % Navigator
-    \fill  (3.25,1.5) [green!80!black!60] ellipse (0.4 and 0.4);
+    \fill  (3.25,1.5) [pyplotblue!70] ellipse (0.4 and 0.4);
     \pic[xscale=0.22,yscale=0.3] at (3.25,1.6725) {plane};
         
     % Sensors
-    \fill  [blue!80!black!40] (6.25,-1.625)  rectangle (4.25,-0.625);
+    \fill  [pyplotorange!70] (6.25,-1.625)  rectangle (4.25,-0.625);
     \node at (1.25,-1.875) {Sensor $1$};
-    \fill  [blue!80!black!40] (2.25,-1.625)  rectangle (0.25,-0.625);
+    \fill  [pyplotorange!70] (2.25,-1.625)  rectangle (0.25,-0.625);
     \node at (5.25,-1.875) {Sensor $n$};
     
     \node at (1.25,-1.125) {$z'_{k,1}$, $r'_{k,1}$};
@@ -939,13 +940,12 @@ Algorithms \ref{alg:nav_prediction}, \ref{alg:measurement_info} and \ref{alg:nav
     \node at (3.25,-3) {\small 3. Update};
     
     % Navigator
-    \fill  [green!80!black!60] (1.5,-3.5) rectangle (5,-5.5);
+    \fill  [pyplotblue!70] (1.5,-3.5) rectangle (5,-5.5);
     \pic[xscale=0.22,yscale=0.3] at (3.25,-3.8275) {plane};
     \node at (3.25,-4.625) {$\sum_{i=1}^n \vec{i}'_{k,i}$, $\sum_{i=1}^n\mat{I}'_{k,i}$};
     \node at (3.25,-5.125) {$\hat{\vec{x}}_{k|k}$, $\mat{P}_{k|k}$};
 \end{tikzpicture}
 \caption{Procedure at timestep $k$ for the proposed privacy-preserving EIF.}
-\vspace{-\baselineskip}
 \label{fig:alg_steps}
 \end{figure}
 
@@ -1018,14 +1018,13 @@ To demonstrate the accuracy of the method, we have compared the root mean square
     \vspace{-\baselineskip}
     \label{fig:sim_layout_errors}
 \end{figure}
-From these results, we can see the similarity in filter performance between the privacy-preserving method and that of the traditional EIF. We can also see that the varying average distances between sensors and navigator have little impact on the differences in performance. We can attribute the similarity in MSE to the conservativeness of estimated modified measurement variances $r'_{k,i}$, resulting in few additional filter divergences, and to the high fractional precision factor, keeping computations consistent with the floating-point arithmetic of the EIF.
+From these results, we can see the similarity in filter performance between the privacy-preserving method and that of the traditional EIF. We can also see that the varying average distances between sensors and navigator have little impact on the differences in performance. We can attribute the similarity in RMSE to the conservativeness of estimated modified measurement variances $r'_{k,i}$, resulting in few additional filter divergences, and to the high fractional precision factor, keeping computations consistent with the floating-point arithmetic of the EIF.
 
 In addition to filter error, computational performance is important to consider when relying on cryptographic methods. Figure \ref{fig:sim_timing} shows the average execution time of $50$ simulation runs with varying numbers of sensors, for different key sizes (bit lengths of $N$). Here, increasing the number of sensors primarily affects the number of inter-process communications and aggregation modular multiplications due to the asynchronous implementation.
 \begin{figure}[htbp]
     \centering
     \includegraphics{images/timing.pdf}
     \caption{Runtimes for varying key sizes and numbers of sensors.}
-    \vspace{-\baselineskip}
     \label{fig:sim_timing}
 \end{figure}
 We can see from the figure that the predominant computational costs stem from cryptographic computations and are directly dependent on the chosen key size. The key size should be chosen such that sufficient security is achieved, and the current recommendation, when relying on the DCRA for security (difficulty of factorising $N$), is the use of $2048$ bit length keys \cite{barkerRecommendationPairwiseKey2019}. For our implementation of the filter, this results in a filter update computation duration of roughly $1.6s$.
@@ -1045,7 +1044,7 @@ We can see from the figure that the predominant computational costs stem from cr
 % 
 
 \section{Conclusion} \label{sec:conclusion}
-We have presented a localisation filter in the presence of range-only sensors, which preserves both navigator and sensor privacies. A suitable cryptographic scheme has been introduced and a filter implementation compared and evaluated. Privacy-preserving range-only localisation is suitable for use in environments where sensor networks are untrusted or location is considered private and we hope to extend the method to broader measurement models in the future. Additional future work includes exploring more computationally efficient encryption schemes and filter reformulations to increase the filter update frequency, exploring the possible security implications of sensors that are not only honest-but-curious and expanding the LCAO notion to guarantee that consistent broadcasts are always made by the navigator.
+We have presented a localisation filter in the presence of range-only sensors, which preserves both navigator and sensor privacies. A suitable cryptographic scheme has been introduced and a filter implementation compared and evaluated. Privacy-preserving range-only localisation is suitable for use in environments where sensor networks are untrusted or location is considered private and we hope to extend the method to broader measurement models in the future. Additional future work includes exploring more computationally efficient encryption schemes and filter reformulations to decrease the filter update duration, exploring the possible security implications of sensors that are not only honest-but-curious and expanding the LCAO notion to guarantee that consistent broadcasts are always made by the navigator.
 
 % 
 %        d8888 8888888b.  8888888b.  8888888888 888b    888 8888888b. 8888888 Y88b   d88P 
@@ -1113,7 +1112,7 @@ The scheme in section \ref{sec:lcao_scheme} will be shown to meet LCAO by contra
 \begin{equation*}
     \mathsf{Adv}^{LCAO}(\mathcal{A}) > \eta_1(\kappa) \implies \mathsf{Adv}^{AO}(\mathcal{A}') > \eta_2(\kappa)\,,
 \end{equation*}
-for \textit{all} negligible functions $\eta_1$, $\eta_2$ and security parameter $\kappa$. That is, if we assume our scheme is not LCAO secure, then the Joye-Libert scheme is not AO secure (which is not the case, \cite{joyeScalableSchemePrivacyPreserving2013}).
+for \textit{any} negligible functions $\eta_1$, $\eta_2$ and security parameter $\kappa$. That is, if we assume our scheme is not LCAO secure, then the Joye-Libert scheme is not AO secure (which is not the case, \cite{joyeScalableSchemePrivacyPreserving2013}).
 \begin{proof}
     Consider adversary $\mathcal{A}$ playing the LCAO game. The following is a construction of an adversary $\mathcal{A}'$ playing the AO game \cite{shiPrivacyPreservingAggregationTimeSeries2011} against a challenger $\mathcal{C}$ using the Joye-Libert aggregation scheme.
     \begin{LaTeXdescription}
@@ -1175,7 +1174,7 @@ for \textit{all} negligible functions $\eta_1$, $\eta_2$ and security parameter 
 \fi
 
 
-\bibliographystyle{IEEEtran}
+\bibliographystyle{IEEEtranBST/IEEEtran}
 \bibliography{BibTeX/PrivateEIFLocalisation}
 
 % 
@@ -1192,17 +1191,17 @@ for \textit{all} negligible functions $\eta_1$, $\eta_2$ and security parameter 
 %                                         
 % 
 
-%\vspace{-4\baselineskip}
+\vspace{-1\baselineskip}
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{images/marko_ristic}}]{Marko Ristic}
 received his software engineering diploma in 2018 at the University of Melbourne, Australia. In 2019, he began work as a researcher at the Intelligent Sensor-Actuator-Systems Laboratory, Karlsruhe Institute of Technology (KIT), Germany, and since 2021, he has been pursuing a Ph.D. at the Autonomous Multisensor Systems (AMS) group, Otto von Guericke University, Germany. His research interests include encrypted and privacy-preserving signal processing, focusing on state estimation, sensor fusion, and distributed localisation.
 \end{IEEEbiography}
 
-%\vspace{-4\baselineskip}
+\vspace{-1\baselineskip}
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{images/benjamin_noack}}]{Benjamin Noack}
 is a professor of Computer Science at the Otto von Guericke University Magdeburg in Germany and head of the Autonomous Multisensor Systems (AMS) group. He received his diploma in computer science from the Karlsruhe Institute of Technology (KIT), Germany, in 2009. Afterward, he obtained his Ph.D. in 2013 at the Intelligent Sensor–Actuator-Systems Laboratory, Karlsruhe Institute of Technology (KIT), Germany. His research interests are in the areas of multi-sensor data fusion, distributed and decentralized Kalman filtering, combined stochastic and set-membership approaches to state estimation, and event-based systems.
 \end{IEEEbiography}
 
-%\vspace{-4\baselineskip}
+\vspace{-1\baselineskip}
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{images/uwe_d_hanebeck}}]{Uwe D. Hanebeck}
 is a chaired professor of Computer Science at the Karlsruhe Institute of Technology (KIT) in Germany and director of the Intelligent Sensor–Actuator-Systems Laboratory (ISAS). He obtained his Ph.D. degree in 1997 and his habilitation degree in 2003, both in Electrical Engineering from the Technical University in Munich, Germany. His research interests are in the areas of information fusion, nonlinear state estimation, stochastic modeling, system identification, and control with a strong emphasis on theory-driven approaches based on stochastic system theory and uncertainty models. He is author and coauthor of more than 500 publications in various high-ranking journals and conferences and an IEEE Fellow.
 \end{IEEEbiography}
