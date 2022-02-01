@@ -1,0 +1,32 @@
+The authors have significantly improved the readability of the paper.
+The contribution is significant enough for privacy preserving state
+estimation. However, this reviewer still have few comments:
+1- It could be interesting to comment why sensor variance is a private
+information. Why is it crucial to preserve it if measurements are
+already protected?
+
+2- In the sentence 'homomorphic encryption is used to make
+time-independent model-free location estimates where an estimator does
+not learn sensor measurements or locations.; Shouldn't be 'cannot
+learn'?
+
+3- In problem statement 'we consider the context of privacy-preserving
+range sensor navigation, where we want no sensor to learn information
+about the navigator or other sensors beyond their local measurements,
+and the navigator to learn no information about individual sensors
+beyond its location estimate.', please specify type of information.
+
+4- Indistinguishable weights: what would happen if the sensor learns
+navigator weights?
+
+5- Fix the following sentence: 'If an attacker compromises the
+navigator, they have control over the weights,'
+
+6- Define IND-CPA.
+
+7- Simulation: The authors have found that 1.7 s are needed for each
+computation step, is that compatible with real-time operation?
+
+8- Can you comment why quantization noise, involved in the
+encryption-decryption schemes, isn't taken into account in the filter
+equations?

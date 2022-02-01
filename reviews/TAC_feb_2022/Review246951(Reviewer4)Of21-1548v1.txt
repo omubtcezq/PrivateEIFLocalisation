@@ -1,0 +1,27 @@
+Comments:
+This paper proposes a novel distributed localisation method in the
+presence of range-only sensors, which preserves both navigator and
+sensor privacies. The major contribution of this paper is that a novel
+private linear combination aggregation scheme is proposed, and based on
+that, a modified extended Kalman filter is also derived. Some comments
+are given as follows:
+
+1.In this paper, the full names of some abbreviations are not given.
+For example, in Section I, page 1, left column, “AES”and “RSA”, and in
+Section I, page 1, right column, “pWSAc” and “pWSAh”.
+
+2.The authors should elaborate the advantages and disadvantages of the
+existing typical cryptographic secrecy scheme and the motivation for
+proposing private linear combination aggregation scheme in this paper.
+
+3.Some symbols are reused. For example, In Section I, Notation,
+“timestep k” and “will denote encryption and decryption with key k”.
+
+4.The authors need to present theoretical computational complexity of
+the proposed method.
+
+5.The authors should state how to measure the performance of the
+private linear combination aggregation scheme proposed in this paper.
+
+6.In practical engineering application, how to balance the relationship
+between key sizes and computation.

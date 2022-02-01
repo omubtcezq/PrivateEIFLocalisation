@@ -1,4 +1,7 @@
 \documentclass[10pt,letterpaper,oneside,twocolumn,journal]{IEEEtran}
+%DIF LATEXDIFF DIFFERENCE FILE
+%DIF DEL main_conditional_accept_022022.tex   Tue Feb  1 15:43:23 2022
+%DIF ADD main.tex                             Tue Feb  1 15:42:06 2022
 
 % 
 % 8888888 888b     d888 8888888b.   .d88888b.  8888888b. 88888888888 .d8888b.  
@@ -96,6 +99,85 @@
 \pdfminorversion=4
 
 % Start
+%DIF PREAMBLE EXTENSION ADDED BY LATEXDIFF
+%DIF UNDERLINE PREAMBLE %DIF PREAMBLE
+\RequirePackage[normalem]{ulem} %DIF PREAMBLE
+\RequirePackage{color}\definecolor{RED}{rgb}{1,0,0}\definecolor{BLUE}{rgb}{0,0,1} %DIF PREAMBLE
+\providecommand{\DIFadd}[1]{{\protect\color{blue}\uwave{#1}}} %DIF PREAMBLE
+\providecommand{\DIFdel}[1]{{\protect\color{red}\sout{#1}}}                      %DIF PREAMBLE
+%DIF SAFE PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFaddbegin}{} %DIF PREAMBLE
+\providecommand{\DIFaddend}{} %DIF PREAMBLE
+\providecommand{\DIFdelbegin}{} %DIF PREAMBLE
+\providecommand{\DIFdelend}{} %DIF PREAMBLE
+\providecommand{\DIFmodbegin}{} %DIF PREAMBLE
+\providecommand{\DIFmodend}{} %DIF PREAMBLE
+%DIF FLOATSAFE PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFaddFL}[1]{\DIFadd{#1}} %DIF PREAMBLE
+\providecommand{\DIFdelFL}[1]{\DIFdel{#1}} %DIF PREAMBLE
+\providecommand{\DIFaddbeginFL}{} %DIF PREAMBLE
+\providecommand{\DIFaddendFL}{} %DIF PREAMBLE
+\providecommand{\DIFdelbeginFL}{} %DIF PREAMBLE
+\providecommand{\DIFdelendFL}{} %DIF PREAMBLE
+\newcommand{\DIFscaledelfig}{0.5}
+%DIF HIGHLIGHTGRAPHICS PREAMBLE %DIF PREAMBLE
+\RequirePackage{settobox} %DIF PREAMBLE
+\RequirePackage{letltxmacro} %DIF PREAMBLE
+\newsavebox{\DIFdelgraphicsbox} %DIF PREAMBLE
+\newlength{\DIFdelgraphicswidth} %DIF PREAMBLE
+\newlength{\DIFdelgraphicsheight} %DIF PREAMBLE
+% store original definition of \includegraphics %DIF PREAMBLE
+\LetLtxMacro{\DIFOincludegraphics}{\includegraphics} %DIF PREAMBLE
+\newcommand{\DIFaddincludegraphics}[2][]{{\color{blue}\fbox{\DIFOincludegraphics[#1]{#2}}}} %DIF PREAMBLE
+\newcommand{\DIFdelincludegraphics}[2][]{% %DIF PREAMBLE
+\sbox{\DIFdelgraphicsbox}{\DIFOincludegraphics[#1]{#2}}% %DIF PREAMBLE
+\settoboxwidth{\DIFdelgraphicswidth}{\DIFdelgraphicsbox} %DIF PREAMBLE
+\settoboxtotalheight{\DIFdelgraphicsheight}{\DIFdelgraphicsbox} %DIF PREAMBLE
+\scalebox{\DIFscaledelfig}{% %DIF PREAMBLE
+\parbox[b]{\DIFdelgraphicswidth}{\usebox{\DIFdelgraphicsbox}\\[-\baselineskip] \rule{\DIFdelgraphicswidth}{0em}}\llap{\resizebox{\DIFdelgraphicswidth}{\DIFdelgraphicsheight}{% %DIF PREAMBLE
+\setlength{\unitlength}{\DIFdelgraphicswidth}% %DIF PREAMBLE
+\begin{picture}(1,1)% %DIF PREAMBLE
+\thicklines\linethickness{2pt} %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,0){\framebox(1,1){}}}% %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,0){\line( 1,1){1}}}% %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,1){\line(1,-1){1}}}% %DIF PREAMBLE
+\end{picture}% %DIF PREAMBLE
+}\hspace*{3pt}}} %DIF PREAMBLE
+} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddbegin}{\DIFaddbegin} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddend}{\DIFaddend} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelbegin}{\DIFdelbegin} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelend}{\DIFdelend} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddbegin}{\DIFOaddbegin \let\includegraphics\DIFaddincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddend}{\DIFOaddend \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelbegin}{\DIFOdelbegin \let\includegraphics\DIFdelincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelend}{\DIFOaddend \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddbeginFL}{\DIFaddbeginFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddendFL}{\DIFaddendFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelbeginFL}{\DIFdelbeginFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelendFL}{\DIFdelendFL} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddbeginFL}{\DIFOaddbeginFL \let\includegraphics\DIFaddincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddendFL}{\DIFOaddendFL \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelbeginFL}{\DIFOdelbeginFL \let\includegraphics\DIFdelincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelendFL}{\DIFOaddendFL \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+%DIF COLORLISTINGS PREAMBLE %DIF PREAMBLE
+\RequirePackage{listings} %DIF PREAMBLE
+\RequirePackage{color} %DIF PREAMBLE
+\lstdefinelanguage{DIFcode}{ %DIF PREAMBLE
+%DIF DIFCODE_UNDERLINE %DIF PREAMBLE
+  moredelim=[il][\color{red}\sout]{\%DIF\ <\ }, %DIF PREAMBLE
+  moredelim=[il][\color{blue}\uwave]{\%DIF\ >\ } %DIF PREAMBLE
+} %DIF PREAMBLE
+\lstdefinestyle{DIFverbatimstyle}{ %DIF PREAMBLE
+	language=DIFcode, %DIF PREAMBLE
+	basicstyle=\ttfamily, %DIF PREAMBLE
+	columns=fullflexible, %DIF PREAMBLE
+	keepspaces=true %DIF PREAMBLE
+} %DIF PREAMBLE
+\lstnewenvironment{DIFverbatim}{\lstset{style=DIFverbatimstyle}}{} %DIF PREAMBLE
+\lstnewenvironment{DIFverbatim*}{\lstset{style=DIFverbatimstyle,showspaces=true}}{} %DIF PREAMBLE
+%DIF END PREAMBLE EXTENSION ADDED BY LATEXDIFF
+
 \begin{document}
 
 % paper title
@@ -231,7 +313,7 @@ At every \textit{instance} $t$ (used to distinguish from an estimation \textit{t
     \draw [-latex] plot[smooth, tension=.7] coordinates {(3,4.25) (1.5,2.875)};
     \fill [lightgray] (2.125,3.875) rectangle (4.375,3.125);
     \node at (3.25,3.5) {$\langle\omega_1^{(t)},\dots ,\omega_m^{(t)}\rangle$};
-    
+
     % Step 2
     \node at (3.25,0.25) {2. Aggregation Step};
     % Navigator
@@ -253,7 +335,7 @@ At every \textit{instance} $t$ (used to distinguish from an estimation \textit{t
     \node at (2,-2.75) {$l_1^{(t)}$};
     \fill [lightgray] (4.25,-2.5) rectangle (4.875,-3);
     \node at (4.625,-2.75) {$l_n^{(t)}$};
-    
+
     % Bounding rectangles
     \draw [gray] (0,6) rectangle (6.5,1);
     \draw [gray] (0,0.75) rectangle (6.5,-4.25);
@@ -501,7 +583,7 @@ In this section, we introduce an encryption scheme meeting the desired security 
 As aggregation is typically performed on scalar inputs, we extend our notation to the context of multidimensional estimation data by letting an instance $t_{k,\tau}$ uniquely capture the scalar aggregation during an estimation timestep $k$ for a single element with position index $\tau$. To achieve this in practice, any injective function can be used, such as the concatenation $t_{k,\tau}=k\mathbin\|\tau$. The four algorithms defining our scheme are given as follows.
 \begin{LaTeXdescription}
     \item[$\mathsf{Setup}(\kappa)$] On input parameter $\kappa$, generate two equal-length, sufficiently large, primes $p$ and $q$, and compute $N=pq$. Define a hash function $H:\mathbb{Z} \rightarrow \mathbb{Z}_{N^2}^*$, choose the number of weights to combine, $m>1$, and set public parameter $\mathsf{pub}=H$, navigator public key $pk_0 = N$ and navigator private key $sk_0=(p,q)$. Sensor secret keys are generated by choosing $sk_i,\,i\in\{1,\dots,n-1\}$ uniformly from $\mathbb{Z}_{N^2}$ and setting the last key as $sk_n = -\sum^{n-1}_{i=1}sk_i \pmod{N^2}$.
- 
+
     \item[$\mathsf{Enc}(pk_0, x)$] Public-key encryption is computed by the Paillier encryption scheme with implicit generator $g=N+1$. This is given by
     \begin{equation}
         \mathcal{E}_{pk_0}(x) = (N+1)^{x}\rho^N \pmod{N^2}\,, \label{eqn:our_scheme_encrypt}
@@ -857,7 +939,7 @@ Measurement modification, real number encoding and linear combination aggregatio
 \caption{Navigator Update}\label{alg:nav_update}
 \begin{algorithmic}[1]
     \Procedure{Update}{$\hat{\vec{x}}_{k|k-1}$, $\mat{P}_{k|k-1}$, $N$, $\lambda$}
-    
+
     \For{$\tau \gets 1$ to $6$}
         \State Receive $\bm{\alpha}_{i}^{(k,\tau)}$ from each sensor $i\in\{1,\dots,n\}$
     \EndFor
@@ -891,60 +973,60 @@ Algorithms \ref{alg:nav_prediction}, \ref{alg:measurement_info} and \ref{alg:nav
     \fill  [pyplotblue!70] (2,7) rectangle (4.5,5.75);
     \pic[xscale=0.22,yscale=0.3] at (3.25,6.7975) {plane};
     \node at (3.25,6.0625) {$\hat{\vec{x}}_{k|k-1}$, $\mat{P}_{k|k-1}$};
-    
+
     % Sensors
     \fill  (1.25,4) [pyplotorange!70] ellipse (0.4 and 0.4);
     \node at (1.25,3.375) {Sensor $1$};
     \fill  (5.25,4) [pyplotorange!70] ellipse (0.4 and 0.4);
     \node at (5.25,3.375) {Sensor $n$};
-        
+
     \fill [black] (2.75,4) circle (0.05);
     \fill [black] (3.25,4) circle (0.05);
     \fill [black] (3.75,4) circle (0.05);
-        
+
     % Arrows
     \draw [-latex] plot[smooth, tension=.7] coordinates {(3,5.5) (1.75,4.25)};
     \draw [-latex] plot[smooth, tension=.7] coordinates {(3.5,5.5) (4.75,4.25)};
-    
+
     \fill [lightgray]  (0.25,5.375) rectangle (6.25,4.625);
     \node at (3.25,5) {$\left\langle\mathcal{E}_{pk_0}(\mathsf{E}_0(\omega)) \,|\, \omega \!\in\! \{\hat{x}^3_{k|k-1}, \hat{y}^3_{k|k-1}, \dots\}\right\rangle$};
-    
+
     
     % Measurement
     \draw [gray] (0,-2.25) rectangle (6.5,2.75);
     \node at (3.25,2.25) {\small 2. Measurement};
-    
+
     % Navigator
     \fill  (3.25,1.5) [pyplotblue!70] ellipse (0.4 and 0.4);
     \pic[xscale=0.22,yscale=0.3] at (3.25,1.6725) {plane};
-        
+
     % Sensors
     \fill  [pyplotorange!70] (6.25,-1.625)  rectangle (4.25,-0.625);
     \node at (1.25,-1.875) {Sensor $1$};
     \fill  [pyplotorange!70] (2.25,-1.625)  rectangle (0.25,-0.625);
     \node at (5.25,-1.875) {Sensor $n$};
-    
+
     \node at (1.25,-1.125) {$z'_{k,1}$, $r'_{k,1}$};
     \node at (5.25,-1.125) {$z'_{k,n}$, $r'_{k,n}$};
-    
+
     \fill [black] (2.75,-1.125) circle (0.05);
     \fill [black] (3.25,-1.125) circle (0.05);
     \fill [black] (3.75,-1.125) circle (0.05);
-    
+
     % Arrows
     \draw [-latex] plot[smooth, tension=.7] coordinates {(1.25,-0.5) (3,1)};
     \draw [-latex] plot[smooth, tension=.7] coordinates {(5.25,-0.5) (3.5,1)};
-    
+
     \fill [lightgray]  (0.375,0.75) rectangle (3.125,-0.25);
     \node[align=center] at (1.75,0.25) {$\mathcal{E}_{pk_0,sk_1}(\mathsf{E}_1(\vec{i}'_{k,1}))$,\\$\mathcal{E}_{pk_0,sk_1}(\mathsf{E}_1(\mat{I}'_{k,1}))$};
     \fill [lightgray]  (3.375,0.75) rectangle (6.125,-0.25);
     \node[align=center] at (4.75,0.25) {$\mathcal{E}_{pk_0,sk_n}(\mathsf{E}_1(\vec{i}'_{k,n}))$,\\$\mathcal{E}_{pk_0,sk_n}(\mathsf{E}_1(\mat{I}'_{k,n}))$};
-    
+
     
     % Update
     \draw [gray] (0,-5.75) rectangle (6.5,-2.5);
     \node at (3.25,-3) {\small 3. Update};
-    
+
     % Navigator
     \fill  [pyplotblue!70] (1.5,-3.5) rectangle (5,-5.5);
     \pic[xscale=0.22,yscale=0.3] at (3.25,-3.8275) {plane};
@@ -1204,12 +1286,12 @@ received his software engineering diploma in 2018 at the University of Melbourne
 
 %\vspace{-1\baselineskip}
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{images/benjamin_noack}}]{Benjamin Noack}
-is a professor of Computer Science at the Otto von Guericke University Magdeburg in Germany and head of the Autonomous Multisensor Systems (AMS) group. He received his diploma in computer science from the Karlsruhe Institute of Technology (KIT), Germany, in 2009. Afterward, he obtained his Ph.D. in 2013 at the Intelligent Sensor–Actuator-Systems Laboratory, Karlsruhe Institute of Technology (KIT), Germany. His research interests are in the areas of multi-sensor data fusion, distributed and decentralized Kalman filtering, combined stochastic and set-membership approaches to state estimation, and event-based systems.
+is a professor of Computer Science at the Otto von Guericke University Magdeburg in Germany and head of the Autonomous Multisensor Systems (AMS) group. He received his diploma in computer science from the Karlsruhe Institute of Technology (KIT), Germany, in 2009. Afterward, he obtained his Ph.D. in 2013 at the Intelligent SensorÔÇôActuator-Systems Laboratory, Karlsruhe Institute of Technology (KIT), Germany. His research interests are in the areas of multi-sensor data fusion, distributed and decentralized Kalman filtering, combined stochastic and set-membership approaches to state estimation, and event-based systems.
 \end{IEEEbiography}
 
 %\vspace{-1\baselineskip}
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{images/uwe_d_hanebeck}}]{Uwe D. Hanebeck}
-is a chaired professor of Computer Science at the Karlsruhe Institute of Technology (KIT) in Germany and director of the Intelligent Sensor–Actuator-Systems Laboratory (ISAS). He obtained his Ph.D. degree in 1997 and his habilitation degree in 2003, both in Electrical Engineering from the Technical University in Munich, Germany. His research interests are in the areas of information fusion, nonlinear state estimation, stochastic modeling, system identification, and control with a strong emphasis on theory-driven approaches based on stochastic system theory and uncertainty models. He is author and coauthor of more than 500 publications in various high-ranking journals and conferences and an IEEE Fellow.
+is a chaired professor of Computer Science at the Karlsruhe Institute of Technology (KIT) in Germany and director of the Intelligent SensorÔÇôActuator-Systems Laboratory (ISAS). He obtained his Ph.D. degree in 1997 and his habilitation degree in 2003, both in Electrical Engineering from the Technical University in Munich, Germany. His research interests are in the areas of information fusion, nonlinear state estimation, stochastic modeling, system identification, and control with a strong emphasis on theory-driven approaches based on stochastic system theory and uncertainty models. He is author and coauthor of more than 500 publications in various high-ranking journals and conferences and an IEEE Fellow.
 \end{IEEEbiography}
 
 % You can push biographies down or up by placing

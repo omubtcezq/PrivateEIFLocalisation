@@ -1,0 +1,276 @@
+\documentclass[a4paper]{scrartcl}
+
+%\usepackage{showframe}
+\usepackage[margin=2cm,footskip=.7cm]{geometry}
+\usepackage{enumitem}
+% \usepackage{fourier}
+\usepackage{xcolor}
+% \usepackage{abkuerzungen}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{../../ISASmacros/isasmathmacros}
+
+\usepackage{pdfpages}
+
+
+\newcommand{\sA}{\ensuremath{\mathsf{A}}}
+\newcommand{\sAB}{\ensuremath{\mathsf{AB}}}
+\newcommand{\sB}{\ensuremath{\mathsf{B}}}
+\newcommand{\sBA}{\ensuremath{\mathsf{BA}}}
+\newcommand{\sC}{\ensuremath{\mathsf{C}}}
+
+\newcommand{\cest}{\ensuremath{\cvec{\gamma}}}
+\newcommand{\cerest}{\ensuremath{\ervec{\gamma}}}
+\newcommand{\cmat}{\ensuremath{\mat{\Gamma}}}
+\newcommand{\tmat}{\ensuremath{\widetilde{\mat{\Gamma}}}}
+
+\newcommand{\gainA}{\ensuremath{\mat{K}}}
+\newcommand{\gainB}{\ensuremath{\mat{L}}}
+
+% \newcommand{\fus}{\ensuremath{\op{fus}}}
+
+% \newcommand{\CI}{\op{CI}\xspace}
+% \newcommand{\EI}{\op{EI}\xspace}
+% \newcommand{\ICI}{\op{ICI}\xspace}
+% \newcommand{\BC}{\op{B\!/\!C}\xspace}
+% \newcommand{\ind}{\op{s}\xspace}
+\newcommand{\ind}{\op{in}\xspace}
+\newcommand{\opt}{\cmat}
+
+
+\newcommand{\excmat}{\ensuremath{\mat{\Gamma}'}}
+\newcommand{\excest}{\ensuremath{\cest'}}
+% \newcommand{\exoptmat}{\ensuremath{\mat{C}_{\excmat}}}
+\newcommand{\exoptmat}{\ensuremath{\mat{C}'_\EI}}
+
+%\RequirePackage[mathscr]{euscript}
+%\RequirePackage{bbding}
+%\RequirePackage{scalefnt}
+%\RequirePackage{mathtools}
+% This was enabled but makes the text look ugly
+%\RequirePackage[T1]{fontenc}
+
+
+%%% COLOR DEFINITIONS
+
+% KIT Colors
+\definecolor{kitgreenex}{RGB}{0,152,131}
+\definecolor{kitblueex}{RGB}{52,115,186}
+\definecolor{kitmaygreen}{RGB}{119,184,38}
+\definecolor{kityellow}{RGB}{255,228,0}
+\definecolor{kitorange}{RGB}{247,154,0}
+\definecolor{kitbrown}{RGB}{182,130,28}
+\definecolor{kitred}{RGB}{187,25,23}
+\definecolor{kitpurple}{RGB}{190,0,126}
+\definecolor{kitcyanblue}{RGB}{0,167,227}
+% Own Definitions
+\definecolor{grey}{RGB}{150,150,150}
+
+
+\definecolor{nblue}{RGB}{54,95,145}
+
+%%% FONTS
+%\setkomafont{pageheadfoot}{\small\color{darkgray}}
+%\setkomafont{pagefoot}{\normalfont\color{darkgray}}
+%\setkomafont{pagenumber}{\color{darkgray}}
+%\setkomafont{captionlabel}{\small\bfseries\color{darkgray}}
+\setkomafont{disposition}{\bfseries}
+\setkomafont{section}{\normalfont\large\bfseries}
+\setkomafont{subsection}{\normalfont\bfseries}
+\setkomafont{author}{\normalfont}
+\setkomafont{date}{\normalfont}
+
+
+%%% PARAGRAPH LAYOUT
+\setlength{\parindent}{0mm}
+\setlength{\parskip}{6pt}
+
+
+%%% REBUTTAL COMMANDS
+\newenvironment{rebuttal}{\begin{enumerate}[label={\color{grey}\thesection.\arabic{enumi}},leftmargin=0pt,ref=\thesection.\arabic{enumi}]}{\end{enumerate}}
+\newcommand{\reviewtext}[1]{{\color{nblue} #1}}
+\newcommand{\papertext}[1]{\emph{``#1''}}
+
+%%% HYPERREF SETUP
+\hypersetup{
+        colorlinks = true,
+        linkcolor = kitgreenex
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{\boldmath Distributed Range-Only Localisation that Preserves Sensor and Navigator Privacies}
+\subtitle{Response to Reviewers' Comments - Submission IEEE-TAC 21-1548}
+\author{Marko Ristic\and Benjamin Noack\and Uwe D. Hanebeck}
+
+%       .d8888b.  888                     888
+%      d88P  Y88b 888                     888
+%      Y88b.      888                     888
+%       "Y888b.   888888  8888b.  888d888 888888
+%          "Y88b. 888        "88b 888P"   888
+%            "888 888    .d888888 888     888
+%      Y88b  d88P Y88b.  888  888 888     Y88b.
+%       "Y8888P"   "Y888 "Y888888 888      "Y888
+
+\begin{document}
+
+\maketitle
+
+Dear Dr. Zhiwei Gao,\\
+Dear Reviewers,
+
+We would like to thank you all for your thorough and helpful reviews. In this letter, we will describe how editor and reviewer comments, questions and suggestions have been addressed. Throughout this response, reviewers' comments are in \reviewtext{blue}. 
+
+Sincerely,\\
+Marko Ristic, Benjamin Noack, and Uwe D. Hanebeck
+
+%      8888888888     888 d8b 888
+%      888            888 Y8P 888
+%      888            888     888
+%      8888888    .d88888 888 888888 .d88b.  888d888
+%      888       d88" 888 888 888   d88""88b 888P"
+%      888       888  888 888 888   888  888 888
+%      888       Y88b 888 888 Y88b. Y88..88P 888
+%      8888888888 "Y88888 888  "Y888 "Y88P"  888
+
+
+
+\section*{Response to the Editor's Report}
+\def\thesection{E}
+\begin{rebuttal} %\setcounter{enumi}{-1}
+\item \reviewtext{I am pleased to inform you that the paper is acceptable for publication in the Transactions provided that you can make the modifications described below.}
+
+My response.
+
+\item \reviewtext{The reviewers would like the authors to clarify some concerns such as the assumption of the EKF design, private sensor variance information, and research motivation and challenge, and so forth.}
+
+My response.
+
+\end{rebuttal}
+
+%      8888888b.                         d888
+%      888   Y88b                       d8888
+%      888    888                         888
+%      888   d88P .d88b.  888  888        888
+%      8888888P" d8P  Y8b 888  888        888
+%      888 T88b  88888888 Y88  88P        888
+%      888  T88b Y8b.      Y8bd8P         888
+%      888   T88b "Y8888    Y88P        8888888
+
+
+
+\section*{Response to the Comments of Reviewer 1 (242571)}
+\def\thesection{R1}
+\begin{rebuttal}
+\item \reviewtext{Thank you for updating the manuscript and most of the concerns have been addressed well in the response letter.}
+
+My response.
+
+\item \reviewtext{However, there is one problem still confused me. The authors claimed that the Gaussian assumption has been removed in the revised version, however, the EKF (EIF) was still used for prediction (Eqs. 26-27). Basically, the EKF is based on the Gaussian assumption and the prediction is obtained in the sense of mean value. Then, the non-Gaussian dynamics would affect the prediction performance using EKF if the Gaussian assumption is removed. My point is 1) if the assumption is removed, please explain the non-Gaussian influence from the EKF or 2) if the Gaussian assumption remains in the manuscript, please explain from the noise comes from in physics sense.}
+
+My response.
+
+\end{rebuttal}
+
+%      8888888b.                         .d8888b.
+%      888   Y88b                       d88P  Y88b
+%      888    888                              888
+%      888   d88P .d88b.  888  888           .d88P
+%      8888888P" d8P  Y8b 888  888       .od888P"
+%      888 T88b  88888888 Y88  88P      d88P"
+%      888  T88b Y8b.      Y8bd8P       888"
+%      888   T88b "Y8888    Y88P        888888888
+
+
+
+\section*{Response to the Comments of Reviewer 2 (242573)}
+\def\thesection{R2}
+\begin{rebuttal}
+\item \reviewtext{The authors have significantly improved the readability of the paper. The contribution is significant enough for privacy preserving state estimation.}
+
+My response.
+
+\item \reviewtext{However, this reviewer still have few comments:
+
+1- It could be interesting to comment why sensor variance is a private information. Why is it crucial to preserve it if measurements are already protected?}
+
+My response.
+
+\item \reviewtext{2- In the sentence 'homomorphic encryption is used to make time-independent model-free location estimates where an estimator does not learn sensor measurements or locations.; Shouldn't be 'cannot learn'?}
+
+My response.
+
+\item \reviewtext{3- In problem statement 'we consider the context of privacy-preserving range sensor navigation, where we want no sensor to learn information about the navigator or other sensors beyond their local measurements, and the navigator to learn no information about individual sensors beyond its location estimate.', please specify type of information.}
+
+My response.
+
+\item \reviewtext{4- Indistinguishable weights: what would happen if the sensor learns navigator weights?}
+
+My response.
+
+\item \reviewtext{5- Fix the following sentence: 'If an attacker compromises the navigator, they have control over the weights,'}
+
+My response.
+
+\item \reviewtext{6- Define IND-CPA.}
+
+My response.
+
+\item \reviewtext{7- Simulation: The authors have found that 1.7 s are needed for each
+computation step, is that compatible with real-time operation?}
+
+My response.
+
+\item \reviewtext{8- Can you comment why quantization noise, involved in the encryption-decryption schemes, isn't taken into account in the filter equations?}
+
+My response.
+
+\end{rebuttal}
+
+%      8888888b.                         .d8888b.
+%      888   Y88b                       d88P  Y88b
+%      888    888                            .d88P
+%      888   d88P .d88b.  888  888          8888"
+%      8888888P" d8P  Y8b 888  888           "Y8b.
+%      888 T88b  88888888 Y88  88P      888    888
+%      888  T88b Y8b.      Y8bd8P       Y88b  d88P
+%      888   T88b "Y8888    Y88P         "Y8888P"
+
+
+
+\section*{Response to the Comments of Reviewer 3 (246951)}
+\def\thesection{R3}
+\begin{rebuttal}
+\item \reviewtext{Comments:
+
+This paper proposes a novel distributed localisation method in the presence of range-only sensors, which preserves both navigator and sensor privacies. The major contribution of this paper is that a novel private linear combination aggregation scheme is proposed, and based on that, a modified extended Kalman filter is also derived. Some comments are given as follows:
+
+1.In this paper, the full names of some abbreviations are not given. For example, in Section I, page 1, left column, “AES”and “RSA”, and in Section I, page 1, right column, “pWSAc” and “pWSAh”.}
+
+My response.
+
+\item \reviewtext{2.The authors should elaborate the advantages and disadvantages of the existing typical cryptographic secrecy scheme and the motivation for proposing private linear combination aggregation scheme in this paper.}
+
+My response.
+
+\item \reviewtext{3.Some symbols are reused. For example, In Section I, Notation, “timestep k” and “will denote encryption and decryption with key k”.}
+
+My response.
+
+\item \reviewtext{4.The authors need to present theoretical computational complexity of the proposed method.}
+
+My response.
+
+\item \reviewtext{5.The authors should state how to measure the performance of the private linear combination aggregation scheme proposed in this paper.}
+
+My response.
+
+\item \reviewtext{6.In practical engineering application, how to balance the relationship between key sizes and computation.}
+
+My response.
+
+\end{rebuttal}
+
+\includepdf[pages=-]{../../diff.pdf}
+
+\end{document}

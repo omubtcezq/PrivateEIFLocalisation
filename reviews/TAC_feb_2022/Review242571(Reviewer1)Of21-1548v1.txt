@@ -1,0 +1,12 @@
+Thank you for updating the manuscript and most of the concerns have
+been addressed well in the response letter. However, there is one
+problem still confused me. The authors claimed that the Gaussian
+assumption has been removed in the revised version, however, the EKF
+(EIF) was still used for prediction (Eqs. 26-27). Basically, the EKF is
+based on the Gaussian assumption and the prediction is obtained in the
+sense of mean value. Then, the non-Gaussian dynamics would affect the
+prediction performance using EKF if the Gaussian assumption is removed.
+My point is 1) if the assumption is removed, please explain the
+non-Gaussian influence from the EKF or 2) if the Gaussian assumption
+remains in the manuscript, please explain from the noise comes from in
+physics sense.

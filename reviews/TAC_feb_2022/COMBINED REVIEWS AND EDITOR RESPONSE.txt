@@ -1,0 +1,114 @@
+COMBINED REVIEWS AND EDITOR RESPONSE
+
+--------------------------------------------------------------------------------
+EDITOR
+--------------------------------------------------------------------------------
+
+Dear Dr. Ristic:
+
+Your paper “Distributed Range-Only Localisation that Preserves Sensor and Navigator Privacies”, Number 21-1548, that you submitted for possible publication as a Regular Paper in the IEEE Transactions on Automatic Control has now been reviewed.  Copies of the reviews are enclosed.
+
+I am pleased to inform you that the paper is acceptable for publication in the Transactions provided that you can make the modifications described below.
+
+The reviewers would like the authors to clarify some concerns such as the assumption of the EKF design, private sensor variance information, and research motivation and challenge, and so forth.  
+
+As soon as you have completed these modifications, please submit your revised paper. Please include a detailed statement describing the changes in the manuscript. The revised paper must be received within 5 weeks of the date of this letter.  
+
+Please log-in, click on the "Author" link at the bottom of your access page, and upload your revised paper under the SAME reference number.
+
+I look forward to receiving your revised paper.
+
+Sincerely,
+
+Dr. Zhiwei Gao
+Associate Editor
+zhiwei.gao@northumbria.ac.uk, zhiwegac@gmail.com Northumbria University
+
+
+--------------------------------------------------------------------------------
+REVIEWER 1
+--------------------------------------------------------------------------------
+
+Thank you for updating the manuscript and most of the concerns have
+been addressed well in the response letter. However, there is one
+problem still confused me. The authors claimed that the Gaussian
+assumption has been removed in the revised version, however, the EKF
+(EIF) was still used for prediction (Eqs. 26-27). Basically, the EKF is
+based on the Gaussian assumption and the prediction is obtained in the
+sense of mean value. Then, the non-Gaussian dynamics would affect the
+prediction performance using EKF if the Gaussian assumption is removed.
+My point is 1) if the assumption is removed, please explain the
+non-Gaussian influence from the EKF or 2) if the Gaussian assumption
+remains in the manuscript, please explain from the noise comes from in
+physics sense.
+
+
+--------------------------------------------------------------------------------
+REVIEWER 2
+--------------------------------------------------------------------------------
+
+The authors have significantly improved the readability of the paper.
+The contribution is significant enough for privacy preserving state
+estimation. However, this reviewer still have few comments:
+1- It could be interesting to comment why sensor variance is a private
+information. Why is it crucial to preserve it if measurements are
+already protected?
+
+2- In the sentence 'homomorphic encryption is used to make
+time-independent model-free location estimates where an estimator does
+not learn sensor measurements or locations.; Shouldn't be 'cannot
+learn'?
+
+3- In problem statement 'we consider the context of privacy-preserving
+range sensor navigation, where we want no sensor to learn information
+about the navigator or other sensors beyond their local measurements,
+and the navigator to learn no information about individual sensors
+beyond its location estimate.', please specify type of information.
+
+4- Indistinguishable weights: what would happen if the sensor learns
+navigator weights?
+
+5- Fix the following sentence: 'If an attacker compromises the
+navigator, they have control over the weights,'
+
+6- Define IND-CPA.
+
+7- Simulation: The authors have found that 1.7 s are needed for each
+computation step, is that compatible with real-time operation?
+
+8- Can you comment why quantization noise, involved in the
+encryption-decryption schemes, isn't taken into account in the filter
+equations?
+
+
+--------------------------------------------------------------------------------
+REVIEWER 3
+--------------------------------------------------------------------------------
+
+Comments:
+This paper proposes a novel distributed localisation method in the
+presence of range-only sensors, which preserves both navigator and
+sensor privacies. The major contribution of this paper is that a novel
+private linear combination aggregation scheme is proposed, and based on
+that, a modified extended Kalman filter is also derived. Some comments
+are given as follows:
+
+1.In this paper, the full names of some abbreviations are not given.
+For example, in Section I, page 1, left column, “AES”and “RSA”, and in
+Section I, page 1, right column, “pWSAc” and “pWSAh”.
+
+2.The authors should elaborate the advantages and disadvantages of the
+existing typical cryptographic secrecy scheme and the motivation for
+proposing private linear combination aggregation scheme in this paper.
+
+3.Some symbols are reused. For example, In Section I, Notation,
+“timestep k” and “will denote encryption and decryption with key k”.
+
+4.The authors need to present theoretical computational complexity of
+the proposed method.
+
+5.The authors should state how to measure the performance of the
+private linear combination aggregation scheme proposed in this paper.
+
+6.In practical engineering application, how to balance the relationship
+between key sizes and computation.
