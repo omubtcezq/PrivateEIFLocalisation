@@ -119,7 +119,7 @@
 Dear Dr. Zhiwei Gao,\\
 Dear Reviewers,
 
-We would like to thank you all for your thorough and helpful reviews. In this letter, we will describe how editor and reviewer comments, questions and suggestions have been addressed. Throughout this response, reviewers' comments are in \reviewtext{blue}. 
+Thank you all for your detailed reviews and for finding the manuscript suitable for publication. In this letter, we will address the remaining editor and reviewer comments and describe any changes made to the manuscript. Throughout this response, reviewers' comments are in \reviewtext{blue}. 
 
 Sincerely,\\
 Marko Ristic, Benjamin Noack, and Uwe D. Hanebeck
@@ -138,13 +138,9 @@ Marko Ristic, Benjamin Noack, and Uwe D. Hanebeck
 \section*{Response to the Editor's Report}
 \def\thesection{E}
 \begin{rebuttal} %\setcounter{enumi}{-1}
-\item \reviewtext{I am pleased to inform you that the paper is acceptable for publication in the Transactions provided that you can make the modifications described below.}
+\item \reviewtext{I am pleased to inform you that the paper is acceptable for publication in the Transactions provided that you can make the modifications described below. The reviewers would like the authors to clarify some concerns such as the assumption of the EKF design, private sensor variance information, and research motivation and challenge, and so forth.}
 
-My response.
-
-\item \reviewtext{The reviewers would like the authors to clarify some concerns such as the assumption of the EKF design, private sensor variance information, and research motivation and challenge, and so forth.}
-
-My response.
+We are glad to hear the paper is acceptable for publication and have responded to each of the reviewer comments below, hoping to clarify all remaining concerns.
 
 \end{rebuttal}
 
@@ -164,11 +160,11 @@ My response.
 \begin{rebuttal}
 \item \reviewtext{Thank you for updating the manuscript and most of the concerns have been addressed well in the response letter.}
 
-My response.
+We are happy to hear this is the case, thank you.
 
 \item \reviewtext{However, there is one problem still confused me. The authors claimed that the Gaussian assumption has been removed in the revised version, however, the EKF (EIF) was still used for prediction (Eqs. 26-27). Basically, the EKF is based on the Gaussian assumption and the prediction is obtained in the sense of mean value. Then, the non-Gaussian dynamics would affect the prediction performance using EKF if the Gaussian assumption is removed. My point is 1) if the assumption is removed, please explain the non-Gaussian influence from the EKF or 2) if the Gaussian assumption remains in the manuscript, please explain from the noise comes from in physics sense.}
 
-My response.
+We regret that there was some confusion about the prediction step of the presented localisation algorithm. Equations $26$-$27$ are the EKF (EIF) update equations (rather than the prediction equations), resulting in updated terms $\vec{y}_{k|k}$ and $\mat{Y}_{k|k}$ from the predictions $\vec{y}_{k|k-1}$ and $\mat{Y}_{k|k-1}$. The Gaussian assumption has indeed been removed from the system model, and obtaining the predictions $\vec{y}_{k|k-1}$ and $\mat{Y}_{k|k-1}$ can be computed using any local filter (linearising or otherwise) as mentioned in Section V. The Gaussian assumption that remains is only present in the measurement model, as is a commonly done to simplify the modelling of sensors, and the non-linear distance-measurement function $h_i$ is linearlised by an appropriate EKF filter for the localisation update step only. We hope this clarifies equations $26$-$27$ and the use of the EKF.
 
 \end{rebuttal}
 
@@ -188,7 +184,7 @@ My response.
 \begin{rebuttal}
 \item \reviewtext{The authors have significantly improved the readability of the paper. The contribution is significant enough for privacy preserving state estimation.}
 
-My response.
+We thank you for the comment and are glad that the contribution is found significant.
 
 \item \reviewtext{However, this reviewer still have few comments:
 
