@@ -190,19 +190,21 @@ We thank you for the comment and are glad that the contribution is found signifi
 
 1- It could be interesting to comment why sensor variance is a private information. Why is it crucial to preserve it if measurements are already protected?}
 
-My response.
+This is a good question that had not been elaborated in the work. The key reason that any sensor-specific information (such as its measurement noise variance) is considered private is that it may hold identifying data if analysed by an adversary. For example, a particular model of sensor may be identified from its measurement noise variance, enabling a targeted attack (cyber or physical) against that sensor. We have made a change to the introduction section to clarify this reasoning.
 
 \item \reviewtext{2- In the sentence 'homomorphic encryption is used to make time-independent model-free location estimates where an estimator does not learn sensor measurements or locations.; Shouldn't be 'cannot learn'?}
 
-My response.
+Thank you for pointing this out, we have added the change to the manuscript.
 
 \item \reviewtext{3- In problem statement 'we consider the context of privacy-preserving range sensor navigation, where we want no sensor to learn information about the navigator or other sensors beyond their local measurements, and the navigator to learn no information about individual sensors beyond its location estimate.', please specify type of information.}
 
 My response.
+abstraction from cryptography to capture the fact nothing is can be learnt from the encryptions
 
 \item \reviewtext{4- Indistinguishable weights: what would happen if the sensor learns navigator weights?}
 
 My response.
+Continuation from above. Since nothing is to be learnt, then any information from the navigator involved in the localisation must remain private. In practice, as is later evident from the concrete use of the scheme, the weights correspond to the navigator estimate which we want to hide from sensors
 
 \item \reviewtext{5- Fix the following sentence: 'If an attacker compromises the navigator, they have control over the weights,'}
 
@@ -211,6 +213,7 @@ My response.
 \item \reviewtext{6- Define IND-CPA.}
 
 My response.
+Referenced on first use of the term. Was removed from appendix after previous reviews as fewer cryptographic background was requested by reviewers.
 
 \item \reviewtext{7- Simulation: The authors have found that 1.7 s are needed for each
 computation step, is that compatible with real-time operation?}
@@ -220,6 +223,7 @@ My response.
 \item \reviewtext{8- Can you comment why quantization noise, involved in the encryption-decryption schemes, isn't taken into account in the filter equations?}
 
 My response.
+
 
 \end{rebuttal}
 
