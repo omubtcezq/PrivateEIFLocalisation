@@ -198,22 +198,19 @@ Thank you for pointing this out, we have added the change to the manuscript.
 
 \item \reviewtext{3- In problem statement 'we consider the context of privacy-preserving range sensor navigation, where we want no sensor to learn information about the navigator or other sensors beyond their local measurements, and the navigator to learn no information about individual sensors beyond its location estimate.', please specify type of information.}
 
-My response.
-abstraction from cryptography to capture the fact nothing is can be learnt from the encryptions
+We regret that this was not clear to the reviewer. We refer to leakable content as arbitrary information to stress that \textit{nothing} can be leart. That is, neither the information we can predict the importance of (such as state estimates or sensor locations), nor that for which we cannot. This is common in cryptography, as no assumptions on the methods or intentions of adversaries can be made. We have updated the sentence to try and make this clearer and note that examples of information that should not be learnt (state estimates and sensor locations) have been given in the preceeding section.
 
 \item \reviewtext{4- Indistinguishable weights: what would happen if the sensor learns navigator weights?}
 
-My response.
-Continuation from above. Since nothing is to be learnt, then any information from the navigator involved in the localisation must remain private. In practice, as is later evident from the concrete use of the scheme, the weights correspond to the navigator estimate which we want to hide from sensors
+This relates to the abstraction from the previous response. Since a meaningful cryptographic definition cannot make assumptions about what leakable information might be useful, we cannot state what would happen. As the weights originate from the navigator and we do not want sensors to learn any information from the navigator, we can say that no new information should be leart from the weights (and therefore require cryptographic indistinguishabilty of weights). In the concrete scheme presented later, it can be seen that the weights correspond to elements of the navigator's state estimate vector, which is stated as an example of information that must remain private to the navigator. We hope this makes the meaning and reasoning of indistinguishability clearer.
 
 \item \reviewtext{5- Fix the following sentence: 'If an attacker compromises the navigator, they have control over the weights,'}
 
-My response.
+Unfortunately, we are unable to find an issue with the stated sentence and have asked additional native English speakers that have also agreed that the sentence looks correct. In case the use of ``they'' (rather than ``he'' or ``she'') is being referred to, it is the formal grammatical pronoun for a person when gender is not specified.
 
 \item \reviewtext{6- Define IND-CPA.}
 
-My response.
-Referenced on first use of the term. Was removed from appendix after previous reviews as fewer cryptographic background was requested by reviewers.
+We are sorry for the confusion, the first use of the term ``Indistinguishability under the Chosen Plaintext Attack (IND-CPA)'' is in section II.A and has been referenced (reference [21]). The full cryptographic game which defines it was present in the appendix of the initial submission but removed due to initial reviews requesting fewer cryptographic background information. We hope this clears up why the definition is only referenced.
 
 \item \reviewtext{7- Simulation: The authors have found that 1.7 s are needed for each
 computation step, is that compatible with real-time operation?}
@@ -222,7 +219,10 @@ My response.
 
 \item \reviewtext{8- Can you comment why quantization noise, involved in the encryption-decryption schemes, isn't taken into account in the filter equations?}
 
-My response.
+We're sorry this wan't clearer. 
+
+
+\dots quantisation noise is negligible when the quantised integer bit size is larger than the bit size of used floating-point numbers
 
 
 \end{rebuttal}
