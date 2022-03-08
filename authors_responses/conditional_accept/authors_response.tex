@@ -210,20 +210,18 @@ Unfortunately, we are unable to find an issue with the stated sentence and have 
 
 \item \reviewtext{6- Define IND-CPA.}
 
-We are sorry for the confusion, the first use of the term ``Indistinguishability under the Chosen Plaintext Attack (IND-CPA)'' is in section II.A and has been referenced (reference [21]). The full cryptographic game which defines it was present in the appendix of the initial submission but removed due to initial reviews requesting fewer cryptographic background information. We hope this clears up why the definition is only referenced.
+We are sorry for the confusion, the first use of the term ``Indistinguishability under the Chosen Plaintext Attack (IND-CPA)'' is in section II.A and has been referenced (reference [21]). The full cryptographic game which defines it was present in the appendix of the initial submission but removed due to initial reviews requesting fewer cryptographic background information. For this reason, we have left the definition only referenced and hope this is found satisfactory.
 
 \item \reviewtext{7- Simulation: The authors have found that 1.7 s are needed for each
 computation step, is that compatible with real-time operation?}
 
-My response.
+It is hard to say explicitly whether a filter udpate of $1.7s$ is compatible with real-time computation as this is dependent on the use-case (for example, infrequent measurements may suffice for the localisation of a slow-moving object such as a hot air baloon but would be insufficient for a fast moving object such as a jet). In addition, a further optimised implementation executed on more powerful hardware could result in significantly faster runtimes.
+
+\textit{+changes made} time was used primarily as a comparitive measure in key sizes.
 
 \item \reviewtext{8- Can you comment why quantization noise, involved in the encryption-decryption schemes, isn't taken into account in the filter equations?}
 
-We're sorry this wan't clearer. 
-
-
-\dots quantisation noise is negligible when the quantised integer bit size is larger than the bit size of used floating-point numbers
-
+We're sorry this wan't clearer. The quantisation noise is captured by the precision parameter $\phi$, which results in less noise when the parameter is large but is upper-bounded by $(20)$. Here, it is noted that when $M=N$, the upper bound can be practically ignored since $\phi$ can be chosen to have a bit-length much larger than a floating-point number, making any introduced encoding noise negligible. When pseudocode is presented in subsection V.C, $M=N$ is chosen, and in the results section VI, $\phi=2^{32}$ leads to a negligible difference in performance between an unencrypted (and unquantised) EIF and the presented quantised and encrypted one. We have udpated subsection V.C to make this clearer and hope that explains why there is no need for the quantisation noise to be considered in the filter.
 
 \end{rebuttal}
 
@@ -247,7 +245,7 @@ This paper proposes a novel distributed localisation method in the presence of r
 
 1.In this paper, the full names of some abbreviations are not given. For example, in Section I, page 1, left column, “AES”and “RSA”, and in Section I, page 1, right column, “pWSAc” and “pWSAh”.}
 
-My response.
+We apologise for having missed these, the full names have now been added.
 
 \item \reviewtext{2.The authors should elaborate the advantages and disadvantages of the existing typical cryptographic secrecy scheme and the motivation for proposing private linear combination aggregation scheme in this paper.}
 
@@ -255,7 +253,7 @@ My response.
 
 \item \reviewtext{3.Some symbols are reused. For example, In Section I, Notation, “timestep k” and “will denote encryption and decryption with key k”.}
 
-My response.
+Thank you for noticing this. We have updated the notation section and other places throughout the text to remove the found errors.
 
 \item \reviewtext{4.The authors need to present theoretical computational complexity of the proposed method.}
 
@@ -267,7 +265,10 @@ My response.
 
 \item \reviewtext{6.In practical engineering application, how to balance the relationship between key sizes and computation.}
 
-My response.
+In practice, chosen cryptographic key size is dependent on the required length of secrecy and the planned lifetime of the used secret key. For example, if the location of an object needs only be private on the day of travel and new keys are generated each day, a shorter key can be used than for an object whose past location must not be leaked for the foreseeable future. Since cryptographic \textit{guarantees} are required, computation is not directly considered when choosing key sizes. However, in cases where computation makes desired cryptograhpic guarantees infeasible, shorter required secrecy or more frequent key exchanges can be considered to reduce key sizes and computation times.
+
+\textit{+changes made}
+
 
 \end{rebuttal}
 
