@@ -215,9 +215,7 @@ We are sorry for the confusion, the first use of the term ``Indistinguishability
 \item \reviewtext{7- Simulation: The authors have found that 1.7 s are needed for each
 computation step, is that compatible with real-time operation?}
 
-It is hard to say explicitly whether a filter udpate of $1.7s$ is compatible with real-time computation as this is dependent on the use-case (for example, infrequent measurements may suffice for the localisation of a slow-moving object such as a hot air baloon but would be insufficient for a fast moving object such as a jet). In addition, a further optimised implementation executed on more powerful hardware could result in significantly faster runtimes.
-
-\textit{+changes made} time was used primarily as a comparitive measure in key sizes.
+It is hard to explicitly say whether a filter udpate of $1.7s$ is compatible with real-time computation as this is dependent on the use-case (for example, infrequent measurements may suffice for the localisation of a slow-moving object such as a hot air baloon but would be insufficient for a fast moving object such as a jet). In terms of reducing this time, a smaller key size, optimised code or more powerful hardware could be used depending on the scenario. We have updated the discussion on execution time and choosing key sizes in section VI to elaborate on their relation and how computation time could be reduced in hopes it makes the reasoning clearer.
 
 \item \reviewtext{8- Can you comment why quantization noise, involved in the encryption-decryption schemes, isn't taken into account in the filter equations?}
 
@@ -250,6 +248,7 @@ We apologise for having missed these, the full names have now been added.
 \item \reviewtext{2.The authors should elaborate the advantages and disadvantages of the existing typical cryptographic secrecy scheme and the motivation for proposing private linear combination aggregation scheme in this paper.}
 
 My response.
+existing typical schemes AES and RSA
 
 \item \reviewtext{3.Some symbols are reused. For example, In Section I, Notation, “timestep k” and “will denote encryption and decryption with key k”.}
 
@@ -257,7 +256,17 @@ Thank you for noticing this. We have updated the notation section and other plac
 
 \item \reviewtext{4.The authors need to present theoretical computational complexity of the proposed method.}
 
-My response.
+As the proposed method presents a solution to a novel cryptographic problem
+
+due to the lack of methods to which it can be comap
+
+as the work presents a novel solution to a cryptographic problem
+in addition to keeping the work short
+the divide .. would further complicate the interpretation of complexity analysis statements due to the combination of bit terms and number terms
+Due to the divide between the cryptographic component and the localisation component
+
+We hope this reasoning 
+backs the reasoning for excluding a complexity analysis in the work
 
 \item \reviewtext{5.The authors should state how to measure the performance of the private linear combination aggregation scheme proposed in this paper.}
 
@@ -265,10 +274,7 @@ My response.
 
 \item \reviewtext{6.In practical engineering application, how to balance the relationship between key sizes and computation.}
 
-In practice, chosen cryptographic key size is dependent on the required length of secrecy and the planned lifetime of the used secret key. For example, if the location of an object needs only be private on the day of travel and new keys are generated each day, a shorter key can be used than for an object whose past location must not be leaked for the foreseeable future. Since cryptographic \textit{guarantees} are required, computation is not directly considered when choosing key sizes. However, in cases where computation makes desired cryptograhpic guarantees infeasible, shorter required secrecy or more frequent key exchanges can be considered to reduce key sizes and computation times.
-
-\textit{+changes made}
-
+In practice, choosing a cryptographic key size is dependent on the required length of secrecy and the planned lifetime of the used secret key. For example, if the location of an object needs only be private on the day of travel and new keys are generated each day, a shorter key can be used than for an object whose past location must remain private for the foreseeable future. Since the secrecy is required, computation is not directly considered when choosing key sizes. However, in cases where computation makes the desired secrecy infeasible, shorter required secrecy and more frequent key exchanges can be considered to reduce key sizes and computation times. To elaborate this requirement, we have added comments discussing the execution time and choosing key sizes in section VI.
 
 \end{rebuttal}
 
