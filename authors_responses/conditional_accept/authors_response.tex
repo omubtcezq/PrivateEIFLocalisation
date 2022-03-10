@@ -140,7 +140,7 @@ Marko Ristic, Benjamin Noack, and Uwe D. Hanebeck
 \begin{rebuttal} %\setcounter{enumi}{-1}
 \item \reviewtext{I am pleased to inform you that the paper is acceptable for publication in the Transactions provided that you can make the modifications described below. The reviewers would like the authors to clarify some concerns such as the assumption of the EKF design, private sensor variance information, and research motivation and challenge, and so forth.}
 
-We are glad to hear the paper is acceptable for publication and have responded to each of the reviewer comments below, hoping to clarify all remaining concerns.
+We are glad to hear the paper is acceptable for publication and have responded to each of the reviewer comments below, hoping to clarify all the remaining concerns.
 
 \end{rebuttal}
 
@@ -190,7 +190,7 @@ We thank you for the comment and are glad that the contribution is found signifi
 
 1- It could be interesting to comment why sensor variance is a private information. Why is it crucial to preserve it if measurements are already protected?}
 
-This is a good question that had not been elaborated in the work. The key reason that any sensor-specific information (such as its measurement noise variance) is considered private is that it may hold identifying data if analysed by an adversary. For example, a particular model of sensor may be identified from its measurement noise variance, enabling a targeted attack (cyber or physical) against that sensor. We have made a change to the introduction section to clarify this reasoning.
+This is a good question that had not been elaborated in the work. The key reason that any sensor-specific information (such as its measurement noise variance) is considered private is that it may hold identifying data if analysed by an adversary. For example, a particular sensor's model may be identified from its measurement noise variance, enabling a targeted attack (cyber or physical) against that sensor. We have made a change to the introduction section to clarify this reasoning.
 
 \item \reviewtext{2- In the sentence 'homomorphic encryption is used to make time-independent model-free location estimates where an estimator does not learn sensor measurements or locations.; Shouldn't be 'cannot learn'?}
 
@@ -198,11 +198,11 @@ Thank you for pointing this out, we have added the change to the manuscript.
 
 \item \reviewtext{3- In problem statement 'we consider the context of privacy-preserving range sensor navigation, where we want no sensor to learn information about the navigator or other sensors beyond their local measurements, and the navigator to learn no information about individual sensors beyond its location estimate.', please specify type of information.}
 
-We regret that this was not clear to the reviewer. We refer to leakable content as arbitrary information to stress that \textit{nothing} can be leart. That is, neither the information we can predict the importance of (such as state estimates or sensor locations), nor that for which we cannot. This is common in cryptography, as no assumptions on the methods or intentions of adversaries can be made. We have updated the sentence to try and make this clearer and note that examples of information that should not be learnt (state estimates and sensor locations) have been given in the preceeding section.
+We regret that this was not clear to the reviewer. We refer to leakable content as arbitrary information to stress that \textit{nothing} can be learnt. That is, neither the information we can predict the importance of (such as state estimates or sensor locations) nor that for which we cannot. This is common in cryptography, as no assumptions on the methods or intentions of adversaries can be made. We have updated the sentence to try and make this clearer and note that examples of information that should not be learnt (state estimates and sensor locations) have been given in the preceding section.
 
 \item \reviewtext{4- Indistinguishable weights: what would happen if the sensor learns navigator weights?}
 
-This relates to the abstraction from the previous response. Since a meaningful cryptographic definition cannot make assumptions about what leakable information might be useful, we cannot state what would happen. As the weights originate from the navigator and we do not want sensors to learn any information from the navigator, we can say that no new information should be leart from the weights (and therefore require cryptographic indistinguishabilty of weights). In the concrete scheme presented later, it can be seen that the weights correspond to elements of the navigator's state estimate vector, which is stated as an example of information that must remain private to the navigator. We hope this makes the meaning and reasoning of indistinguishability clearer.
+This is a good question and relates to the abstraction from the previous response. Since a meaningful cryptographic definition cannot make assumptions about what leakable information might be useful, we cannot state what would happen. As the weights originate from the navigator and we do not want sensors to learn any information from the navigator, we can say that no new information should be learnt from the weights (and therefore require cryptographic indistinguishability of weights). In the concrete scheme presented later, it can be seen that the weights correspond to elements of the navigator's state estimate vector, which is stated as an example of information that must remain private to the navigator. We hope this makes the meaning and reasoning of indistinguishability clearer.
 
 \item \reviewtext{5- Fix the following sentence: 'If an attacker compromises the navigator, they have control over the weights,'}
 
@@ -210,16 +210,16 @@ Unfortunately, we are unable to find an issue with the stated sentence and have 
 
 \item \reviewtext{6- Define IND-CPA.}
 
-We are sorry for the confusion, the first use of the term ``Indistinguishability under the Chosen Plaintext Attack (IND-CPA)'' is in section II.A and has been referenced (reference [21]). The full cryptographic game which defines it was present in the appendix of the initial submission but removed due to initial reviews requesting fewer cryptographic background information. For this reason, we have left the definition only referenced and hope this is found satisfactory.
+We apologise for the confusion, the first use of the term ``Indistinguishability under the Chosen Plaintext Attack (IND-CPA)'' is in section II.A and has been referenced (reference [21]). The full cryptographic game which defines it was originally present in the appendix of the initial submission, but removed after reviewers requested less cryptographic background. For this reason, we have left the definition only referenced and hope this is found satisfactory.
 
 \item \reviewtext{7- Simulation: The authors have found that 1.7 s are needed for each
 computation step, is that compatible with real-time operation?}
 
-It is hard to explicitly say whether a filter udpate of $1.7s$ is compatible with real-time computation as this is dependent on the use-case (for example, infrequent measurements may suffice for the localisation of a slow-moving object such as a hot air baloon but would be insufficient for a fast moving object such as a jet). In terms of reducing this time, a smaller key size, optimised code or more powerful hardware could be used depending on the scenario. We have updated the discussion on execution time and choosing key sizes in section VI to elaborate on their relation and how computation time could be reduced in hopes it makes the reasoning clearer.
+We agree that a further interpretation of execution times was lacking. It is hard to explicitly say whether a filter update of $1.7s$ is compatible with real-time computation as this is dependent on the use-case (for example, infrequent measurements may suffice for the localisation of a slow-moving object such as a hot air balloon but would be insufficient for a fast-moving object such as a jet). In terms of reducing this time, a smaller key size, optimised code or more powerful hardware could be used depending on the scenario. We have updated the discussion on execution time and choosing key sizes in section VI to elaborate on their relationship and how computation time could be reduced hoping that this makes our reasoning clearer.
 
 \item \reviewtext{8- Can you comment why quantization noise, involved in the encryption-decryption schemes, isn't taken into account in the filter equations?}
 
-We're sorry this wan't clearer. The quantisation noise is captured by the precision parameter $\phi$, which results in less noise when the parameter is large but is upper-bounded by $(20)$. Here, it is noted that when $M=N$, the upper bound can be practically ignored since $\phi$ can be chosen to have a bit-length much larger than a floating-point number, making any introduced encoding noise negligible. When pseudocode is presented in subsection V.C, $M=N$ is chosen, and in the results section VI, $\phi=2^{32}$ leads to a negligible difference in performance between an unencrypted (and unquantised) EIF and the presented quantised and encrypted one. We have udpated subsection V.C to make this clearer and hope that explains why there is no need for the quantisation noise to be considered in the filter.
+We regret that this was not clearer. The quantisation noise is captured by the precision parameter $\phi$, which results in less noise when the parameter is large but is upper-bounded by $(20)$. Here, it is noted that when $M=N$, the upper bound can be practically ignored since $\phi$ can be chosen to have a bit-length much larger than a floating-point number, making any introduced encoding noise negligible. When pseudocode is presented in subsection V.C, $M=N$ is chosen, and in the results section VI, $\phi=2^{32}$ leads to a negligible difference in performance between an unencrypted (and non-quantised) EIF and the presented quantised and encrypted one. We have updated subsection V.C to make this clearer and hope that it now explains why there is no need for the quantisation noise to be considered in the filter.
 
 \end{rebuttal}
 
@@ -247,34 +247,23 @@ We apologise for having missed these, the full names have now been added.
 
 \item \reviewtext{2.The authors should elaborate the advantages and disadvantages of the existing typical cryptographic secrecy scheme and the motivation for proposing private linear combination aggregation scheme in this paper.}
 
-My response.
-existing typical schemes AES and RSA
+This could indeed have been stated more explicitly in the text. Typical symmetric and public-key encryption schemes only support the encryption and decryption of data and therefore imply a trust between encryptor and decryptor (any information from the encryptor is learnt, in whole, by the decryptor). This assumption can be made in some scenarios, for example, when loading a secure webpage, the decryptor wishes to see the page in its entirety while the encryptor wishes to provide it. However, when this trust cannot be assumed, such as in our scenario of a navigator and sensors, we want specific control over what information can be learnt from encryptions, making the typical schemes (as well as existing homomorphic schemes in our case) no longer applicable. The motivation for the notion of linear combination aggregator obliviousness is the potential for modifying the communications in distributed range-only navigation to a sum of locally weighted sums where the result contains only average sensor data. This notion is defined as part of the problem statement before a scheme that meets it and the appropriately modified navigation are presented as solutions. We have now updated the introduction section to better explain why the typical cryptographic schemes are not applicable to the problem we consider.
 
 \item \reviewtext{3.Some symbols are reused. For example, In Section I, Notation, “timestep k” and “will denote encryption and decryption with key k”.}
 
-Thank you for noticing this. We have updated the notation section and other places throughout the text to remove the found errors.
+Thank you for noticing this. We have updated the notation section and other places throughout the text to remove any found errors.
 
 \item \reviewtext{4.The authors need to present theoretical computational complexity of the proposed method.}
 
-As the proposed method presents a solution to a novel cryptographic problem
-
-due to the lack of methods to which it can be comap
-
-as the work presents a novel solution to a cryptographic problem
-in addition to keeping the work short
-the divide .. would further complicate the interpretation of complexity analysis statements due to the combination of bit terms and number terms
-Due to the divide between the cryptographic component and the localisation component
-
-We hope this reasoning 
-backs the reasoning for excluding a complexity analysis in the work
+We thank you for the reasonable suggestion. As the proposed method presents a solution to a novel cryptographic problem, we believe that a lack of methods to which it can be compared reduces the benefits of a complexity analysis to readers. While also keeping the work shorter, the combination of complexities in terms of bit lengths (required for cryptographic components) and number sizes (required for state estimation components) would further complicate the interpretation of any presented analysis. We hope this rationale can be understood as the reason for excluding a theoretical complexity analysis from the work.
 
 \item \reviewtext{5.The authors should state how to measure the performance of the private linear combination aggregation scheme proposed in this paper.}
 
-My response.
+Thank you for the interesting suggestion. We found the topic relates to our reasoning in responses to your comments $2$ and $4$ above. The cryptographic notion of linear combination aggregator obliviousness is presented as a novel part of the problem to which the proposed scheme is a solution. Since the proposed scheme is proven correct (meets the novel notion), and no alternative that meets this notion is known to exist, it is difficult to measure its performance through a meaningful comparison. Instead, the presented use-case for the scheme, distributed range-only localisation, has its performance measured in terms of accuracy (comparison to an industry-standard algorithm without privacy guarantees) and execution time (from our local implementation, including the aggregation scheme). A possible measure of scheme performance would be the execution times of individual operations in the proposed scheme, but due to their implicit presence in figure 5 (predominant computation costs stem from cryptographic operations) and the desire to keep the paper short, we have decided to omit this. We hope this elaborates on our reasoning.
 
 \item \reviewtext{6.In practical engineering application, how to balance the relationship between key sizes and computation.}
 
-In practice, choosing a cryptographic key size is dependent on the required length of secrecy and the planned lifetime of the used secret key. For example, if the location of an object needs only be private on the day of travel and new keys are generated each day, a shorter key can be used than for an object whose past location must remain private for the foreseeable future. Since the secrecy is required, computation is not directly considered when choosing key sizes. However, in cases where computation makes the desired secrecy infeasible, shorter required secrecy and more frequent key exchanges can be considered to reduce key sizes and computation times. To elaborate this requirement, we have added comments discussing the execution time and choosing key sizes in section VI.
+In practice, choosing a cryptographic key size is dependent on the required duration of secrecy and the planned lifetimes of used secret keys. For example, if the location of an object needs only be private on the day of travel and new keys are generated each day, a shorter key can be used than for an object whose past location must remain private for the foreseeable future. Since secrecy is required, computation is not directly considered when choosing key sizes. However, in cases where computation makes the desired secrecy infeasible, shorter required secrecy and more frequent key exchanges can be considered to reduce key sizes and computation times. To elaborate on this requirement, we have added comments discussing the execution time and choosing key sizes in section VI.
 
 \end{rebuttal}
 
