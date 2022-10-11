@@ -267,7 +267,7 @@ Before giving a formal definition for the construction and security of our desir
 \begin{LaTeXdescription}
     \item[Global Navigator Broadcast] We assume that broadcast information from the navigator is received by \textit{all} sensors involved in the protocol.
     \item[Consistent Navigator Broadcast] We assume that broadcast information from the navigator is received equally by all sensors. This means the navigator may not send different weights to individual sensors during a single instance $t$.
-    \item[Honest-but-Curious Attackers] We adopt the honest-but-curious attacker model for all corrupted sensors that an attacker controls, meaning that sensors follow the localisation procedure correctly but attackers may store or use any gained sensitive information.
+    \item[Honest-but-Curious Attackers] We adopt the honest-but-curious attacker model for all corrupted parties that an attacker controls, meaning that the navigator and sensors follow the localisation procedure correctly but attackers may store or use any gained sensitive information.
 \end{LaTeXdescription}
 We justify the global broadcast assumption by noting that any subset of sensors within the range of the navigator can be considered a group and treated as the global set during estimation, generalising the method, while the wide-spread use of cheap non-directional antennas supports the assumption of consistent broadcasts. The final assumption refers to the known problem of misbehaving sensors \cite{lazosSeRLocSecureRangeindependent2004,ben-galOutlierDetection2005}, often requiring additional complicated detection mechanisms, and will not be considered in this work.
 
@@ -275,8 +275,8 @@ We are now ready to define the type of encryption scheme we want for the specifi
 \begin{LaTeXdescription}
     \item[$\mathsf{Setup}(\kappa)$] On input of security parameter $\kappa$, generate public parameters $\mathsf{pub}$, the number of weights $m$, the navigator's public and private keys $pk_0$ and $sk_0$ and the sensor private keys $sk_i,\,i\in\{1,\dots,n\}$.
     \item[$\mathsf{Enc}(pk_0, x)$] The navigator and sensors can encrypt any value $x$ with the navigator's public key $pk_0$ and obtain the encryption $\mathcal{E}_{pk_0}(x)$.
-    \item[$\mathsf{CombEnc}(t, pk_0, sk_i, \mathcal{E}(\omega_1^{(t)}),\dots,\mathcal{E}(\omega_m^{(t)}), a^{(t)}_{i,1},\dots,a^{(t)}_{i,m})$] At instance $t$, sensor $i$ computes and obtains the encrypted linear combination denoted $l^{(t)}_i = \mathcal{E}_{pk_0,sk_i}(\sum^m_{j=1}a^{(t)}_{i,j}\omega^{(t)}_j)$ using its secret key $sk_i$.
-    \item[$\mathsf{AggDec}(t, pk_0, sk_0, l^{(t)}_1,\dots,l^{(t)}_n)$] At instance $t$, the navigator computes the aggregation of linear combinations $\sum^{n}_{i=1}l_i^{(t)}=\sum^{n}_{i=1}\sum^{m}_{j=1} a^{(t)}_{i,j}\omega^{(t)}_j$ using its public and private keys $pk_0$, $sk_0$.
+    \item[$\mathsf{CombEnc}(t, pk_0, sk_i, \mathcal{E}_{pk_0}(\omega_1^{(t)}),\!...,\mathcal{E}_{pk_0}(\omega_m^{(t)}),a^{(t)}_{i,1},\!...,a^{(t)}_{i,m})\hspace*{1.2pt}$] At instance $t$, sensor $i$ computes and obtains the encrypted linear combination $\mathcal{E}_{pk_0,sk_i}(\sum^m_{j=1}a^{(t)}_{i,j}\omega^{(t)}_j)$ with secret key $sk_i$.
+    \item[$\mathsf{AggDec}(t, pk_0, sk_0, \mathcal{E}_{pk_0,sk_1}(l^{(t)}_1),\dots,\mathcal{E}_{pk_0,sk_n}(l^{(t)}_n))$] At instance $t$, the navigator computes the plaintext aggregation of linear combinations $\sum^{n}_{i=1}l_i^{(t)}$ using its public and private keys $pk_0$, $sk_0$.
 \end{LaTeXdescription}
 The security notions we want these algorithms to meet reflect the previously stated estimation privacy goals. The navigator should learn no information from individual sensors while sensors should learn no information from the navigator or any other sensors. In the context of the introduced communication protocol, this can be summarised as the following notions.
 \begin{LaTeXdescription}

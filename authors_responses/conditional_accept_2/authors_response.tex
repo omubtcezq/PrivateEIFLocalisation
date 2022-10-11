@@ -116,7 +116,7 @@
 
 \maketitle
 
-Dear Dr Zhiwei Gao,\\
+Dear Prof. David Castanon,\\
 Dear Reviewers,
 
 Thank you all for the positive reviews, in this letter we will address the remaining comments and changes made to the manuscript. Throughout this response, reviewers' comments are in \reviewtext{blue}. 
@@ -138,9 +138,11 @@ Marko Ristic, Benjamin Noack, and Uwe D. Hanebeck
 \section*{Response to the Editor's Report}
 \def\thesection{E}
 \begin{rebuttal} %\setcounter{enumi}{-1}
-\item \reviewtext{I am pleased to inform you that the paper is acceptable for publication in the Transactions provided that you can make the modifications described below.}
+\item \reviewtext{I am pleased to inform you that the paper is acceptable for publication in the Transactions provided that you can make the modifications described below.
 
-We are glad to hear the positive response, thank you. Below we respond to the remaining reviewer comments.
+The reviewers would like the authors to double check the symbols and formulas and clarify some concerns on sensor attacks etc, which are detailed in their comments.}
+
+We are glad to hear the positive response, thank you. Below we clarify the remaining concerns from reviewer comments.
 
 \end{rebuttal}
 
@@ -186,19 +188,19 @@ Thank you for the supportive comments. The quoted sentence has been updated.
 
 \item \reviewtext{2. In section II-A, please check the correctness of the formula $l_i^{(t)}=\sum_{j=1}^m a^{(t)}_{j,i} \omega^{(t)}_i$, which is inconsistent with the description in Fig. 1.}
 
-Thank you for noticing this. The error has now been corrected.
+The error has now been corrected, thank you for noticing it.
 
 \item \reviewtext{3. In section II-A, is the sensor Honest-but-Curious or is the attacker model Honest-but-Curious? How does the attack occur in the sensors?}
 
-We regret that the intended meaning was not clearer. The two expressions were used interchangeably due to sensors being the only corruptible parties by an attacker. The section has been updated to explicitly state that attackers are honest-but-curious and that sensors can be corrupted. We hope this clarifies the intended meaning.
+This was not written clearly and we are grateful that it was pointed out. The section has been updated to explicitly state that attackers are honest-but-curious and that the navigator or sensors can be corrupted. We hope this clarifies the intended meaning.
 
 \item \reviewtext{4. What's the meaning of $\mathcal{E}(\cdot)$ in $\mathsf{CombEnc}(t,pk_0,sk_i,\mathcal{E}(\omega_1^{(t)}),\dots)$? The author does not give a paraphrase in Notation. And in $\mathsf{AggDec}(t,pk_0,sk_0,\dots)$, the public and private keys $pk_0,sk_0$ is not shown in the description of linear combinations $\sum_{i=1}^n l_i^{(t)} = \sum_{i=1}^n \sum_{j=1}^m a^{(t)}_{i,j} \omega^{(t)}_j$.}
 
-TODO respond.
+The reviewer is correct to notice the inconsistency with notations in this section. Key subscripts have been added to make it clear that the encryptions $\mathcal{E}(\cdot)$ are performed with the keys generated in the $\mathsf{Setup}(\cdot)$ algorithm and the linear combinations $l_i^{(t)}$ modified to denote the unencrypted sum.
 
 \item \reviewtext{5. Please complete the references with the relevant information, for example, the year of publication of ref. 8.}
 
-TODO respond.
+Sorry about the mistake, the missing year has been added and the remaining references inspected for additional errors.
 
 \end{rebuttal}
 
